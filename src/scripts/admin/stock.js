@@ -245,7 +245,7 @@ async function loadAllIngredients(baseUrl) {
             throw new Error('Network response was not ok');
         }
         const responseData = await response.json();
-        //  console.log(responseData);
+          console.log(responseData);
 
         let tableHTML = "";
 
@@ -386,6 +386,8 @@ async function updateIngredient(baseUrl) {
             clearIngredientsInputs();
             checkIngredientInputs();
             getAvailableIngredients(baseUrl);
+            loadAllStock(baseUrl);
+            getAllActiveIngredients(baseUrl)
 
         })
         .catch(error => {
@@ -434,6 +436,8 @@ async function deleteIngredient(baseUrl) {
                     clearIngredientsInputs();
                     checkIngredientInputs();
                     getAvailableIngredients(baseUrl);
+                    loadAllStock(baseUrl);
+                    getAllActiveIngredients(baseUrl);
                 })
                 .catch(error => {
                     console.error('Error Deleting Ingredient:', error);
@@ -765,7 +769,8 @@ async function loadAllStock(baseUrl) {
             throw new Error('Network response was not ok');
         }
         const responseData = await response.json();
-
+        console.log(responseData);
+        
         let tableHTML = "";
 
         for (let i = 0; i < responseData.data.length; i++) {
@@ -1061,6 +1066,8 @@ async function updateStock(baseUrl) {
             loadAllStockHistory(baseUrl);
             stockHistory(baseUrl);
             stockOverviewReport(baseUrl);
+            // getAllActiveIngredients(baseUrl)
+            
 
             document.getElementById('stock-update-ingredientName').value = '';
             document.getElementById('stock-update-ingredientUnit').value = '';
@@ -1241,6 +1248,8 @@ async function updateStockHistory(baseUrl) {
             loadAllStockHistory(baseUrl);
             loadAllStock(baseUrl)
             resetStockHistoryForm()
+            stockHistory(baseUrl);
+            stockOverviewReport(baseUrl);
         
 
         })
@@ -1289,6 +1298,8 @@ function deleteStockHistory(baseUrl) {
                     loadAllStockHistory(baseUrl)
                     loadAllStock(baseUrl)
                     resetStockHistoryForm()
+                    stockHistory(baseUrl);
+                    stockOverviewReport(baseUrl);
                 })
                 .catch(error => {
                     console.error('Error Deleting Stock:', error);

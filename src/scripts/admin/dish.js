@@ -323,7 +323,7 @@ function displayDishes(baseUrl, data, dishImagePath) {
 
 //-----dish click event handler-------------
 function dishClickEventHandler(baseUrl, dishId, dishImagePath) {
-    console.log(dishId);
+  //  console.log(dishId);
     
     const processedIngredientIds = [];
     const maxIngredients = 20;
@@ -1187,7 +1187,7 @@ async function filterDishes(data, searchText) {
         const dishName = item.dishName.toLowerCase();
         if (dishName.includes(searchText)) {
             const card = `
-                <div class="dish-detail-img">
+                <div class="dish-detail-img" data-dish-id="${item.dishId}">
                     <div class="dish-detail-img-view">
                         <img src="${imageUrl}" alt="" height="100%" width="100%;">
                     </div>

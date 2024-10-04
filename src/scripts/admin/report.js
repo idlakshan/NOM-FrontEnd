@@ -1264,247 +1264,11 @@ function filterStockTable(selectedOption) {
 
 
 
-
-//-------------------------Credit Report Start---------------------------------------
-// let selectedCreditCustomerId = null;
-// const tblCredit = new DataTable("#tblCredit", {
-//     paging: false,
-//     info: false,
-// });
-// async function creditReport(baseUrl) {
-
-//     const response = await fetch(baseUrl + "/CreditCustomer/customerWithLastPayment", {
-//         method: "GET",
-//         headers: {
-//             Accept: "application/json",
-//             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-//         },
-//     });
-//     const creditDataList = await response.json();
-//     //console.log(creditDataList);
-
-//     if (!creditDataList.data || creditDataList.data.length === 0) {
-//         console.warn('No credit data available to populate the table.');
-//         return; 
-//     }
-
-//     function formatDate(dateString) {
-//         const date = new Date(dateString);
-//         const year = date.getFullYear();
-//         const month = String(date.getMonth() + 1).padStart(2, '0');
-//         const day = String(date.getDate()).padStart(2, '0');
-//         const hours = String(date.getHours()).padStart(2, '0');
-//         const minutes = String(date.getMinutes()).padStart(2, '0');
-//         const seconds = String(date.getSeconds()).padStart(2, '0');
-
-//         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-//     }
-
-//     let creditList = "";
-
-//     for (let i = 0; i < creditDataList.data.length; i++) {
-//         const lastPayment = creditDataList.data[i][6] === null ? "No Recent Payments" : formatDate(creditDataList.data[i][6]);
-//         creditList += `
-//                 <tr>
-//                     <td>${i + 1}</td>
-//                     <td>${creditDataList.data[i][0]}</td>
-//                     <td>${creditDataList.data[i][7]}</td>
-//                     <td>${creditDataList.data[i][8]}</td>
-//                     <td>${lastPayment}</td>
-//                     <td>${creditDataList.data[i][5]}</td>
-//                     <td>${creditDataList.data[i][4]}</td>
-//                     <td>${creditDataList.data[i][3]}</td>
-//                 </tr>
-//             `;
-//     }
-//     document.querySelector('#tblCredit tbody').innerHTML = creditList;
-
-//     const tblCredit = new DataTable("#tblCredit", {
-//         paging: false,
-//         info: false,
-//     });
-//     // const tblCreditPopup = new DataTable("#tblCreditPopup", {
-//     //     paging: false,
-//     //     info: false,
-//     // });
-
-
-
-
-
-//     const rows = document.querySelectorAll('#tblCredit tbody tr');
-//     rows.forEach(function (row, index) {
-//         row.addEventListener("click", function () {
-//             const customerId = creditDataList.data[index][2];
-//             selectedCreditCustomerId = creditDataList.data[index][2];
-//             document.getElementById("creditCusOrderList").innerHTML = ""
-//             creditOrdersPopup(baseUrl, customerId);
-//         });
-//     });
-
-//     const customersContact = [];
-//     const customersName = [];
-
-//     document.querySelectorAll('#tblCredit tbody tr').forEach((row) => {
-//         const customerContact = row.cells[3].textContent.trim();
-//         const customerName = row.cells[2].textContent.trim();
-
-//         if (!customersName.includes(customerName)) {
-//             customersName.push(customerName);
-//         }
-
-//         if (!customersContact.includes(customerContact)) {
-//             customersContact.push(customerContact);
-//         }
-//     });
-
-//     const datalist = document.getElementById('creditCustList');
-//     [...customersName, ...customersContact].forEach((id) => {
-//         const option = document.createElement('option');
-//         option.value = id;
-//         datalist.appendChild(option);
-//     });
-
-//     document.getElementById("cusNameCredit").addEventListener("input", function () {
-//         const searchValue = this.value;
-
-//         if (searchValue === "All") {
-//             tblCredit.search('').draw();
-//             calculateTotalCreditDue()
-//         } else {
-//             tblCredit.search(searchValue).draw();
-//             calculateTotalCreditDue()
-//         }
-//     });
-//     calculateTotalCreditDue()
-
-// }
-
-
-// document.getElementById('custom-credit').addEventListener('change', function () {
-//     const selectedOption = this.value;
-//     filterCreditTable(selectedOption);
-// });
-
-
-// function filterCreditTable(selectedOption) {
-//     const today = new Date();
-//     const tableRows = document.querySelectorAll("#tblCredit tbody tr");
-//     const fromDateInput = document.getElementById('fromDateCredit');
-//     const toDateInput = document.getElementById('toDateCredit');
-
-//     // Function to strip time from a Date object
-//     function getDateOnly(date) {
-//         return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-//     }
-
-//     function showAllRows() {
-//         tableRows.forEach(function (row) {
-//             row.style.display = "table-row";
-//         });
-//     }
-
-//     tableRows.forEach(function (row) {
-//         const rowDate = new Date(row.cells[4].textContent); // Assuming the date is in the 5th column (index 4)
-
-//         // Strip the time part from the row date
-//         const rowDateOnly = getDateOnly(rowDate);
-
-//         switch (selectedOption) {
-//             case "Today":
-//             case "Yesterday":
-//             case "Last Month":
-//             case "Last Year":
-//                 fromDateInput.value = '';
-//                 toDateInput.value = '';
-//                 fromDateInput.disabled = true;
-//                 toDateInput.disabled = true;
-
-//                 let compareDate;
-//                 switch (selectedOption) {
-//                     case "Today":
-//                         compareDate = today;
-//                         break;
-//                     case "Yesterday":
-//                         compareDate = new Date(today);
-//                         compareDate.setDate(today.getDate() - 1);
-//                         break;
-//                     case "Last Month":
-//                         compareDate = new Date(today);
-//                         compareDate.setMonth(today.getMonth() - 1);
-//                         break;
-//                     case "Last Year":
-//                         compareDate = new Date(today);
-//                         compareDate.setFullYear(today.getFullYear() - 1);
-//                         break;
-//                 }
-
-//                 const compareDateOnly = getDateOnly(compareDate);  // Strip time from comparison date
-
-//                 if (rowDateOnly.getTime() === compareDateOnly.getTime()) {
-//                     row.style.display = "table-row";
-//                     calculateTotalCreditDue();
-//                 } else {
-//                     row.style.display = "none";
-//                 }
-//                 break;
-
-//             case "Custom":
-//                 fromDateInput.disabled = false;
-//                 toDateInput.disabled = false;
-//                 fromDateInput.value = '';
-//                 toDateInput.value = new Date().toISOString().split('T')[0];
-
-//                 showAllRows();
-
-//                 fromDateInput.addEventListener("change", function () {
-//                     filterCustomDate();
-//                 });
-
-//                 toDateInput.addEventListener("change", function () {
-//                     filterCustomDate();
-//                 });
-
-//                 function filterCustomDate() {
-//                     const fromDate = new Date(fromDateInput.value);
-//                     const toDate = new Date(toDateInput.value);
-
-//                     // Strip the time part from the custom date inputs
-//                     const fromDateOnly = getDateOnly(fromDate);
-//                     const toDateOnly = getDateOnly(toDate);
-
-//                     tableRows.forEach(function (row) {
-//                         const rowDate = new Date(row.cells[4].textContent); // Assuming date is in 5th column (index 4)
-//                         const rowDateOnly = getDateOnly(rowDate);  // Strip time from the row date
-
-//                         if (rowDateOnly >= fromDateOnly && rowDateOnly <= toDateOnly) {
-//                             row.style.display = "table-row";
-//                             calculateTotalCreditDue();
-//                         } else {
-//                             row.style.display = "none";
-//                         }
-//                     });
-//                 }
-//                 break;
-
-//             case "All":
-//             default:
-//                 fromDateInput.value = '';
-//                 toDateInput.value = '';
-//                 fromDateInput.disabled = true;
-//                 toDateInput.disabled = true;
-//                 showAllRows();
-//                 break;
-//         }
-//     });
-
-//     calculateTotalCreditDue();
-// }
-
 let selectedCreditCustomerId = null;
-const tblCredit = new DataTable("#tblCredit", {
+const tblCredit = new DataTable("#tblCreditReport", {
     paging: false,
     info: false,
+
 });
 
 // Main function to fetch and populate the credit report
@@ -1524,9 +1288,9 @@ async function creditReport(baseUrl) {
     }
 
     populateCreditTable(creditDataList.data);
-    setupRowClickEvent(creditDataList.data, baseUrl);
+    //setupRowClickEvent(creditDataList.data, baseUrl);
     setupCreditSearch();
-    calculateTotalCreditDue();
+   // calculateTotalCreditDue();
 }
 
 
@@ -1559,12 +1323,12 @@ function populateCreditTable(data) {
             </tr>`;
     });
 
-    document.querySelector('#tblCredit tbody').innerHTML = creditList;
+    document.querySelector('#tblCreditReport tbody').innerHTML = creditList;
 }
 
 
 function setupRowClickEvent(data, baseUrl) {
-    const rows = document.querySelectorAll('#tblCredit tbody tr');
+    const rows = document.querySelectorAll('#tblCreditReport tbody tr');
     rows.forEach((row, index) => {
         row.addEventListener("click", function () {
             const customerId = data[index][2];
@@ -1579,7 +1343,7 @@ function setupCreditSearch() {
     const customersContact = [];
     const customersName = [];
 
-    document.querySelectorAll('#tblCredit tbody tr').forEach(row => {
+    document.querySelectorAll('#tblCreditReport tbody tr').forEach(row => {
         const customerContact = row.cells[3].textContent.trim();
         const customerName = row.cells[2].textContent.trim();
 
@@ -1600,6 +1364,7 @@ function setupCreditSearch() {
 
     document.getElementById("cusNameCredit").addEventListener("input", function () {
         const searchValue = this.value;
+        console.log('Search Value:', searchValue);  // Add this line for debugging
         tblCredit.search(searchValue === "All" ? '' : searchValue).draw();
         calculateTotalCreditDue();
     });
@@ -1608,7 +1373,7 @@ function setupCreditSearch() {
 
 function filterCreditTable(selectedOption) {
     const today = new Date();
-    const tableRows = document.querySelectorAll("#tblCredit tbody tr");
+    const tableRows = document.querySelectorAll("#tblCreditReport tbody tr");
     const fromDateInput = document.getElementById('fromDateCredit');
     const toDateInput = document.getElementById('toDateCredit');
 
@@ -1685,7 +1450,7 @@ document.getElementById('custom-credit').addEventListener('change', function () 
 function calculateTotalCreditDue() {
     let totalDue = 0;
 
-    const tableRows = document.querySelectorAll("#tblCredit tbody tr");
+    const tableRows = document.querySelectorAll("#tblCreditReport tbody tr");
 
     tableRows.forEach(function (row) {
         if (getComputedStyle(row).display !== "none") {
@@ -1746,7 +1511,6 @@ async function creditOrdersPopup(baseUrl, selectedCreditCustomerId) {
 
         const creditOrdersDetailsList = await response.json();
         //console.log(creditOrdersDetailsList);
-
 
 
         let creditOrderDetailsDataList = "";
