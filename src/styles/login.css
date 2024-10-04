@@ -1,0 +1,128 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+.login-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 800px;
+  text-align: center;
+}
+
+.title {
+  font-size: 32px;
+}
+
+.title span {
+  color: transparent;
+  border-left: 5px solid #EA6D27;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: calc(100% - 120px);
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+input[type="button"] {
+  width: calc(100% - 400px);
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 4px;
+  background-color: #101A24;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.keyboard-container {
+  margin-top: 20px;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+}
+
+.keyboard-button {
+  margin: 5px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 70px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.keyboard-button-enter {
+  width: 180px;
+  border: 2px solid #101A24;
+}
+
+.keyboard-button-backspace {
+  width: 150px;
+}
+
+.keyboard-button:hover {
+  background-color: #f0f0f0;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+
+.alert-orange-button {
+  background-color: #EA6D27 !important;
+  border-color: #EA6D27 !important;
+  border: none !important;
+  outline: none !important;
+}
+
+
+@media only screen and (max-width: 1392px) {
+  .login-container {
+    width: 800px;
+    height: 90vh;
+
+  }
+
+
+  .keyboard-button {
+    margin: 2px;
+    padding: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 70px;
+    height: 50px;
+    text-align: center;
+    box-sizing: border-box;
+
+  }
+
+  .keyboard-button-enter,
+  .keyboard-button-backspace {
+    width: 120px;
+  }
+}

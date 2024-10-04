@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashier-dinein</title>
+
+    <!-- Fontawesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/common-styles.css">
+    <link rel="stylesheet" href="../styles/cashier-dinein.css">
+    <link rel="stylesheet" href="../styles/extrenal-popup.css">
+
+</head>
+
+<body>
+    <main class="main">
+        <nav class="navbar">
+            <div class="navbar-left">
+                <img src="../icons/rms_logo.png" class="logo" height="50px" alt="resturant management system logo"
+                    loading="eager">
+                <p id="currentDateAndTime">11 NOV 2023 | 9.02 AM</p>
+                <div class="navbar-left-notifications">
+                    <img src="../icons/notification-orange.png" class="inPreparing-bell" alt="notifications"
+                        loading="eager" width="35px" height="35px">
+                    <p class="notifications-count">6</p>
+
+                    <img src="../icons/notification-green.png" class="ready-bell" alt="notifications" loading="eager"
+                        width="53px" height="42px" style="margin-left: 15px; padding-bottom:2px ;">
+                    <p class="notifications-count">4</p>
+                </div>
+            </div>
+            <div class="navbar-right">
+                <label class="switch">
+                    <input type="checkbox" checked id="toTakeAwayToggle">
+                    <span class="slider round" style="font-size: 14px; padding: 10px;"><span
+                            style="color:#F2F2F5; font-size: 14px; margin-left: 8px;">DineIn</span>PayOff</span>
+                </label>
+
+                <div class="cashier-top-button">
+                    <button class="btn-admin" id="btnDAdmin" type="button">Admin</button>
+                </div>
+                <img class="cashier-logout" src="../icons/logout.png" style="cursor: pointer;" alt="log out"
+                    loading="eager" width="35px" height="35px" id="logOut">
+
+            </div>
+        </nav>
+
+        <section class="container" id="dinein-container" style="overflow-x: hidden;">
+            <section class="container-top">
+                <div class="container-top-left">
+                    <div class="tableArea">
+                        <label class="switch switch-tableview">
+                            <input type="checkbox" class="checkd " id="checkbox-dinein-tables">
+                            <span class="slider round dineinSlider" style="font-size: 14px; padding: 8px;"><span
+                                    style="color:#F2F2F5; font-size: 14px; margin-left: 3px;">Indoor</span>Outdoor</span>
+                        </label>
+                        <img src="../icons/table-down.png" alt="" class="btnPopUpTable btnPopUpTable-rotate">
+                        <div class="top-line"></div>
+                        <div class="cashier-dinein-table-area">
+                            <div class="cashier-dinein-table-inner-area" id="tableArea">
+                                <div class="cashier-dinein-table-inner-area-top">
+                                    <div class="table-selectors">
+                                        <div class="table-color-selector">
+                                            <div class="table-color-select" style="background-color: #5C6574;"></div>
+                                            <p>Available</p>
+                                        </div>
+
+                                        <div class="table-color-selector">
+                                            <div class="table-color-select" style="background-color: #F6C4AE;"></div>
+                                            <p>Occupied</p>
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                                <div class="cashier-dinein-table-inner-area-body">
+                              
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- change table -->
+                        <div class="changeTablePopup">
+                            <div class="changeTablePopup-inner"> 
+                              
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="alphabetArea">
+                        <div class="backButtonArea">
+                            <img src="../images/back.png" width="110px" style="margin-right: 12%;" alt="">
+                        </div>
+                        <ul class="alphabetLettersArea">
+                            <li>
+                                <button class="letter-btn ">A</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">B</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">C</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">D</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">E</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">F</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">G</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">H</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">I</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">J</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">K</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">L</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">M</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">N</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">O</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">P</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">Q</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">R</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">S</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">T</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">U</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">V</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">W</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">X</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">Y</button>
+                            </li>
+                            <li>
+                                <button class="letter-btn ">Z</button>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="container-top-right">
+                    <button class="btn-addcustomer" id="btnAddCustomer">Add Customer</button>
+                </div>
+            </section>
+
+            <section class="container-body">
+                <div class="container-body-left">
+                    <div class="container-body-left-inner">
+                        <div class="category-items-area">
+
+                        </div>
+                        <!--------- dishes List------------------>
+                        <div class="dishes-area">
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--------- dishbox popup ui------------------>
+                <div class="selectedDishPopup">
+
+
+                </div>
+
+                <!--------- add customer popup ui------------------>
+                <div class="addCustomer-box">
+                    <div class="addCustomer-box-header">
+                        <h4 class="addCustomer-box-title">Save Customer</h4>
+                        <img class="addCustomer-box-close-icon" src="../icons/close_icon.png" width="50px" alt="">
+
+                    </div>
+                    <div class="addCustomer-box-body">
+                        <form class="addCustomer-box-body-top" id="customer-save-form">
+                            <div class="addCustomer-input-container">
+                                <img src="../icons/phone.png" width="40px" style="padding-left: 3%;" alt="">
+                                <input class="addCustomer-inputField" id="addCustomerMobile" type="text"
+                                    placeholder="Customer Mobile" name="cusMobileNo">
+                            </div>
+
+                            <div class="addCustomer-input-container">
+                                <img src="../icons/user.png" width="40px" style="padding-left: 3%;" alt="">
+                                <input class="addCustomer-inputField" id="addCustomerName" name="cusName" type="text"
+                                    placeholder="Customer Name">
+                            </div>
+
+                        </form>
+
+                        <div class="addCustomer-box-body-bottom">
+                            <div class="keypad-addCustomer">
+                                <div class="keys-addCustomer">
+                                    <button class="btns-addCustomer">Q</button>
+                                    <button class="btns-addCustomer">W</button>
+                                    <button class="btns-addCustomer">E</button>
+                                    <button class="btns-addCustomer">R</button>
+                                    <button class="btns-addCustomer">T</button>
+                                    <button class="btns-addCustomer">Y</button>
+                                    <button class="btns-addCustomer">U</button>
+                                    <button class="btns-addCustomer">I</button>
+                                    <button class="btns-addCustomer">O</button>
+                                    <button class="btns-addCustomer">P</button>
+                                    <button class="btns-addCustomer">A</button>
+                                    <button class="btns-addCustomer">S</button>
+                                    <button class="btns-addCustomer">D</button>
+                                    <button class="btns-addCustomer">F</button>
+                                    <button class="btns-addCustomer">G</button>
+                                    <button class="btns-addCustomer">H</button>
+                                    <button class="btns-addCustomer">J</button>
+                                    <button class="btns-addCustomer">K</button>
+                                    <button class="btns-addCustomer">L</button>
+                                    <button class="btns-addCustomer">Z</button>
+                                    <button class="btns-addCustomer">X</button>
+                                    <button class="btns-addCustomer">C</button>
+                                    <button class="btns-addCustomer">V</button>
+                                    <button class="btns-addCustomer">B</button>
+                                    <button class="btns-addCustomer">N</button>
+                                    <button class="btns-addCustomer">M</button>
+                                    <button class="btns-addCustomer wide">Space</button>
+                                </div>
+                                <div class="addCustomer-numberArea">
+                                    <div class="keys-numbers">
+                                        <button class="btns-addCustomer-number">1</button>
+                                        <button class="btns-addCustomer-number">2</button>
+                                        <button class="btns-addCustomer-number">3</button>
+                                        <button class="btns-addCustomer-number">4</button>
+                                        <button class="btns-addCustomer-number">5</button>
+                                        <button class="btns-addCustomer-number">6</button>
+                                        <button class="btns-addCustomer-number">7</button>
+                                        <button class="btns-addCustomer-number">8</button>
+                                        <button class="btns-addCustomer-number">9</button>
+                                        <button class="btns-addCustomer-number">0</button>
+                                        <button class="btns-addCustomer-number btn-addCustomer-delete">←</i></button>
+                                        <button class="btns-addCustomer-number">Enter</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="addCustomer-box-footer">
+                        <button class="btn-submit" disabled id="btnSaveCustomer" type="button">+ Save Customer</button>
+                    </div>
+                </div>
+
+
+                <!--------- side order panel------------------>
+                <div class="container-body-right">
+                    <div class="cashier-dinein-right-inner-content-body" id="chashier-dinein-panel1">
+                        <div class="cashier-dinein-right-inner-content-body-top">
+                            <input type="text" name="" class="cashier-orderId" id="dinein_orderId" placeholder="O-001"
+                                disabled>
+                       
+
+                            <input type="text" class="waiterName" list="waiters_list" id="loadAllWaiters"
+                                autocomplete="on" placeholder="Select a waiter" />
+                            <datalist id="waiters_list">
+
+                            </datalist>
+                            <input type="text" name="" class="cashier-groupId tableId dinein-table-id" id="tableId"
+                                placeholder="G-000" disabled>
+                            <label for="cashier-customerId" class="customer-mobile-lable">Mobile</label>
+                            <input type="text" list="customer-mobile" class="customer-mobile-input"
+                                id="inputCustomer-MobileOne" autocomplete="on" />
+                            <datalist id="customer-mobile">
+
+                            </datalist>
+                            <label type="text" id="customer-name" class="customer-name"></label>
+
+                        </div>
+                        <div class="cashier-dinein-right-inner-content-body-middle">
+
+                        </div>
+                        <div class="cashier-dinein-right-inner-content-body-bottom">
+                            <label for="total" id="di-total-lable">DI-Total</label>
+                            <input type="text" id="di-total" class="di-total" placeholder="0.00" disabled>
+
+                            <label for="total" id="tk-total-lable">TK-Total</label>
+                            <input type="text" id="tk-total" class="tk-total" placeholder="0.00" disabled>
+
+                            <button class="btn-submit btn-pay" disabled>Pay</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="numberic-keypad numberic-keypad-mobile">
+                    <ul id="keyboard">
+                        <li class="letter letter-mobile">1</li>
+                        <li class="letter letter-mobile">2</li>
+                        <li class="letter letter-mobile">3</li>
+                        <li class="letter letter-mobile">4</li>
+                        <li class="letter letter-mobile">5</li>
+                        <li class="letter letter-mobile">6</li>
+                        <li class="letter letter-mobile">7</li>
+                        <li class="letter letter-mobile">8</li>
+                        <li class="letter letter-mobile">9</li>
+                        <li class="delete delete-mobile">←</li>
+                        <li class="letter letter-mobile">0</li>
+                        <li class="enter enter-mobile">Enter</li>
+                    </ul>
+                </div>
+            </section>
+
+        </section>
+
+        <!--------- selected dish details popup------------------>
+        <div class="dishDetailsPopup">
+            <div class="dishDetailsPopupWrapper">
+                <img src="../icons/close_icon.png" class="btnCloseDishDetailsPopup" width="45px"
+                    style="position: absolute; right: 2px; top: 2px;" alt="">
+                <div class="dishdetailsTop">
+                    <img src="../icons/time.png" width="35px" alt="">
+                    <h3 class="selectDishName">Chicken Fried Rice</h3>
+                </div>
+                <div class="dishdetailsMiddle">
+                    <select name="" id="waiter_list">
+                        <option value="">Select waiter</option>
+                    </select>
+                </div>
+                <div class="dishdetailsBody">
+                    <table id="tbl_dishDetails">
+                        <thead>
+                            <tr>
+                                <th>#Id</th>
+                                <th>Date & Time</th>
+                                <th>Waiter</th>
+                                <th>Dish Price</th>
+                                <th>Qty</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl_dishDetails_body">
+
+                    
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!--------- order confrim panel------------------>
+        <div class="confrim-orderPanel">
+            <div class="confrim-orderPanel-top">
+                <h3 id="confirmOrderId">Order ID</h3>
+                <h3 id="confirmTableId"> Table ID</h3>
+                <img class="close_icon_orderConfrim" src="../icons/close_icon.png" alt="">
+            </div>
+            <div class="confrim-orderPanel-body">
+                <form class="confrim-orderPanel-body-inner" id="confirm-order-panel-dinein">
+
+                    <div class="confrim-orderPanel-body-inner-container">
+                        <h4>Sub Total</h4>
+                        <h4 class="subTotal">0.00</h4>
+                    </div>
+                    <div class="confrim-orderPanel-body-inner-container">
+                        <h4>Discount</h4>
+                        <input class="orderDiscount orderInput" type="text" name="" id="" placeholder="0%" disabled>
+                    </div>
+                    <div class="confrim-orderPanel-body-inner-container">
+                        <h4>Net-Total</h4>
+                        <h4 class="orderNetTotal" id="netTotalOne">0.00</h4>
+                    </div>
+                    <div class="confrim-orderPanel-body-inner-payment">
+                        <div class="confrim-orderPanel-body-inner-payment-label">
+                            <label class="label-paymet" for="">Cash</label>
+                            <label class="label-paymet" for="">Card</label>
+                            <label class="label-paymet" for="">Credit</label>
+                        </div>
+                        <div class="confrim-orderPanel-body-inner-payment-input">
+                            <input type="number" value="0.00" name="" id="inputpaycashOne" class="input-paymet" step="0.01" min="0">
+                            <input type="number" value="0.00" name="" id="inputpaycardOne" class="input-paymet" step="0.01" min="0">
+                            <input type="number" value="0.00" name="" id="inputpaycreditOne" class="input-paymet" step="0.01" min="0">
+                        </div>
+                        <div class="confrim-orderPanel-body-inner-payment-alert">
+                            <p class="warning-payment-alert" id="paymentWarning" style="font-size: 1rem; color: #ff3300; padding-right: 5px; display: none;"></p>
+                        </div>
+                        
+                    </div>
+
+                    <div class="confrim-orderPanel-body-inner-container" style="margin-top: -2px;">
+                        <h4>Balance</h4>
+                        <h4 class="orderBalance orderBalanceOne" id="order_balance">0.00</h4>
+                    </div>
+                    <div class="confrim-orderPanel-body-inner-container">
+                        <button type="button" class="btn-submit btn-confrim" id="btn_confirm" disabled>confirm</button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="confrim-orderPanel-footer">
+                <div class="numberic-keypad-order">
+                    <ul id="keyboard-order">
+                        <li class="letter letter-order">1</li>
+                        <li class="letter letter-order">2</li>
+                        <li class="letter letter-order">3</li>
+                        <li class="letter letter-order">4</li>
+                        <li class="letter letter-order">5</li>
+                        <li class="letter letter-order">6</li>
+                        <li class="letter letter-order">7</li>
+                        <li class="letter letter-order">8</li>
+                        <li class="letter letter-order">9</li>
+                        <li class="delete letter-order delete-order">←</li>
+                        <li class="letter letter-order">0</li>
+                        <li class="enter letter-order enter-order">.</li>
+                    </ul>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        
+          <!--------- Shift End popup------------------>
+          <div class="shift_popup" id="shift_end" style="height: 80%; top: 17%; display: none;">
+            <div class="shift_top">
+                <h4 class="shift-box-title">Shift Closure</h4>
+                <img class="shift-box-close-icon" id="shift-box-close-shiftend" src="../icons/close_icon.png" width="45px" alt=""
+                    style="margin-top: -9px;">
+            </div>
+            <form class="shift_middle_shiftEnd">
+                <div class="shift_middle_left">
+                    <div class="form-group" style="width: 90%;">
+                        <label for="user">User:</label>
+                        <div class="input-container-shift" id="">
+                            <input type="text" id="shift_end_user_cashier" name="user" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="width: 90%;">
+                        <label for="start-float">Start Float:</label>
+                        <div class="input-container-shift" id="" style="width: 70%;">
+                            <input type="text" id="shiftend-start-float" name="start-float" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group" style="width: 90%;">
+                        <label for="start-float">Cash Amount:</label>
+                        <div class="input-container-shift" id="" style="width: 78%;">
+                            <input type="number" class="shift-keyboard-input" id="shiftend-cash-amount" name="start-float">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="width: 90%;">
+                        <label for="remark">Remark:</label>
+                        <div class="input-container-shift textArea-shiftend" id="">
+                            <textarea class="shift-keyboard-input" id="remarkShiftend" name="remark" rows="3"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="shift_middle_right">
+
+                    <div class="form-group" style="width: 90%; margin-top: 14%;">
+                        <label for="start-float">End Float:</label>
+                        <div class="input-container-shift" id="" style="width: 70%;">
+                            <input class="shift-keyboard-input" type="number" id="shiftend-end-float" name="start-float">
+                        </div>
+                    </div>
+                    <div class="form-group" style="width: 90%;">
+                        <label for="start-float">Card Amount:</label>
+                        <div class="input-container-shift" id="" style="width: 76%;">
+                            <input class="shift-keyboard-input" type="number" id="shiftend-card-amount" name="start-float">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="btnShiftEnd" class="btn-submit btn-shift-end" disabled>End Shift</button>
+            </form>
+
+            <div class="shift_bottom">
+                <div class="keyboard-outer-shift">
+                    <div class="shift-keyboard-row">
+                        <div class="shift-keyboard-button shift-keyboard-button-number-shiftEnd">1</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-number-shiftEnd">2</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-number-shiftEnd">3</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-number-shiftEnd">4</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-number-shiftEnd">5</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-number-shiftEnd">6</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-number-shiftEnd">7</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-number-shiftEnd">8</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-number-shiftEnd">9</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-number-shiftEnd">0</div>
+                    </div>
+                    <div class="shift-keyboard-row">
+                        <div class="shift-keyboard-button">Q</div>
+                        <div class="shift-keyboard-button">W</div>
+                        <div class="shift-keyboard-button">E</div>
+                        <div class="shift-keyboard-button">R</div>
+                        <div class="shift-keyboard-button">T</div>
+                        <div class="shift-keyboard-button">Y</div>
+                        <div class="shift-keyboard-button">U</div>
+                        <div class="shift-keyboard-button">I</div>
+                        <div class="shift-keyboard-button">O</div>
+                        <div class="shift-keyboard-button">P</div>
+                    </div>
+                    <div class="shift-keyboard-row">
+                        <div class="shift-keyboard-button">A</div>
+                        <div class="shift-keyboard-button">S</div>
+                        <div class="shift-keyboard-button">D</div>
+                        <div class="shift-keyboard-button">F</div>
+                        <div class="shift-keyboard-button">G</div>
+                        <div class="shift-keyboard-button">H</div>
+                        <div class="shift-keyboard-button">J</div>
+                        <div class="shift-keyboard-button">K</div>
+                        <div class="shift-keyboard-button">L</div>
+                    </div>
+                    <div class="shift-keyboard-row">
+                        <div class="shift-keyboard-button">Z</div>
+                        <div class="shift-keyboard-button">X</div>
+                        <div class="shift-keyboard-button">C</div>
+                        <div class="shift-keyboard-button">V</div>
+                        <div class="shift-keyboard-button">B</div>
+                        <div class="shift-keyboard-button">N</div>
+                        <div class="shift-keyboard-button">M</div>
+                    </div>
+                    <div class="shift-keyboard-row">
+                        <div class="shift-keyboard-button shift-keyboard-button-special-shiftEnd"
+                            onclick="toggleShiftKeyBoardSymbol('shift-keyboard-button-number-shiftEnd', 'shift-keyboard-button-special-shiftEnd')">
+                            !#*</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-keyChange"
+                            onclick="toggleShiftKeyboardLetters()">abc?</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-space">Space</div>
+                        <div class="shift-keyboard-button shift-keyboard-button-backspace">Backspace</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!--------- cash Settlemet popup------------------>
+        <div class="shift_popup" id="cashSettlementPopup" style="height: 65%; top: 21%; display: none;">
+            <div class="shift_top" style="height: 15%;">
+                <h4 class="shift-box-title" style="margin-top: -2%;">Cash Settlement Summary</h4>
+                <img class="shift-box-close-icon" id="btnsummary-close" src="../icons/close_icon.png" width="45px" alt=""
+                    style="margin-top: -30px;">
+            </div>
+
+            <form class="shift_middle_shiftEnd" style="height:37%;">
+                <div class="shift_middle_left">
+                    <div class="form-group" style="width: 90%; height: 35%;">
+                        <label for="user">User:</label>
+                        <div class="input-container-shift" id="">
+                            <input type="text" id="summary-userId" name="user" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="width: 90%; height: 35%;">
+                        <label for="start-float">Start Float:</label>
+                        <div class="input-container-shift" id="" style="width: 70%;">
+                            <input type="text" id="summary-startFloat" name="start-float" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group" style="width: 90%; height: 35%;">
+                        <label for="start-float">Shift Start:</label>
+                        <div class="input-container-shift" id="" style="width: 70%;">
+                            <input type="text" id="summary-startTime" name="start-float" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="shift_middle_right">
+
+                    <div class="form-group" style="width: 90%; margin-top: 14%; height: 35%;">
+                        <label for="start-float">End Float:</label>
+                        <div class="input-container-shift" id="" style="width: 70%;">
+                            <input type="text" id="summary-endFloat" name="start-float" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group" style="width: 90%; height: 35%;">
+                        <label for="start-float">Shift End:</label>
+                        <div class="input-container-shift" id="" style="width: 70%;">
+                            <input type="text" id="summary-endTime" name="start-float" disabled>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="cashSettlement_bottom">
+                <div class="cashSettlement_bottom_column" style="width: 20%;">
+                    <div class="cashSettlement_bottom_row">
+
+
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <h5>Cash</h5>
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <h5>Card</h5>
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <h5>Credit</h5>
+
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <h5>Total</h5>
+
+                    </div>
+
+
+                </div>
+                <div class="cashSettlement_bottom_column">
+                    <div class="cashSettlement_bottom_row">
+                        <h5>Actual Amount</h5>
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                          <p id="actual-cash">100000.00</p>
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="actual-card">100000.00</p>
+ 
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="actual-credit">100000.00</p>
+
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="actual-tot">100000.00</p>
+
+                    </div>
+                </div>
+                <div class="cashSettlement_bottom_column">
+                    <div class="cashSettlement_bottom_row">
+                        <h5>System Amount</h5>
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="syst-cash">100000.00</p>
+
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="syst-card">100000.00</p>
+
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="syst-credit">100000.00</p>
+
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="syst-tot">100000.00</p>
+
+                    </div>
+
+                </div>
+                <div class="cashSettlement_bottom_column">
+                    <div class="cashSettlement_bottom_row">
+                        <h5>Variance</h5>
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="vari-cash">100000.00</p>
+
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="vari-card">100000.00</p>
+
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="vari-credit">100000.00</p>
+
+                    </div>
+                    <div class="cashSettlement_bottom_row">
+                        <p id="vari-tot">100000.00</p>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+
+    <script src="../scripts/cashier-dinein.js"></script>
+    <script src="../scripts/shift.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>

@@ -1,0 +1,226 @@
+.table-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+
+.table-container-left {
+    width: 43%;
+    height: 99%;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    margin-left: 5PX;
+
+
+}
+
+.table-header-wrap {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* border: 1px solid blue; */
+    padding: 0 !important;
+    margin-bottom: 3%;
+    margin-top: 1px;
+}
+
+
+
+.heading-table {
+    margin-left: 10px;
+    border-left: 5px solid var(--primary-color);
+    padding: 8px;
+    font-size: 24px;
+    color: var(--secondary-color);
+    font-weight: 600;
+    margin-top: 3px;
+    /* border: 1px solid blue; */
+
+}
+
+.table-form-wrap {
+    width: 100%;
+    height: 95%;
+    /* border: 1px solid blue; */
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+    padding: 0 !important;
+}
+
+
+
+#table_Type,
+#table_status {
+    outline: none;
+    width: 200px;
+    border-radius: 6px;
+    border: 1px solid var(--text-field-border);
+    padding-left: 1%;
+    height: 45px;
+}
+
+#search_table_status,
+#search_table_type {
+    outline: none;
+    width: 150px;
+    border-radius: 6px;
+    border: 1px solid var(--text-field-border);
+    padding-left: 1%;
+    height: 45px;
+}
+
+
+#input-container-buttonArea-table {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: none;
+    margin-top: 5px;
+
+    margin: 4% 0 2% 0;
+}
+
+
+.table-container-right {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    width: 55.5%;
+    height: 99%;
+    margin: 0 0 0 10px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    justify-content: center;
+    align-items: center;
+}
+
+.table-container-right-top {
+    width: 100%;
+    height: 18%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    /* border: 1px solid red; */
+    border-bottom: 3px solid var(--text-field-border);
+    margin-bottom: 2%;
+
+
+}
+
+.table-container-right-top-upper {
+    width: 100%;
+    height: 60%;
+    /* border: 1px solid green; */
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 1%;
+    margin-bottom: 3%;
+
+}
+
+.table-container-right-top-bottom {
+    width: 100%;
+    height: 40%;
+
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 50px;
+    padding-top: 2px;
+    align-items: center;
+
+}
+
+.table-container-right-top-bottom-wrapper {
+    width: 25%;
+    height: 90%;
+    /* border: 1px solid red; */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#table_search_container {
+    outline: none;
+    width: 35%;
+    height: 87%;
+    border-radius: 6px;
+    /* border: none; */
+    padding-left: 10px;
+    background-color: #FFFFFF;
+
+}
+
+.table-container-right-body {
+    width: 100%;
+    height: 80%;
+    /* border: 1px solid green; */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    overflow-y: scroll;
+
+}
+
+.table_color {
+    width: 20px;
+    height: 70%;
+    background-color: black;
+    border-radius: 3px;
+}
+
+.table-container-right-top-bottom-wrapper:nth-child(1) .table_color {
+    background-color: var(--order-panel-color);
+}
+
+.table-container-right-top-bottom-wrapper:nth-child(2) .table_color {
+    background-color: var(--selected-color);
+}
+
+.table-container-right-top-bottom-wrapper:nth-child(3) .table_color {
+    background-color: var(--secondary-color);
+}
+
+.table-container-right-top-bottom-wrapper h6 {
+    padding-top: 8px;
+    color: var(--secondary-color);
+}
+
+.table-container-right-body {
+    width: 100%;
+    height: 88%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    overflow-y: scroll;
+    gap: 1.4%;
+
+}
+
+
+
+@media only screen and (max-width: 1392px) {
+    #table_Type,
+    #table_status {
+        width: 160px;
+        height: 40px;
+    }
+}
+

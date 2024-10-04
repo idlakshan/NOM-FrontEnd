@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link rel="stylesheet" href="../styles/login.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <!-- <script defer src="../scripts/login.js"></script> -->
+<body>
+
+  <div class="login-container">
+
+    <h2 class="title"><span>|</span> Welcome back</h2>
+
+    <form>
+      <input type="text" placeholder="Username" id="login_userName">
+      <input type="password" placeholder="Password" id="login_password">
+      <input type="button" id="login_button" value="Login">
+    </form>
+    <div class="keyboard-container">
+      <div class="keyboard-row">
+        <div class="keyboard-button keyboard-button-number">1</div>
+        <div class="keyboard-button keyboard-button-number">2</div>
+        <div class="keyboard-button keyboard-button-number">3</div>
+        <div class="keyboard-button keyboard-button-number">4</div>
+        <div class="keyboard-button keyboard-button-number">5</div>
+        <div class="keyboard-button keyboard-button-number">6</div>
+        <div class="keyboard-button keyboard-button-number">7</div>
+        <div class="keyboard-button keyboard-button-number">8</div>
+        <div class="keyboard-button keyboard-button-number">9</div>
+        <div class="keyboard-button keyboard-button-number">0</div>
+      </div>
+      <div class="keyboard-row">
+        <div class="keyboard-button">Q</div>
+        <div class="keyboard-button">W</div>
+        <div class="keyboard-button">E</div>
+        <div class="keyboard-button">R</div>
+        <div class="keyboard-button">T</div>
+        <div class="keyboard-button">Y</div>
+        <div class="keyboard-button">U</div>
+        <div class="keyboard-button">I</div>
+        <div class="keyboard-button">O</div>
+        <div class="keyboard-button">P</div>
+      </div>
+      <div class="keyboard-row">
+        <div class="keyboard-button">A</div>
+        <div class="keyboard-button">S</div>
+        <div class="keyboard-button">D</div>
+        <div class="keyboard-button">F</div>
+        <div class="keyboard-button">G</div>
+        <div class="keyboard-button">H</div>
+        <div class="keyboard-button">J</div>
+        <div class="keyboard-button">K</div>
+        <div class="keyboard-button">L</div>
+      </div>
+      <div class="keyboard-row">
+        <div class="keyboard-button">Z</div>
+        <div class="keyboard-button">X</div>
+        <div class="keyboard-button">C</div>
+        <div class="keyboard-button">V</div>
+        <div class="keyboard-button">B</div>
+        <div class="keyboard-button">N</div>
+        <div class="keyboard-button">M</div>
+      </div>
+      <div class="keyboard-row">
+        <div class="keyboard-button keyboard-button-special" onclick="toggleSymbol()">!#*</div>
+        <div class="keyboard-button" onclick="toggleCase()">abc?</div>
+        <div class="keyboard-button keyboard-button-enter">Enter</div>
+        <div class="keyboard-button keyboard-button-backspace">Backspace</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../scripts/login.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+ 
+</body>
+
+</html>

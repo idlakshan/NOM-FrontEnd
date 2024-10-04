@@ -1,0 +1,320 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&family=Inter:wght@400;600&display=swap');
+
+:root {
+
+    --primary-color: #EA6D27;
+    --secondary-color: #101A24;
+    --tertiary-color: #ffffff;
+    --selected-color: #F6C4AE;
+    --bg-color: #F2F2F5;
+    --panel-selected-color: #F3F3F4;
+    --order-panel-color: #5C6574;
+    --ready-notification-color: #4BAE4F;
+    --font-color: #101A24;
+    --text-field-border: #a6a6a6;
+
+    --primary-font-family: 'Inter', sans-serif;
+    --secondary-font-family: 'Be Vietnam Pro', sans-serif;
+
+    --text-field-success: #00cc00;
+    --text-field-error: #ff3300;
+}
+
+body,
+h1,
+h2,
+h3,
+p,
+ul,
+li {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+html {
+    font-size: 16px;
+
+
+}
+
+li {
+    list-style: none;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    width: 100%;
+    background-color: #FFFFFF;
+    overflow: hidden;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    padding: 5px;
+    margin: 5px; 
+    height: 80px;
+    cursor: pointer;
+}
+
+.input-container input{
+    background-color: white;
+}
+
+th {
+    background-color:#d9d9d9;
+    text-align: center;
+    padding: 5px;
+}
+
+table th:first-child {
+    border-top-left-radius: 10px;
+}
+
+table th:last-child {
+    border-top-right-radius: 10px;
+}
+
+td {
+    text-align: center;
+    border-bottom: 1px solid var(--text-field-border);
+    padding: 5px;
+}
+
+.active {
+    background: var(--selected-color);
+}
+
+
+.btn-submit {
+    width: 95px;
+    height: 38px;
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+    color: #FFFFFF;
+    outline: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+
+.btn-submit:hover {
+    font-weight: 600;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.btn-submit:disabled {
+    opacity: 0.7;
+}
+
+.btnDownlod{
+    border-radius: 5px;
+    border: var(--primary-color);
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    margin-left: 10px;
+    outline: none;
+    width: auto;
+    width: 50%;
+    padding: 1px;
+ 
+}
+
+.draggable-keyboard {
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    cursor: pointer;
+}
+
+.btnDraggable_keyboard { 
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+}
+
+.keyboard-outer {
+    position: absolute;
+    right: 100%;
+    bottom: 0;
+    margin-top: 35px;
+    margin-left: 4px;
+    background-color: #ffffff;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    width: 650px;
+    height: 350px;
+    border-radius: 10px;
+    padding: 5px;
+    border:2px solid var(--order-panel-color);
+    border-top: 5px solid var(--order-panel-color);
+
+  
+   
+}
+
+.admin-keyboard-row {
+    display: flex;
+    justify-content: center;
+  
+  }
+
+.admin-keyboard-button {
+    margin: 3px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 80px;
+    height: 60px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  
+.admin-keyboard-button-enter {
+    width: 200px;
+    border: 2px solid #101A24;
+  }
+  
+.admin-keyboard-button-backspace {
+    width: 180px;
+}
+  
+.admin-keyboard-button:hover {
+    background-color: #f0f0f0;
+ }
+
+button{
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+.swal-button-orange {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.swal-custom-height {
+    padding: 2.3rem 1.2rem !important; 
+}
+
+.check {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+
+}
+
+
+.check:checked {
+    background-color: var(--primary-color);
+}
+
+.check:checked::after {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 3px;
+    width: 7px;
+    height: 14px;
+    border: 2px solid white;
+    border-width: 0 4px 4px 0; 
+    transform: rotate(45deg);
+}
+
+
+
+.dinein-table {
+    border: 2px solid var(--text-field-border);
+    border-radius: 8px;
+    background-color: white;
+    width: 23%;
+    height: 34%;
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    margin-left: 0.5%;
+   cursor: pointer;
+}
+
+.dinein-table-header {
+    display: flex;
+    width: 100%;
+    height: 15%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.dinein-table-body {
+    display: flex;
+    width: 100%;
+    height: 45%;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    background-color: white;
+
+}
+
+.dinein-table-footer {
+    display: flex;
+    width: 100%;
+    height: 15%;
+    padding: 0 5px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: white;
+}
+
+#table_tableId {
+    font-size: 1rem;
+    padding-top: 10px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3); 
+    z-index: 1;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+    
+}
+
+
+.disabled-row {
+    pointer-events: none;
+    opacity: 0.5;
+    background-color: var(--bg-color); 
+}
+

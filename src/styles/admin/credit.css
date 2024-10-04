@@ -1,0 +1,314 @@
+.credit-container{
+    width: 99%;
+    height: 91%;
+    background-color: white;   
+    margin: 5px 5px 0 5px;
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.creditPayment-popup{
+    width: 45%;
+    height: 50%;
+    background-color: white;
+    position: absolute;
+    top: 5%;
+    left: 55%;
+    transform: translate(-50%, 50%);
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    border: 2px solid var(--order-panel-color);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    display: none;
+}
+
+.creditPayment-popup-container{
+    /* border: 1px solid red; */
+    width: 98%;
+    height: 98%;
+    padding: 3px;
+}
+
+.creditPayment-popup-containerTop{
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 12%;
+}
+
+.creditPayment-popup-containerBody{
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 88%;
+    display: flex;
+    margin-top: 5px;
+}
+
+.creditPayment-popup-containerLeft{
+    /* border: 1px solid red; */
+    width: 48%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2%;
+}
+.creditPayment-popup-containerRight{
+  
+    width: 52%;
+    height: 100%;
+}
+
+.credit-container-form{
+    /* border: 1px solid green; */
+    width: 95%;
+    height: 20%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+.credit-container-form h2{
+ color: var(--secondary-color);
+ font-size: 1.1rem;
+ font-weight: bold;
+}
+
+.input-container-credit{
+  width: 60%;
+  height: 80%;
+  margin-bottom: 0;
+
+}
+
+/* .input-container-credit input{
+    border: 1px solid green;
+
+} */
+
+
+
+.keyboard-credit{
+  width: 80%;
+  height: 80% !important;
+
+  margin-top: 5%;
+}
+
+
+
+/*-------------------credit orders popup------------------ */
+
+.creditOrders-popup{
+   width: 75%;
+    height: 87%;
+    background-color: white;
+    position: absolute;
+    top: -32%;
+    left: 60%;
+    transform: translate(-50%, 50%);
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    border: 2px solid var(--order-panel-color);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    display: none;
+}
+
+.creditOrders-popup-container{
+    width: 99%;
+    height: 98%;
+    /* border: 1px solid red; */
+}
+
+.creditOrders-popup-header{
+    width: 100%;
+    height: 10%;
+    /* border: 1px solid red; */
+
+}
+
+.creditOrders-popup-top{
+    width: 100%;
+    height: 8%;
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    
+}
+
+.input-container-creditOrders-search{
+    width: 20% !important;
+    margin-top: 15px !important;
+    margin-right: 20px !important;
+}
+
+.select_creditOrder{
+    height: 90% !important;
+    width: 15% !important;
+}
+
+.creditOrders-popup-body{
+    width: 100%;
+    height: 82%;
+    /* border: 1px solid red; */
+    display: flex;
+}
+.creditOrders-popup-left{
+    width: 62%;
+    height: 100%;
+    border-right: 3px solid var(--bg-color);
+    margin-right: 2%;
+}
+
+.creditOrders-popup-right{
+    width: 37%;
+    height: 100%;
+    /* border: 1px solid red; */
+    margin-bottom: 12% !important;
+
+}
+
+.creditOrders-popup-right-top{
+    width: 100%;
+    height: 49%;
+    /* border: 1px solid green; */
+}
+
+.creditOrders-popup-right-bottom{
+    width: 100%;
+    height: 50%;
+    /* border: 1px solid green; */
+    margin-bottom: 15%;
+}
+
+.numberic-keypad-creditOrders{
+  /* border: 1px solid blue; */
+  height: 100% !important;
+  align-items: flex-start;
+  
+}
+
+.creditOrder-container-form{
+    width: 80%;
+    justify-content: space-between;
+    /* border: 1px solid black; */
+    margin-left: 27px;
+}
+
+.table_inputContainer{
+    width: 95px;
+    height: 38px;
+    border: 1px solid var(--text-field-border);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 21px;
+   
+   
+}
+
+.table_input{
+    width: 95%;
+    height: 95%;
+    outline: none;
+    border: none;
+    padding-left: 6px;
+}
+
+
+.table_checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    margin-top: 7px;
+}
+
+
+.table_checkbox:checked {
+    background-color: var(--primary-color);
+}
+
+
+.table_checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 3px;
+    width: 7px;
+    height: 14px;
+    border: 2px solid white;
+    border-width: 0 4px 4px 0; 
+    transform: rotate(45deg);
+}
+
+
+#search_creditPayment_status{
+    outline: none;
+    width: 150px;
+    border-radius: 6px;
+    border: 1px solid var(--text-field-border);
+    padding-left: 1%;
+    height: 45px;
+}
+
+
+
+
+@media only screen and (max-width: 1392px) {
+    .creditPayment-popup{
+        width: 50%;
+        height: 55%;
+    }
+
+
+    .keyboard-credit{
+        margin-bottom: 6% !important;
+   
+    }
+
+
+    .creditOrders-popup{
+        width: 75%;
+         height: 94%;
+         top: -44%;
+         left: 60%;
+       
+     }
+
+     #creditOrdersCustomerName{
+        margin-left: 280px !important;
+     }
+
+     .numberic-keypad-creditOrders{
+       
+        margin-top: 2%;
+    
+     }
+
+     #btn_creditOrderwise{
+        margin-left: 66px !important;
+     }
+
+     .keyboard-creditOrders li {
+        height: 51px !important;
+    }
+    
+}

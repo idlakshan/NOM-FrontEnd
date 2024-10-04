@@ -1,0 +1,41 @@
+{
+  "name": "next-order",
+  "version": "1.0.0",
+  "description": "A desktop app for managing restaurant operations",
+  "main": "main.js",
+  "scripts": {
+    "test": "npm test",
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^27.0.4",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.2",
+    "dotenv": "^16.4.5",
+    "virtual-keyboard": "^1.30.4"
+  },
+  "build": {
+    "appId": "com.intelleon.rms",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "node_modules/**/*",
+      "config.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "src/icons/favicon.ico",
+      "signAndEditExecutable": false
+    },
+    "asar": true
+  }
+}

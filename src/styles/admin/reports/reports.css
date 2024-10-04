@@ -1,0 +1,550 @@
+/* ----------------------------reports----------------------------- */
+.sub-report-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    /* border: 1px solid green; */
+}
+
+.sub-report-container-wrapper{
+    width: 100%;
+    height: 99%;
+    background-color: white;
+    margin: 0 5px;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.report-header-wrapper {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* border: 1px solid green; */
+}
+
+.report-heading-title {
+    margin-left: 10px;
+    border-left: 5px solid var(--primary-color);
+    padding: 8px;
+    font-size: 24px;
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+
+.report-container-top {
+    width: 100%;
+    height: 25%;
+    /* border: 1px solid red; */
+    display: flex;
+}
+
+.report-container-top-input-wrapper {
+    width: 90%;
+    height: 100%;
+    /* border: 1px solid green; */
+
+}
+
+.report-container-top-csvbutton-wrapper {
+    width: 10%;
+    height: 100%;
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-wrapper-top{
+    width: 100%;
+    height: 50%;
+    /* border: 1px solid blue; */
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+}
+
+.input-wrapper-bottom{
+    width: 100%;
+    height: 50%;
+    /* border: 1px solid blue; */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 2.6%;
+    
+}
+
+.input-wrapper-bottom-sales{
+    width: 100%;
+    height: 50%;
+    /* border: 1px solid blue; */
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+   
+}
+
+.current-stock-top{
+    /* border: 1px solid red; */
+    height: 10%;
+    margin-top: 2%;
+}
+
+.current-stock-bottom{
+    /* border: 1px solid red; */
+    height: 80% !important;
+}
+
+.current-stock-top-wrapper{
+    /* border: 1px solid blue; */
+    height: 100%; 
+    display: flex;
+    justify-content: flex-start;
+    
+}
+
+.report-search-input-currentStock{
+    height: 75% !important;
+    margin-left: 3%;
+}
+
+.report-search-input{
+    height: 60%;
+    width: 25%;
+    padding: 5px;
+    padding-left: 10px;
+    border: 2px solid var(--text-field-border);
+    border-radius: 6px;
+    overflow-y: auto;
+}
+
+.report-date-input{
+    width: 25%;
+    height: 60%;
+    border-radius: 6px;
+    border: 2px solid var(--text-field-border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    display: flex;
+    
+}
+
+.reports-container-bottom {
+    width: 100%;
+    height: 65%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* border-top: 2px solid var(--order-panel-color); */
+    padding-top: 1%;
+    /* margin-top: 15px; */
+    /* border: 1px solid red; */
+}
+
+
+.report-popup {
+    width: 45%;
+    height: 80%;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    position: absolute;
+    top: 14%;
+    left: 35%;
+    display: none;
+    border: 2px solid var(--order-panel-color);
+    z-index: 2;
+    /* display: inline; */
+}
+
+.reportNote {
+    padding-right: 2%;
+    color: var(--text-field-border);
+    /* border: 1px solid red; */
+
+}
+
+.table-footer {
+    display: flex;
+    align-items: center;
+    width: 98%;
+    height: 10%;
+    /* border: 1px solid red; */
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.dataTables_filter {
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+.reports-container-header {
+    width: 100%;
+    height: 15%;
+    border: 1px solid green;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.searchbtn-container {
+    border: 2px solid var(--text-field-border);
+    width: 30%;
+    height: 50%;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.searchbtn-container input {
+    width: 80%;
+    border: none;
+}
+
+.searchbtn-container input:focus {
+    outline: none;
+}
+
+.searchbtn-container select {
+    width: 50%;
+
+}
+
+.searchbtn-container:nth-child(2) {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    border: none;
+}
+
+.searchbtn-container:nth-child(2) select {
+    height: 100%;
+    border: 2px solid var(--text-field-border);
+    border-radius: 10px;
+    overflow-y: auto;
+
+}
+
+.searchbtn-container:nth-child(2) select:focus {
+    outline: none;
+
+}
+
+.reports-container-body {
+    width: 100%;
+    height: 85%;
+    overflow-y: auto;
+    /* border: 1px solid red; */
+}
+
+.dataTables_filter {
+    display: none;
+}
+
+.scrollable-datalist {
+    max-height: 15px;
+    overflow-y: auto;
+}
+
+
+.dropdown-reports {
+    height: 50%;
+    width: 18%;
+    padding: 5px;
+    border: 2px solid var(--text-field-border);
+    border-radius: 10px;
+    overflow-y: auto;
+}
+
+.dropdown-reports:focus {
+    outline: none;
+}
+
+.searchbtn-container-date {
+    width: 18%;
+    height: 50%;
+    border-radius: 15px;
+    border: 2px solid var(--text-field-border);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+}
+
+.reports-datepicker {
+    height: 100%;
+    background-color: #fff;
+    border: none;
+}
+
+.reports-datepicker:focus {
+    outline: none;
+}
+
+.reports-datepicker-lable {
+    padding-top: 8px;
+    color: var(--text-field-border);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+#currentStockReportItems option:not(:first-child) {
+    margin-bottom: 5px;
+    height: 10px;
+
+}
+
+
+/* .reportNote {
+    padding-right: 2%;
+    color: var(--text-field-border);
+    border: 1px solid red;
+
+}
+
+.table-footer {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    border: 1px solid red;
+    align-items: center;
+    justify-content: flex-end;
+} */
+
+
+
+.reports-two-container-header {
+    width: 90%;
+    height: 12%;
+    /* border: 1px solid green; */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.csvDownload-icon-outer {
+    width: 10%;
+    /* border: 1px solid green; */
+}
+
+
+
+.dropdown-two-reports:focus {
+    outline: none;
+}
+
+
+
+.reports-two-container-body {
+    width: 100%;
+    height: 70%;
+    overflow-y: auto;
+    /* border: 1px solid red; */
+    position: relative;
+}
+
+
+.reports-popup-container-header {
+    width: 100%;
+    height: 25%;
+    /* border: 1px solid green; */
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+    margin-bottom: 1%;
+    border-bottom: 2px solid var(--text-field-border);
+}
+
+.reports-popup-container-body {
+    width: 100%;
+    height: 60%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* border: 1px solid red; */
+
+}
+
+.reports-popup-container-header-column {
+    width: 45%;
+    height: 100%;
+    /* border: 1px solid rgb(0, 51, 255); */
+    margin-left: 5%;
+
+}
+
+.reports-popup-container-header-row {
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 33%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.popup-header-title {
+    padding: 10px;
+    margin-top: 2%;
+    font-weight: 600;
+    color: var(--secondary-color);
+    font-size: 1rem;
+}
+
+.popup-title-sub {
+    font-weight: 300;
+    color: var(--text-field-border);
+    padding-left: 10px;
+}
+
+.cashSettlement_bottom_row h5{
+    font-size: 1rem;
+}
+
+.cashSettlement_bottom_row p{
+    color: var(--secondary-color);
+}
+
+.report-cashSettlement-popup{
+    height: 65%;
+}
+
+/*========== credit report-popup============ */
+
+.report-credit-popup {
+    width: 75%;
+    height: 85%;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    position: absolute;
+    top: 12%;
+    left: 22.5%;
+    /* display: none; */
+    border: 2px solid var(--order-panel-color);
+    /* display: inline; */
+}
+
+
+.reports-credit-popup-container-header{
+    width: 100%;
+    height: 30%;
+    /* border: 1px solid red; */
+}
+
+.reports-Creditpopup-container-body {
+    width: 100%;
+    height: 60%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* border: 1px solid red; */
+
+}
+
+
+
+
+
+.report-credit-orderdetails-popup{
+    display: block;
+}
+
+.reports-creditpopup-container-header-column {
+    width: 50%;
+    height: 100%;
+    /* border: 1px solid rgb(0, 51, 255); */
+    padding-left: 30px;
+    /* margin-left: 5%; */
+
+}
+
+
+.reports-creditpopup-container-body {
+    width: 100%;
+    height: 50%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* border: 1px solid red; */
+
+}
+
+
+.reports-creditpopup-container-header {
+    width: 100%;
+    height: 35%;
+    /* border: 1px solid green; */
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+    margin-bottom: 1%;
+    border-bottom: 2px solid var(--text-field-border);
+}
+
+
+.reports-creditpopup-container-header-row {
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 23%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+
+
+.report-creditPayments-popup{
+  display: block;
+}
+
+.btnTableCreditOrders{
+    width: 60px;
+    height: 35px;
+
+
+}
+
+.report-credit-payment-popup{
+    display: block;
+}
+
+
+
+@media only screen and (max-width: 1392px) {
+    .input-wrapper-bottom{
+        padding-left: 1.8%;
+    }
+
+    .report-popup {
+        width: 55%;
+        left: 30%;
+    }
+}
+

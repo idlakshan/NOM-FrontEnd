@@ -1,0 +1,304 @@
+.employee-container {
+    /* border: 1px solid green; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+
+.employee-wrap-left {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    width: 43%;
+    height: 99%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    margin-left: 5PX;
+
+}
+
+.employee-header-wrap {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2%;
+    /* border: 1px solid blue; */
+}
+
+.heading-employee {
+    margin-left: 10px;
+    border-left: 5px solid var(--primary-color);
+    padding: 8px;
+    font-size: 24px;
+    color: var(--secondary-color);
+    font-weight: 600;
+    /* border: 1px solid blue; */
+}
+
+.employee-image-wrapper {
+    height: 10%;
+    width: 100%;
+
+}
+
+.employee-form-wrap {
+    width: 100%;
+    height: 90%;
+    /* border: 1px solid blue; */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    /* margin-top: 10px; */
+}
+
+.input-container {
+    /* width: 450px; */
+    width: 90%;
+    /* height: 45px; */
+    height: 8.5%;
+    border-radius: 6px;
+    border: 1px solid var(--text-field-border);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.input-container input {
+    outline: none;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    border: none;
+    padding-left: 13px;
+    background-color: #FFFFFF;
+
+
+}
+
+#input_container_selectRoles {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: none;
+}
+
+#user_role_one,
+#user_role_two {
+    outline: none;
+    width: 200px;
+    border-radius: 6px;
+    border: 1px solid var(--text-field-border);
+    padding-left: 1%;
+    height: 45px;
+}
+
+#input-container-buttonArea {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: none;
+    margin-top: 5px;
+    /* border: 1px solid red; */
+}
+
+.employee-wrap-right {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    width: 55.5%;
+    height: 99%;
+    margin: 0 0 0 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    overflow-y: auto;
+    overflow-x: hidden;
+
+
+}
+
+.allemployee-header-wrap {
+    width: 100%;
+    height: 10%;
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.buttonAarea-allemployee {
+    /* border: 1px solid red; */
+    display: flex;
+    width: 300px;
+    height: 65%;
+}
+
+.heading-AllEmployee {
+    margin-left: 10px;
+    border-left: 5px solid var(--primary-color);
+    padding: 8px;
+    font-size: 24px;
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+#btn_changePassword_popup {
+    width: 160px;
+    margin-top: 10px;
+}
+
+
+
+.admin-employee-passwordPopup {
+    width: 45%;
+    height: 75%;
+    position: absolute;
+    z-index: 1;
+    background-color: var(--bg-color);
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    top: 20%;
+    left: 32%;
+    padding: 10px;
+    display: none;
+    border: 2px solid var(--order-panel-color);
+}
+
+#selectedEmployeeName {
+    color: var(--secondary-color);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.changePassword-body-top {
+    width: 100%;
+    height: 35%;
+    /* border: 1px solid red; */
+}
+
+.passwordPopup-form {
+    /* border: 1px solid blue; */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 15px;
+}
+
+.input-container-changepassword {
+    /* width: 450px; */
+    width: 80%;
+    /* height: 45px; */
+    height: 70%;
+    border-radius: 6px;
+    border: 1px solid var(--text-field-border);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    background-color: #FFFFFF;
+    /* border: 1px solid red; */
+}
+
+.input-container-changepassword input {
+    outline: none;
+    width: 70%;
+    height: 100%;
+    border-radius: 6px;
+    border: none;
+    padding-left: 13px;
+    background-color: #FFFFFF;
+    /* border: 1px solid red; */
+}
+
+.changePassword-body-bottom {
+    width: 100%;
+    height: 45%;
+    /* border: 1px solid red; */
+}
+
+.btnChangepassword-wrapper {
+    width: 100%;
+    height: 10%;
+    /* border: 1px solid red; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#btn_changePassword {
+    width: 30%;
+    height: 40px;
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+    color: #FFFFFF;
+    outline: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+/* .admin-section.employee {
+    position: relative; 
+    width: 100%;
+    height: 100vh;
+} */
+
+
+
+
+
+@media only screen and (max-width: 1500px) {
+    #btn_changePassword_popup {
+        font-size: 14px;
+    }
+
+    #user_role_one,
+    #user_role_two {
+        width: 180px;
+    }
+
+}
+
+@media only screen and (max-width: 1392px) {
+    #btn_changePassword_popup {
+        width: 120px;
+        font-size: 11px;
+        height: 35px;
+    }
+
+    #user_role_one,
+    #user_role_two {
+        width: 150px;
+    }
+
+    .employee-input-field-changePassword::placeholder {
+        font-size: 0.8rem;
+    }
+
+    #selectedEmployeeName {
+        font-size: 0.9rem;
+
+    }
+
+    #btn_changePassword {
+        height: 36px;
+        margin-top: 2%;
+    }
+
+}
