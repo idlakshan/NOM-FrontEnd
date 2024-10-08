@@ -1,0 +1,13 @@
+{
+    "BASE_URL": "http://178.18.246.51:8080/api/v1",
+    "UNITS": "Kg,L,Pieces",
+    "IMAGE_PATH": "https://nom-api-stg.devsnest.work/images",
+    "ROLE_IDS": {
+        "Admin": "RL-001",
+        "cashier": "RL-002",
+        "Waiter": "RL-004",
+        "Chef": "RL-003",
+        "Empty": "RL-000"
+    }
+}
+  
