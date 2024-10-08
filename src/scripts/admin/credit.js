@@ -514,7 +514,7 @@ async function selectedCustomerCreditDetailsPopup(baseUrl, row) {
             }
 
             const creditOrdersList = await response.json();
-            //console.log(creditOrdersList);
+            console.log(creditOrdersList);
 
             function formatDate(dateString) {
                 const date = new Date(dateString);

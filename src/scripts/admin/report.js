@@ -269,10 +269,10 @@ async function salesReport(baseUrl) {
         info: false
     });
 
-    const tblSalesPopup = new DataTable('#tblSalesPopup', {
-        paging: false,
-        info: false
-    });
+    // const tblSalesPopup = new DataTable('#tblSalesPopup', {
+    //     paging: false,
+    //     info: false
+    // });
 
     const rows = document.querySelectorAll('#tblSales tbody tr');
     rows.forEach(function (row, index) {
@@ -823,6 +823,8 @@ async function expensesReport(baseUrl) {
         }
 
         const expensesDataList = await response.json();
+       // console.log(expensesDataList);
+        
 
         if (!expensesDataList.data || expensesDataList.data.length === 0) {
             console.warn('No Expenses data available to populate the table.');
@@ -882,6 +884,7 @@ async function expensesReport(baseUrl) {
 document.getElementById("orderIdExpenses").addEventListener("input", function () {
     const searchValue = this.value;
     tblExpencess.search(searchValue === "All" ? '' : searchValue).draw();
+    calculateExpensesTotals();
 });
 
 document.getElementById("custom-expenses").addEventListener("change", function () {
@@ -977,6 +980,7 @@ function filterExpensesTable(selectedOption) {
                             row.style.display = "none";
                         }
                     });
+                    calculateExpensesTotals();
                 }
                 break;
 
@@ -1271,7 +1275,7 @@ const tblCredit = new DataTable("#tblCreditReport", {
 
 });
 
-// Main function to fetch and populate the credit report
+// Main function 
 async function creditReport(baseUrl) {
     const response = await fetch(`${baseUrl}/CreditCustomer/customerWithLastPayment`, {
         method: "GET",
@@ -1282,33 +1286,16 @@ async function creditReport(baseUrl) {
     });
 
     const creditDataList = await response.json();
+   // console.log(creditDataList.data);
+    
     if (!creditDataList.data || creditDataList.data.length === 0) {
         console.warn('No credit data available to populate the table.');
         return;
     }
 
-    populateCreditTable(creditDataList.data);
-    //setupRowClickEvent(creditDataList.data, baseUrl);
-    setupCreditSearch();
-   // calculateTotalCreditDue();
-}
-
-
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
-
-function populateCreditTable(data) {
     let creditList = "";
 
-    data.forEach((item, index) => {
+    creditDataList.data.forEach((item, index) => {
         const lastPayment = item[6] === null ? "No Recent Payments" : formatDate(item[6]);
         creditList += `
             <tr>
@@ -1323,8 +1310,60 @@ function populateCreditTable(data) {
             </tr>`;
     });
 
-    document.querySelector('#tblCreditReport tbody').innerHTML = creditList;
+
+    const tableBody = document.getElementById('tblCreditReport').querySelector('tbody');
+    tableBody.innerHTML = creditList;
+
+    tblCredit.clear().rows.add($(tableBody).children()).draw();
+
+    //populateCreditTable(creditDataList.data);
+
+    const customersContactArr = [];
+    const customersNameArr = [];
+
+
+    document.querySelectorAll('#tblCreditReport tbody tr').forEach(function (row) {
+        const customerContact = row.cells[3].textContent.trim();
+        const customerName = row.cells[2].textContent.trim();
+
+        if (!customersNameArr.includes(customerName)) {
+            customersNameArr.push(customerName);
+        }
+        if (!customersContactArr.includes(customerContact)) {
+            customersContactArr.push(customerContact);
+        }
+    });
+
+    const datalist = document.getElementById("creditCustList");
+    datalist.innerHTML = '';
+    [...customersContactArr, ...customersNameArr].forEach(id => {
+        const option = document.createElement("option");
+        option.value = id;
+        datalist.appendChild(option);
+    });
+
+    setupRowClickEvent(creditDataList.data, baseUrl);
+    calculateTotalCreditDue();
 }
+
+document.getElementById("cusNameCredit").addEventListener("input", function () {
+    const searchValue = this.value;
+    tblCredit.search(searchValue === "All" ? '' : searchValue).draw();
+    calculateTotalCreditDue();
+});
+
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 
 
 function setupRowClickEvent(data, baseUrl) {
@@ -1336,37 +1375,6 @@ function setupRowClickEvent(data, baseUrl) {
             document.getElementById("creditCusOrderList").innerHTML = "";
             creditOrdersPopup(baseUrl, customerId);
         });
-    });
-}
-
-function setupCreditSearch() {
-    const customersContact = [];
-    const customersName = [];
-
-    document.querySelectorAll('#tblCreditReport tbody tr').forEach(row => {
-        const customerContact = row.cells[3].textContent.trim();
-        const customerName = row.cells[2].textContent.trim();
-
-        if (!customersName.includes(customerName)) {
-            customersName.push(customerName);
-        }
-        if (!customersContact.includes(customerContact)) {
-            customersContact.push(customerContact);
-        }
-    });
-
-    const datalist = document.getElementById('creditCustList');
-    [...customersName, ...customersContact].forEach(id => {
-        const option = document.createElement('option');
-        option.value = id;
-        datalist.appendChild(option);
-    });
-
-    document.getElementById("cusNameCredit").addEventListener("input", function () {
-        const searchValue = this.value;
-        console.log('Search Value:', searchValue);  // Add this line for debugging
-        tblCredit.search(searchValue === "All" ? '' : searchValue).draw();
-        calculateTotalCreditDue();
     });
 }
 
@@ -1426,6 +1434,7 @@ function filterCreditTable(selectedOption) {
                         const rowDateOnly = getDateOnly(new Date(row.cells[4].textContent));
                         row.style.display = (rowDateOnly >= fromDateOnly && rowDateOnly <= toDateOnly) ? "table-row" : "none";
                     });
+                    calculateTotalCreditDue();
                 }
                 break;
 
@@ -1444,6 +1453,7 @@ function filterCreditTable(selectedOption) {
 // Event listener for date filtering
 document.getElementById('custom-credit').addEventListener('change', function () {
     filterCreditTable(this.value);
+  
 });
 
 
@@ -1814,7 +1824,8 @@ async function creditPaymentDetailsPopup(baseUrl, selectedCreditCustomerId, orde
         }
 
         const creditPaymentList = await response.json();
-        //  console.log(creditPaymentList);
+      //  console.log(creditPaymentList);
+
         document.getElementById("creditPaymetHistoryReportPopUpOId").innerText = orderId;
         document.getElementById("creditPaymetHistoryReportPopupCustomer").innerText = creditPaymentList.data[0];
         document.getElementById("creditPaymetHistoryReportPopupOrderDate").innerText = formatDate(orderDate)
@@ -1857,7 +1868,7 @@ async function loadcreditPaymentTableDetails(baseUrl, orderId) {
         }
 
         const tableData = await response.json();
-        console.log(tableData);
+       // console.log(tableData);
 
         let paymentDataList = ''
 
@@ -2152,7 +2163,7 @@ async function OrderDetailsReport(baseUrl) {
         }
 
         const orderDetailsDataList = await response.json();
-        console.log(orderDetailsDataList);
+      //  console.log(orderDetailsDataList);
 
 
         if (!orderDetailsDataList.data || orderDetailsDataList.data.length === 0) {
@@ -2519,10 +2530,10 @@ async function dishReport(baseUrl) {
             info: false,
         });
 
-        const tblDishpopup = new DataTable("#tblDishPopup", {
-            paging: false,
-            info: false,
-        });
+        // const tblDishpopup = new DataTable("#tblDishPopup", {
+        //     paging: false,
+        //     info: false,
+        // });
 
         const orderIds = [];
         const customers = [];
@@ -2648,6 +2659,8 @@ async function cashSettlementReport(baseUrl) {
         }
 
         const shiftList = await response.json();
+        console.log(shiftList.data);
+        
 
         if (!shiftList.data || shiftList.data.length === 0) {
             console.warn('No cash settlement data available to populate the table.');
@@ -3030,6 +3043,7 @@ async function creditPayment(baseUrl) {
         document.getElementById("creditPaymentInput").addEventListener("input", function () {
             const searchValue = this.value;
             tblCreditPayment.search(searchValue === "All" ? '' : searchValue).draw();
+            calculateCreditPaymentDetails();
         });
 
         document.getElementById('custom-creditPayment').addEventListener('change', function () {
