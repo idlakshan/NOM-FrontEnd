@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('login_button').addEventListener('click', handleLogin);
   document.querySelector('.keyboard-button-enter').addEventListener('click', handleLogin);
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      handleLogin();
+    }
+  });
 });
 
 

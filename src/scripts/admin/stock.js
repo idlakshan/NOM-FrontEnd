@@ -245,7 +245,7 @@ async function loadAllIngredients(baseUrl) {
             throw new Error('Network response was not ok');
         }
         const responseData = await response.json();
-          console.log(responseData);
+        //  console.log(responseData);
 
         let tableHTML = "";
 
@@ -769,15 +769,14 @@ async function loadAllStock(baseUrl) {
             throw new Error('Network response was not ok');
         }
         const responseData = await response.json();
-        console.log(responseData);
+       // console.log(responseData);
         
         let tableHTML = "";
 
         for (let i = 0; i < responseData.data.length; i++) {
-            // Determine the stock status
             let stockStatus = responseData.data[i][1];
             let displayStatus = stockStatus === "inStock" ? "In Stock" : "Out of Stock";
-            let color = stockStatus === "outOfStock" ? "red" : "black"; // Use red for out-of-stock, black for in-stock
+            let color = stockStatus === "outOfStock" ? "red" : "black"; 
 
             tableHTML += `
                 <tr data-index="${i}">

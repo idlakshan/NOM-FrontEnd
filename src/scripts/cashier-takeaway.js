@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     setInterval(updateTime, 1000);
 
     tabEvenet(baseUrl);
-    loadAllCategory(baseUrl,dishImagePath);
+    loadAllCategory(baseUrl, dishImagePath);
     //loadDishes(baseUrl);
     searchCustomersTakeaway(baseUrl);
     addCustomerEvent();
@@ -248,10 +248,10 @@ async function init(baseUrl) {
 
     if (role === "Admin") {
         const isActiveAdmin = await checkAdminSession(baseUrl, userId);
-       // console.log(isActiveAdmin);
+        // console.log(isActiveAdmin);
 
         if (!isActiveAdmin) {
-           // console.log("hii");
+            // console.log("hii");
             Swal.fire({
                 title: "Confirmation",
                 text: "Are you sure you want to Start a Shift?",
@@ -265,6 +265,7 @@ async function init(baseUrl) {
                     checkCashierSession(baseUrl, userId);
                 } else {
                     dishCardListArea.style.pointerEvents = "none";
+                    localStorage.setItem('sessionStarted', false); 
                 }
             });
         } else {
@@ -350,7 +351,7 @@ function tabEvenet(baseUrl) {
 
 
 // =============Load All Categories=============
-async function loadAllCategory(baseUrl,dishImagePath) {
+async function loadAllCategory(baseUrl, dishImagePath) {
     try {
         const response = await fetch(baseUrl + "/Categorry", {
             method: 'GET',
@@ -374,7 +375,7 @@ async function loadAllCategory(baseUrl,dishImagePath) {
         }
 
         const categoryCardList = document.querySelectorAll(".catergory-card");
-        selectCategoryCardEvent(baseUrl, categoryCardList,dishImagePath);
+        selectCategoryCardEvent(baseUrl, categoryCardList, dishImagePath);
 
     } catch (error) {
         console.error("Error fetching category data:", error);
@@ -402,7 +403,7 @@ function validateMobileInput(panelNumber) {
 
 
 // =============selectCategoryCardEvent=============
-function selectCategoryCardEvent(baseUrl, categoryCardList,dishImagePath) {
+function selectCategoryCardEvent(baseUrl, categoryCardList, dishImagePath) {
     categoryCardList.forEach((categoryCard) => {
         categoryCard.addEventListener("click", function () {
             const currentCategoryCard = categoryCard;
@@ -422,7 +423,7 @@ function selectCategoryCardEvent(baseUrl, categoryCardList,dishImagePath) {
             alphabetArea.style.display = "flex";
 
             const selectedCategoryCardName = currentCategoryCard.querySelector(".catergory-card-title").innerText;
-            loadDishes(baseUrl, selectedCategoryCardName,dishImagePath);
+            loadDishes(baseUrl, selectedCategoryCardName, dishImagePath);
         });
     });
 
@@ -434,72 +435,11 @@ function selectCategoryCardEvent(baseUrl, categoryCardList,dishImagePath) {
 
 }
 
-// =============select Customer keyboard Event =============
-function setupNumericKeypad(tabIndex, inputElement, numericKeypad, numberKeys, keyBackspace, keyEnter) {
-    inputElement.addEventListener("click", function () {
-        hideAllNumericKeypads(tabIndex);
-        numericKeypad.style.display = 'block';
-    });
 
-    numberKeys.forEach((numberKey) => {
-        numberKey.addEventListener('click', function () {
-            insertAtCaret(inputElement, numberKey.textContent);
-        });
-    });
-
-    keyBackspace.addEventListener('click', () => {
-        handleBackspace(inputElement);
-    });
-
-    keyEnter.addEventListener("click", function () {
-        numericKeypad.style.display = 'none';
-    });
-}
-
-function hideAllNumericKeypads(tabIndex) {
-    for (let i = 1; i <= 3; i++) {
-        const keypad = document.querySelector(`.numberic-keypad${i}`);
-        if (i !== tabIndex && keypad.style.display === 'block') {
-            keypad.style.display = 'none';
-        }
-    }
-}
-
-function insertAtCaret(inputElement, value) {
-    const start = inputElement.selectionStart;
-    const end = inputElement.selectionEnd;
-    const text = inputElement.value;
-    
-    inputElement.value = text.slice(0, start) + value + text.slice(end);
-
-    inputElement.selectionStart = inputElement.selectionEnd = start + value.length;
-}
-
-function handleBackspace(inputElement) {
-    const start = inputElement.selectionStart;
-    const end = inputElement.selectionEnd;
-  
-    if (start !== end) {
-        inputElement.value = inputElement.value.slice(0, start) + inputElement.value.slice(end);
-        inputElement.selectionStart = inputElement.selectionEnd = start;
-    } 
-    else if (start > 0) {
-        inputElement.value = inputElement.value.slice(0, start - 1) + inputElement.value.slice(end);
-        inputElement.selectionStart = inputElement.selectionEnd = start - 1;
-    }
-}
-
-
-
-function selectCustomerMobileEvent() {
-    setupNumericKeypad(1, inputMobileElementTab1, numbericKeypadOne, numberkeysOne, keyBackspaceOne, keyEnterOne);
-    setupNumericKeypad(2, inputMobileElementTab2, numbericKeypadTwo, numberkeysTwo, keyBackspaceTwo, keyEnterTwo);
-    setupNumericKeypad(3, inputMobileElementTab3, numbericKeypadThree, numberkeysThree, keyBackspaceThree, keyEnterThree);
-}
 
 
 // =============Load All dishes=============
-async function loadDishes(baseUrl, selectedCategoryCardName,dishImagePath) {
+async function loadDishes(baseUrl, selectedCategoryCardName, dishImagePath) {
     try {
         const response = await fetch(baseUrl + "/dish?category=" + selectedCategoryCardName, {
             headers: {
@@ -533,7 +473,7 @@ async function loadDishes(baseUrl, selectedCategoryCardName,dishImagePath) {
         selectedDishPopupTabOne(baseUrl, dishes.data, dishCards);
         selectedDishPopupTabTwo(baseUrl, dishes.data, dishCards);
         selectedDishPopupTabThree(baseUrl, dishes.data, dishCards);
-        
+
 
     } catch (error) {
         console.error("Error fetching category data:", error);
@@ -676,12 +616,74 @@ function displayPopupTabOne(baseUrl, dishes, index) {
     }
 
     //select dish size event
+    let plusClickListenerTabOne, minusClickListenerTabOne;
     let clickedSelectedDishQtyNumbersTabOne = "1";
     let clearedTabOne = false;
 
     sizeBtnContainersTabOne.forEach((sizeBtnContainerTabOne) => {
         const sizeBtnImg = sizeBtnContainerTabOne.querySelector(".size-btn-img");
         let isClickedTabOne = false;
+
+        function attachNumberPadListenersTabOne() {
+            btnInputNumbers.forEach((btnInputNumber) => {
+                btnInputNumber.disabled = false;
+                btnInputNumber.removeEventListener("click", handleNumberClickTabOne);
+                btnInputNumber.addEventListener("click", handleNumberClickTabOne);
+            });
+            dishSizeInputTabOne.addEventListener("input", handleInputTabOne);
+            btnBackspaceNumbers.addEventListener("click", handleBackspaceTabOne);
+        }
+
+        function handleNumberClickTabOne() {
+            const clickedNumber = this.innerHTML;
+            // console.log("Clicked number:", clickedNumber);
+            if (clearedTabOne) {
+                clickedSelectedDishQtyNumbersTabOne = clickedNumber;
+                clearedTabOne = false;
+            } else {
+                clickedSelectedDishQtyNumbersTabOne += clickedNumber;
+            }
+            dishSizeInputTabOne.value = clickedSelectedDishQtyNumbersTabOne;
+        }
+
+        function handleInputTabOne() {
+            if (this.value === "") {
+                clearedTabOne = true;
+            }
+        }
+
+        function handleBackspaceTabOne() {
+            clickedSelectedDishQtyNumbersTabOne = clickedSelectedDishQtyNumbersTabOne.slice(0, -1);
+            dishSizeInputTabOne.value = clickedSelectedDishQtyNumbersTabOne;
+
+            if (dishSizeInputTabOne.value === "") {
+                dishSizeInputTabOne.value = "1";
+                clickedSelectedDishQtyNumbersTabOne = "1";
+            }
+        }
+
+        function attachPlusMinusListenersTabOne() {
+            btnPlus.removeEventListener('click', plusClickListenerTabOne);
+            btnMinus.removeEventListener('click', minusClickListenerTabOne);
+
+            plusClickListenerTabOne = function () {
+                const currentValue = parseInt(dishSizeInputTabOne.value);
+                clickedSelectedDishQtyNumbersTabOne = (currentValue + 1).toString();
+                dishSizeInputTabOne.value = clickedSelectedDishQtyNumbersTabOne;
+            };
+
+            minusClickListenerTabOne = function () {
+                const currentValue = parseInt(dishSizeInputTabOne.value);
+                if (currentValue > 1) {
+                    clickedSelectedDishQtyNumbersTabOne = (currentValue - 1).toString();
+                    dishSizeInputTabOne.value = clickedSelectedDishQtyNumbersTabOne;
+                }
+            };
+
+            btnPlus.addEventListener('click', plusClickListenerTabOne);
+            btnMinus.addEventListener('click', minusClickListenerTabOne);
+        }
+
 
         sizeBtnContainerTabOne.addEventListener("click", function () {
             isClickedTabOne = !isClickedTabOne
@@ -703,53 +705,8 @@ function displayPopupTabOne(baseUrl, dishes, index) {
                 clickedSelectedDishQtyNumbersTabOne = "1";
                 clearedTabOne = false;
 
-                btnInputNumbers.forEach((btnInputNumber) => {
-                    btnInputNumber.disabled = false;
-
-                    //============change qtyInput value by clicked Numbers============
-                    btnInputNumber.addEventListener("click", function () {
-                        const clickedNumber = this.innerHTML;
-                        if (clearedTabOne) {
-                            clickedSelectedDishQtyNumbersTabOne = clickedNumber;
-                            clearedTabOne = false;
-                        } else {
-                            clickedSelectedDishQtyNumbersTabOne += clickedNumber;
-                        }
-
-                        dishSizeInputTabOne.value = clickedSelectedDishQtyNumbersTabOne;
-                    });
-                });
-
-                dishSizeInputTabOne.addEventListener("input", function () {
-                    if (this.value === "") {
-                        clearedTabOne = true;
-                    }
-                });
-
-                btnBackspaceNumbers.addEventListener("click", function () {
-                    clickedSelectedDishQtyNumbersTabOne = clickedSelectedDishQtyNumbersTabOne.slice(0, -1);
-                    dishSizeInputTabOne.value = clickedSelectedDishQtyNumbersTabOne;
-
-                    if (dishSizeInputTabOne.value === "") {
-                        dishSizeInputTabOne.value = "1";
-                        clickedSelectedDishQtyNumbersTabOne = "1";
-                    }
-                });
-
-                //change qtyInput value by clicked plus Minus Buttons
-                btnPlus.addEventListener('click', function () {
-                    const currentValue = parseInt(dishSizeInputTabOne.value);
-                    dishSizeInputTabOne.value = currentValue + 1;
-                });
-
-                btnMinus.addEventListener('click', function () {
-                    const currentValue = parseInt(dishSizeInputTabOne.value);
-                    if (currentValue === 1) {
-                        dishSizeInputTabOne.value = "1";
-                    } else {
-                        dishSizeInputTabOne.value = currentValue - 1;
-                    }
-                });
+                attachNumberPadListenersTabOne();
+                attachPlusMinusListenersTabOne();
 
             } else {
                 lastSelectedSizeTabOne = null;
@@ -768,21 +725,21 @@ function displayPopupTabOne(baseUrl, dishes, index) {
                     btnInputNumber.disabled = true;
                 });
 
-                btnPlus.disabled = true;
-                btnMinus.disabled = true;
+                btnPlus.removeEventListener('click', plusClickListenerTabOne);
+                btnMinus.removeEventListener('click', minusClickListenerTabOne);
 
-                sizeBtns.forEach((btn) => {
-                    btn.disabled = false;
+                btnInputNumbers.forEach((btnInputNumber) => {
+                    btnInputNumber.removeEventListener("click", handleNumberClickTabOne);
                 });
 
-                sizeBtnContainersTabOne.forEach((dishSizeBtnContainer) => {
-                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
-                })
+                dishSizeInputTabOne.removeEventListener("input", handleInputTabOne);
+                btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabOne);
             }
 
         });
 
     });
+
 
     //added cart to selected items-TabOne
     btnAddItem.addEventListener("click", function () {
@@ -903,7 +860,7 @@ function btnPayButtonTabOneValidateEvent(orderItemsContainer) {
     const hasItems = orderItemsContainer.children.length > 0;
     const isMobileEmpty = inputMobileElementTab1.value.trim() === "";
     const isNameEmpty = customerNameTab1.innerText.trim() === "";
-  
+
 
     btnPayTabOne.disabled = !hasItems || isMobileEmpty || isNameEmpty
 
@@ -946,7 +903,7 @@ function btnPayClickHandlerTabOne(subTotalValue) {
 
 
 btnPayTabOne.addEventListener('click', function () {
-    if(!inputMobileElementTab1.value){
+    if (!inputMobileElementTab1.value) {
         Swal.fire({
             title: "Oops...",
             text: 'Please select the Customer',
@@ -958,7 +915,7 @@ btnPayTabOne.addEventListener('click', function () {
         return
     }
 
-    if (selectCusCreditStatusTabOne === "Disabled" || inputMobileElementTab1.value ==="unKnown") {
+    if (selectCusCreditStatusTabOne === "Disabled" || inputMobileElementTab1.value === "unKnown") {
         inputCreditTabOne.disabled = true
     } else if (selectCusCreditStatusTabOne === "Enabled") {
         inputCreditTabOne.disabled = false
@@ -1050,7 +1007,7 @@ async function ConfirmOrderTabOne(baseUrl) {
     const netTotal = parseFloat(orderNetTotalTabOne.innerText);
     const orderDetails = collectOrderDetailsTabOne();
 
-    
+
     try {
         const response = await fetch(baseUrl + "/orders/", {
             method: 'PUT',
@@ -1080,7 +1037,7 @@ async function ConfirmOrderTabOne(baseUrl) {
         }
 
         const data = await response.json();
-     //   console.log(data);
+        //   console.log(data);
         await confirmPaymetTabOne(baseUrl, orderId);
 
     } catch (error) {
@@ -1148,7 +1105,7 @@ async function confirmPaymetTabOne(baseUrl, orderId) {
 
         const data = await response.json();
         //console.log(data);
-       // getBillReport(baseUrl);
+        // getBillReport(baseUrl);
 
     } catch (error) {
         console.error("Error in confirmPaymetTabOne: ", error);
@@ -1341,12 +1298,76 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
     }
 
     //select dish size event
+    let plusClickListenerTabTwo, minusClickListenerTabTwo;
     let clickedSelectedDishQtyNumbersTabTwo = "1";
     let clearedTabTwo = false;
 
     sizeBtnContainersTabTwo.forEach((sizeBtnContainerTabTwo) => {
         const sizeBtnImg = sizeBtnContainerTabTwo.querySelector(".size-btn-img");
         let isClickedTabTwo = false;
+
+        function attachNumberPadListenersTabTwo() {
+            btnInputNumbers.forEach((btnInputNumber) => {
+                btnInputNumber.disabled = false;
+                btnInputNumber.removeEventListener("click", handleNumberClickTabTwo);
+                btnInputNumber.addEventListener("click", handleNumberClickTabTwo);
+            });
+            dishSizeInputTabTwo.addEventListener("input", handleInputTabTwo);
+            btnBackspaceNumbers.addEventListener("click", handleBackspaceTabTwo);
+        }
+
+        function handleNumberClickTabTwo() {
+            const clickedNumber = this.innerHTML;
+            // console.log("Clicked number:", clickedNumber);
+            if (clearedTabTwo) {
+                clickedSelectedDishQtyNumbersTabTwo = clickedNumber;
+                clearedTabTwo = false;
+            } else {
+                clickedSelectedDishQtyNumbersTabTwo += clickedNumber;
+            }
+            dishSizeInputTabTwo.value = clickedSelectedDishQtyNumbersTabTwo;
+        }
+
+        function handleInputTabTwo() {
+            if (this.value === "") {
+                clearedTabTwo = true;
+            }
+        }
+
+        function handleBackspaceTabTwo() {
+            clickedSelectedDishQtyNumbersTabTwo = clickedSelectedDishQtyNumbersTabTwo.slice(0, -1);
+            dishSizeInputTabTwo.value = clickedSelectedDishQtyNumbersTabTwo;
+
+            if (dishSizeInputTabTwo.value === "") {
+                dishSizeInputTabTwo.value = "1";
+                clickedSelectedDishQtyNumbersTabTwo = "1";
+            }
+        }
+
+
+
+        function attachPlusMinusListenersTabTwo() {
+            btnPlus.removeEventListener('click', plusClickListenerTabTwo);
+            btnMinus.removeEventListener('click', minusClickListenerTabTwo);
+
+            plusClickListenerTabTwo = function () {
+                const currentValue = parseInt(dishSizeInputTabTwo.value);
+                clickedSelectedDishQtyNumbersTabTwo = (currentValue + 1).toString();
+                dishSizeInputTabTwo.value = clickedSelectedDishQtyNumbersTabTwo;
+            };
+
+            minusClickListenerTabTwo = function () {
+                const currentValue = parseInt(dishSizeInputTabTwo.value);
+                if (currentValue > 1) {
+                    clickedSelectedDishQtyNumbersTabTwo = (currentValue - 1).toString();
+                    dishSizeInputTabTwo.value = clickedSelectedDishQtyNumbersTabTwo;
+                }
+            };
+
+            btnPlus.addEventListener('click', plusClickListenerTabTwo);
+            btnMinus.addEventListener('click', minusClickListenerTabTwo);
+        }
+
 
         sizeBtnContainerTabTwo.addEventListener("click", function () {
             isClickedTabTwo = !isClickedTabTwo
@@ -1368,56 +1389,8 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
                 clickedSelectedDishQtyNumbersTabTwo = "1";
                 clearedTabTwo = false;
 
-
-
-                btnInputNumbers.forEach((btnInputNumber) => {
-                    btnInputNumber.disabled = false;
-
-                    //============change qtyInput value by clicked Numbers============
-                    btnInputNumber.addEventListener("click", function () {
-                        const clickedNumber = this.innerHTML;
-                        if (clearedTabTwo) {
-                            clickedSelectedDishQtyNumbersTabTwo = clickedNumber;
-                            clearedTabTwo = false;
-                        } else {
-                            clickedSelectedDishQtyNumbersTabTwo += clickedNumber;
-                        }
-                        dishSizeInputTabTwo.value = clickedSelectedDishQtyNumbersTabTwo;
-                    });
-                });
-
-                dishSizeInputTabTwo.addEventListener("input", function () {
-                    if (this.value === "") {
-                        clearedTabTwo = true;
-                    }
-                });
-
-                btnBackspaceNumbers.addEventListener("click", function () {
-                    // alert("hi")
-                    clickedSelectedDishQtyNumbersTabTwo = clickedSelectedDishQtyNumbersTabTwo.slice(0, -1);
-                    dishSizeInputTabTwo.value = clickedSelectedDishQtyNumbersTabTwo;
-
-                    if (dishSizeInputTabTwo.value === "") {
-                        dishSizeInputTabTwo.value = "1";
-                        clickedSelectedDishQtyNumbersTabTwo = "1";
-                    }
-                });
-
-                //============change qtyInput value by clicked plus Minus Buttons============
-                btnPlus.addEventListener('click', function () {
-                    const currentValue = parseInt(dishSizeInputTabTwo.value);
-                    dishSizeInputTabTwo.value = currentValue + 1;
-                });
-
-                btnMinus.addEventListener('click', function () {
-                    const currentValue = parseInt(dishSizeInputTabTwo.value);
-                    if (currentValue === 1) {
-                        dishSizeInputTabTwo.value = "1";
-                    } else {
-                        dishSizeInputTabTwo.value = currentValue - 1;
-                    }
-                });
-
+                attachNumberPadListenersTabTwo();
+                attachPlusMinusListenersTabTwo();
 
             } else {
                 lastSelectedSizeTabTwo = null;
@@ -1436,16 +1409,15 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
                     btnInputNumber.disabled = true;
                 });
 
-                btnPlus.disabled = true;
-                btnMinus.disabled = true;
+                btnPlus.removeEventListener('click', plusClickListenerTabTwo);
+                btnMinus.removeEventListener('click', minusClickListenerTabTwo);
 
-                sizeBtns.forEach((btn) => {
-                    btn.disabled = false;
+                btnInputNumbers.forEach((btnInputNumber) => {
+                    btnInputNumber.removeEventListener("click", handleNumberClickTabTwo);
                 });
 
-                sizeBtnContainersTabTwo.forEach((dishSizeBtnContainer) => {
-                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
-                })
+                dishSizeInputTabTwo.removeEventListener("input", handleInputTabTwo);
+                btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabTwo);
             }
 
         });
@@ -1572,7 +1544,7 @@ function btnPayButtonTabTwoValidateEvent(orderItemsContainer) {
     const hasItems = orderItemsContainer.children.length > 0;
     const isMobileEmpty = inputMobileElementTab2.value.trim() === "";
     const isNameEmpty = customerNameTab2.innerText.trim() === "";
-  
+
     btnPayTabTwo.disabled = !hasItems || isMobileEmpty || isNameEmpty
 }
 
@@ -1613,7 +1585,7 @@ function btnPayClickHandlerTabTwo(subTotalValue) {
 
 btnPayTabTwo.addEventListener('click', function () {
 
-    if(!inputMobileElementTab2.value){
+    if (!inputMobileElementTab2.value) {
         Swal.fire({
             title: "Oops...",
             text: 'Please select the Customer',
@@ -1625,7 +1597,7 @@ btnPayTabTwo.addEventListener('click', function () {
         return
     }
 
-    if (selectCusCreditStatusTabTwo === "Disabled" || inputMobileElementTab2.value ==="unKnown") {
+    if (selectCusCreditStatusTabTwo === "Disabled" || inputMobileElementTab2.value === "unKnown") {
         inputCreditTabTwo.disabled = true
     } else if (selectCusCreditStatusTabTwo === "Enabled") {
         inputCreditTabTwo.disabled = false
@@ -1733,7 +1705,7 @@ async function ConfirmOrderTabTwo(baseUrl) {
         orderDetails: orderDetails,
     });
 
-  //  console.log("Request Body:", requestBody);
+    //  console.log("Request Body:", requestBody);
 
     try {
         const response = await fetch(baseUrl + "/orders/", {
@@ -1751,7 +1723,7 @@ async function ConfirmOrderTabTwo(baseUrl) {
         }
 
         const data = await response.json();
-       // console.log(data);
+        // console.log(data);
 
         await confirmPaymetTabTwo(baseUrl, orderId);
 
@@ -1821,10 +1793,10 @@ async function confirmPaymetTabTwo(baseUrl, orderId) {
         }
 
         const data = await response.json();
-      //  console.log(data);
+        //  console.log(data);
 
 
-      //  getBillReport(baseUrl);
+        //  getBillReport(baseUrl);
 
     } catch (error) {
         console.error("Error in confirmPaymetTabTwo: ", error);
@@ -2021,12 +1993,74 @@ function displayPopupTabThree(baseUrl, dishes, index) {
     }
 
     //select dish size event
+    let plusClickListenerTabThree, minusClickListenerTabThree;
     let clickedSelectedDishQtyNumbersTabThree = "1";
     let clearedTabThree = false;
 
     sizeBtnContainersTabThree.forEach((sizeBtnContainerTabThree) => {
         const sizeBtnImg = sizeBtnContainerTabThree.querySelector(".size-btn-img");
         let isClickedTabThree = false;
+
+        function attachNumberPadListenersTabThree() {
+            btnInputNumbers.forEach((btnInputNumber) => {
+                btnInputNumber.disabled = false;
+                btnInputNumber.removeEventListener("click", handleNumberClickTabThree);
+                btnInputNumber.addEventListener("click", handleNumberClickTabThree);
+            });
+            dishSizeInputTabThree.addEventListener("input", handleInputTabThree);
+            btnBackspaceNumbers.addEventListener("click", handleBackspaceTabThree);
+        }
+
+        function handleNumberClickTabThree() {
+            const clickedNumber = this.innerHTML;
+            // console.log("Clicked number:", clickedNumber);
+            if (clearedTabThree) {
+                clickedSelectedDishQtyNumbersTabThree = clickedNumber;
+                clearedTabThree = false;
+            } else {
+                clickedSelectedDishQtyNumbersTabThree += clickedNumber;
+            }
+            dishSizeInputTabThree.value = clickedSelectedDishQtyNumbersTabThree;
+        }
+
+        function handleInputTabThree() {
+            if (this.value === "") {
+                clearedTabThree = true;
+            }
+        }
+
+        function handleBackspaceTabThree() {
+            clickedSelectedDishQtyNumbersTabThree = clickedSelectedDishQtyNumbersTabThree.slice(0, -1);
+            dishSizeInputTabThree.value = clickedSelectedDishQtyNumbersTabThree;
+
+            if (dishSizeInputTabThree.value === "") {
+                dishSizeInputTabThree.value = "1";
+                clickedSelectedDishQtyNumbersTabThree = "1";
+            }
+        }
+
+        function attachPlusMinusListenersTabThree() {
+            btnPlus.removeEventListener('click', plusClickListenerTabThree);
+            btnMinus.removeEventListener('click', minusClickListenerTabThree);
+
+            plusClickListenerTabThree = function () {
+                const currentValue = parseInt(dishSizeInputTabThree.value);
+                clickedSelectedDishQtyNumbersTabThree = (currentValue + 1).toString();
+                dishSizeInputTabThree.value = clickedSelectedDishQtyNumbersTabThree;
+            };
+
+            minusClickListenerTabThree = function () {
+                const currentValue = parseInt(dishSizeInputTabThree.value);
+                if (currentValue > 1) {
+                    clickedSelectedDishQtyNumbersTabThree = (currentValue - 1).toString();
+                    dishSizeInputTabThree.value = clickedSelectedDishQtyNumbersTabThree;
+                }
+            };
+
+            btnPlus.addEventListener('click', plusClickListenerTabThree);
+            btnMinus.addEventListener('click', minusClickListenerTabThree);
+        }
+
 
         sizeBtnContainerTabThree.addEventListener("click", function () {
             isClickedTabThree = !isClickedTabThree
@@ -2048,58 +2082,8 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 clickedSelectedDishQtyNumbersTabThree = "1";
                 clearedTabThree = false;
 
-
-
-                btnInputNumbers.forEach((btnInputNumber) => {
-                    btnInputNumber.disabled = false;
-
-                    //============change qtyInput value by clicked Numbers============
-                    btnInputNumber.addEventListener("click", function () {
-                        const clickedNumber = this.innerHTML;
-                        if (clearedTabThree) {
-                            clickedSelectedDishQtyNumbersTabThree = clickedNumber;
-                            clearedTabThree = false;
-                        } else {
-                            clickedSelectedDishQtyNumbersTabThree += clickedNumber;
-                        }
-                        dishSizeInputTabThree.value = clickedSelectedDishQtyNumbersTabThree;
-                    });
-                });
-
-                dishSizeInputTabThree.addEventListener("input", function () {
-                    if (this.value === "") {
-                        clearedTabThree = true;
-                    }
-                });
-
-                btnBackspaceNumbers.addEventListener("click", function () {
-                    // alert("hi")
-                    clickedSelectedDishQtyNumbersTabThree = clickedSelectedDishQtyNumbersTabThree.slice(0, -1);
-                    dishSizeInputTabThree.value = clickedSelectedDishQtyNumbersTabThree;
-
-                    if (dishSizeInputTabThree.value === "") {
-                        dishSizeInputTabThree.value = "1";
-                        clickedSelectedDishQtyNumbersTabThree = "1";
-                    }
-                });
-
-                //============change qtyInput value by clicked plus Minus Buttons============
-                btnPlus.addEventListener('click', function () {
-                    const currentValue = parseInt(dishSizeInputTabThree.value);
-                    dishSizeInputTabThree.value = currentValue + 1;
-                });
-
-                btnMinus.addEventListener('click', function () {
-                    const currentValue = parseInt(dishSizeInputTabThree.value);
-                    if (currentValue === 1) {
-                        dishSizeInputTabThree.value = "1";
-                    } else {
-                        dishSizeInputTabThree.value = currentValue - 1;
-                    }
-                });
-
-
-
+                attachNumberPadListenersTabThree();
+                attachPlusMinusListenersTabThree();
 
             } else {
                 lastSelectedSizeTabThree = null;
@@ -2118,19 +2102,21 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                     btnInputNumber.disabled = true;
                 });
 
-                btnPlus.disabled = true;
-                btnMinus.disabled = true;
+                btnPlus.removeEventListener('click', plusClickListenerTabThree);
+                btnMinus.removeEventListener('click', minusClickListenerTabThree);
 
-                sizeBtns.forEach((btn) => {
-                    btn.disabled = false;
+                btnInputNumbers.forEach((btnInputNumber) => {
+                    btnInputNumber.removeEventListener("click", handleNumberClickTabThree);
                 });
-                sizeBtnContainersTabThree.forEach((dishSizeBtnContainer) => {
-                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
-                })
+
+                dishSizeInputTabThree.removeEventListener("input", handleInputTabThree);
+                btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabThree);
             }
+
         });
 
     });
+
 
     //============added cart to selected items============
 
@@ -2250,9 +2236,9 @@ function btnPayButtonTabThreeValidateEvent(orderItemsContainer) {
     const hasItems = orderItemsContainer.children.length > 0;
     const isMobileEmpty = inputMobileElementTab3.value.trim() === "";
     const isNameEmpty = customerNameTab3.innerText.trim() === "";
-  
+
     btnPayTabThree.disabled = !hasItems || isMobileEmpty || isNameEmpty
-    
+
 }
 
 
@@ -2292,7 +2278,7 @@ function btnPayClickHandlerTabThree(subTotalValue) {
 }
 
 btnPayTabThree.addEventListener('click', function () {
-    if(!inputMobileElementTab3.value){
+    if (!inputMobileElementTab3.value) {
         Swal.fire({
             title: "Oops...",
             text: 'Please select the Customer',
@@ -2304,7 +2290,7 @@ btnPayTabThree.addEventListener('click', function () {
         return
     }
 
-    if (selectCusCreditStatusTabThree === "Disabled" || inputMobileElementTab3.value ==="unKnown") {
+    if (selectCusCreditStatusTabThree === "Disabled" || inputMobileElementTab3.value === "unKnown") {
         inputCreditTabThree.disabled = true
     } else if (selectCusCreditStatusTabThree === "Enabled") {
         inputCreditTabThree.disabled = false
@@ -2423,7 +2409,7 @@ async function ConfirmOrderTabThree(baseUrl) {
         }
 
         const data = await response.json();
-     //   console.log(data);
+        //   console.log(data);
 
         await confirmPaymetTabThree(baseUrl, orderId);
 
@@ -2493,7 +2479,7 @@ async function confirmPaymetTabThree(baseUrl, orderId) {
         const data = await response.json();
         //console.log(data);
 
-      //  getBillReport(baseUrl);
+        //  getBillReport(baseUrl);
 
     } catch (error) {
         console.error("Error in confirmPaymetTabThree: ", error);
@@ -2549,7 +2535,7 @@ orderConfrimTab3.addEventListener("click", async function () {
 
 //download and print PDF
 function downloadAndShowPdf(baseUrl) {
-    fetch(baseUrl+"/payment/export?format=pdf", {
+    fetch(baseUrl + "/payment/export?format=pdf", {
         method: 'GET',
         headers: {
             Accept: "application/json",
@@ -2579,7 +2565,7 @@ function downloadAndShowPdf(baseUrl) {
             } else {
                 console.error('Failed to open popup window. Please check if popups are blocked.');
             }
-    
+
             if (popupWindow) {
                 popupWindow.onload = () => URL.revokeObjectURL(pdfUrl);
             }
@@ -2597,7 +2583,7 @@ function clearInput(inputElement, orderBalance, updateBalanceFunction) {
 
     inputElement.addEventListener("focus", function () {
         inputElement.style.color = "#EA6D27";
-        
+
         if (parseFloat(orderBalance.innerText) > 0) {
             if (inputElement.value.trim() === "0.00") {
                 inputElement.value = parseFloat(orderBalance.innerText).toFixed(2);
@@ -2631,7 +2617,7 @@ function clearInput(inputElement, orderBalance, updateBalanceFunction) {
     inputElement.addEventListener("input", function (event) {
         if (!isCleared) {
             console.log(event.data);
-            
+
             inputElement.style.color = "";
             inputElement.value = event.data;
             isCleared = true;
@@ -2964,6 +2950,115 @@ async function searchCustomersTakeaway(baseUrl) {
 }
 
 
+// =============select Customer keyboard Event =============
+function setupNumericKeypad(tabIndex, inputElement, numericKeypad, numberKeys, keyBackspace, keyEnter) {
+    inputElement.addEventListener("click", function () {
+        hideAllNumericKeypads(tabIndex);
+        numericKeypad.style.display = 'block';
+    });
+
+    numberKeys.forEach((numberKey) => {
+        numberKey.addEventListener('click', function () {
+            insertAtCaret(inputElement, numberKey.textContent);
+        });
+    });
+
+    keyBackspace.addEventListener('click', () => {
+        handleBackspace(inputElement);
+    });
+
+    keyEnter.addEventListener("click", function () {
+        numericKeypad.style.display = 'none';
+    });
+
+    const inputEvent = new Event('input', {
+        bubbles: true,
+        cancelable: true,
+    });
+    inputElement.dispatchEvent(inputEvent);
+}
+
+
+document.querySelector("#takeaway-container").addEventListener('click', function (event) {
+
+    if (!event.target.closest('.inputCustomer-Mobile1, .inputCustomer-Mobile2, .inputCustomer-Mobile3, .cashier-dinein-right-inner-content-body-top') &&
+        !event.target.closest('.numberic-keypad1, .numberic-keypad2, .numberic-keypad3')) {
+
+        let keypad1 = document.querySelector(".numberic-keypad1");
+        if (keypad1 && keypad1.style.display !== "none") {
+            keypad1.style.display = "none";
+        }
+
+        let keypad2 = document.querySelector(".numberic-keypad2");
+        if (keypad2 && keypad2.style.display !== "none") {
+            keypad2.style.display = "none";
+        }
+
+        let keypad3 = document.querySelector(".numberic-keypad3");
+        if (keypad3 && keypad3.style.display !== "none") {
+            keypad3.style.display = "none";
+        }
+    }
+});
+
+
+
+
+function hideAllNumericKeypads(tabIndex) {
+    for (let i = 1; i <= 3; i++) {
+        const keypad = document.querySelector(`.numberic-keypad${i}`);
+        if (i !== tabIndex && keypad.style.display === 'block') {
+            keypad.style.display = 'none';
+        }
+    }
+}
+
+function insertAtCaret(inputElement, value) {
+    const start = inputElement.selectionStart;
+    const end = inputElement.selectionEnd;
+    const text = inputElement.value;
+
+    inputElement.value = text.slice(0, start) + value + text.slice(end);
+
+    inputElement.selectionStart = inputElement.selectionEnd = start + value.length;
+
+    const inputEvent = new Event('input', {
+        bubbles: true,
+        cancelable: true,
+    });
+    inputElement.dispatchEvent(inputEvent);
+}
+
+function handleBackspace(inputElement) {
+    const start = inputElement.selectionStart;
+    const end = inputElement.selectionEnd;
+
+    if (start !== end) {
+        inputElement.value = inputElement.value.slice(0, start) + inputElement.value.slice(end);
+        inputElement.selectionStart = inputElement.selectionEnd = start;
+    }
+    else if (start > 0) {
+        inputElement.value = inputElement.value.slice(0, start - 1) + inputElement.value.slice(end);
+        inputElement.selectionStart = inputElement.selectionEnd = start - 1;
+    }
+
+    const inputEvent = new Event('input', {
+        bubbles: true,
+        cancelable: true,
+    });
+    inputElement.dispatchEvent(inputEvent);
+}
+
+
+
+function selectCustomerMobileEvent() {
+    setupNumericKeypad(1, inputMobileElementTab1, numbericKeypadOne, numberkeysOne, keyBackspaceOne, keyEnterOne);
+    setupNumericKeypad(2, inputMobileElementTab2, numbericKeypadTwo, numberkeysTwo, keyBackspaceTwo, keyEnterTwo);
+    setupNumericKeypad(3, inputMobileElementTab3, numbericKeypadThree, numberkeysThree, keyBackspaceThree, keyEnterThree);
+}
+
+
+
 
 
 //============Search Dishes By Alphabet============
@@ -2989,8 +3084,8 @@ function searchDishByLettera(dishCards) {
     dishContentArea.addEventListener("click", () => {
         console.log("click");
         dishCards.forEach(dishCard => {
-          
-            
+
+
             dishCard.style.display = "block";
         });
     });
@@ -3031,7 +3126,7 @@ async function createOrderId(baseUrl, orderId, tabNo) {
 async function getTkOrderId(baseUrl, tabNo, orderIdElementId) {
     try {
         const response = await fetchOrders(baseUrl);
-       // console.log(response);
+        // console.log(response);
 
         const existingOrders = response.data || [];
 
@@ -3041,7 +3136,7 @@ async function getTkOrderId(baseUrl, tabNo, orderIdElementId) {
             if (order.tabNo == tabNo && order.orderStatus === "Pending" && order.orderDateAndTime === null) {
 
                 document.getElementById(orderIdElementId).value = order.orderId;
-             //   console.log(order);
+                //   console.log(order);
                 return order.orderId;
             }
         }
@@ -3283,7 +3378,7 @@ async function sendEndShift(baseUrl) {
         }
 
         const responseData = await response.json();
-      //  console.log(responseData);
+        //  console.log(responseData);
         document.getElementById("shift_end").style.display = "none";
         cashierSessionSummary(responseData)
 
@@ -3297,7 +3392,7 @@ async function sendEndShift(baseUrl) {
 
 async function cashierSessionSummary(responseData) {
     document.getElementById("cashSettlementPopup").style.display = "flex";
-   // console.log(responseData);
+    // console.log(responseData);
     const startDateTime = responseData.data.startDateTime;
     const endDateTime = responseData.data.endDateTime;
 
@@ -3371,7 +3466,7 @@ async function checkCashierSession(baseUrl, userId) {
         }
         const data = await response.json();
         const isCashierActiveSession = data.data
-       // console.log(data.data);
+        // console.log(data.data);
 
         if (!isCashierActiveSession) {
             document.getElementById("shift_start").style.display = "flex"
@@ -3460,7 +3555,7 @@ function sendStartShift(baseUrl) {
             return response.json();
         })
         .then(data => {
-          //  console.log(data);
+            //  console.log(data);
             document.getElementById("shift_start").style.display = "none"
             document.querySelector(".container").style.pointerEvents = "auto";
             document.querySelector(".navbar").style.pointerEvents = "auto";
@@ -3564,7 +3659,7 @@ function payTkOrdersKeyboardEvent() {
                 value: buttonValue,
                 configurable: true,
             });
-            
+
             selectedInputTkOrder.dispatchEvent(inputEvent);
         }
     }

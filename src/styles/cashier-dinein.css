@@ -330,8 +330,39 @@ input:checked+.slider:before {
     background-color: #5C6574;
     height: 20%;
     border-radius: 10px 10px 0 0;
-    position: relative;
+    padding-bottom: 0.5%;
+    /* position: relative; */
 
+}
+
+.cart-panel-top{
+    width: 100%;
+    height: 50%;
+    display: flex;
+}
+
+.cart-panel-top-left{
+    width: 60%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6%;
+}
+
+.cart-panel-top-right{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cart-panel-bottom{
+    width: 100%;
+    height: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
 }
 
 .cashier-orderId {
@@ -339,26 +370,20 @@ input:checked+.slider:before {
     height: 40px;
     background-color: #5C6574;
     border: none;
-    position: absolute;
-    left: 5%;
-    top: 8%;
     color: white;
     font-size: 1.5rem;
     font-weight: 500;
 }
 
 .cashier-groupId {
-    width: 100px;
+    width: 80px;
     height: 40px;
     background-color: #5C6574;
     border: none;
-    position: absolute;
-    left: 40%;
-    top: 8%;
     font-size: 1.3rem;
-    color: white;
+    margin-right: -2%;
     font-size: 1.5rem;
-    font-weight: 500;
+    color: white;
     outline: none;
 
 
@@ -376,10 +401,56 @@ input:checked+.slider:before {
     font-weight: 500;
 }
 
+ .customer-mobile-lable {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #FFFFFF;
+}
 
-.customer-mobile-lable {
+.customer-mobile-input {
+    width: 200px;
+    height: 40px;
+    border-radius: 7px;
+    border: none;
+    outline: none;
+    padding-left: 4%;
+    font-weight: 500;
+    font-size: 1.2rem;
+    color: #101A24;
+}
+
+.customer-name {
+    width: 200px;
+    height: 40px;
+    border-radius: 7px;
+    border: none;
+    font-size: 1.2rem;
+    background-color: var(--tertiary-color);
+    color: #101A24;
+    font-weight: 600;
+    padding-left: 2%;
+    outline: none;
+    margin-right: -3%;
+    
+} 
+
+.waiterName {
+    width: 200px;
+    height: 40px;
+
+    font-size: 1rem;
+    border-radius: 7px;
+    outline: none;
+    padding-left: 10px;
+    font-weight: 600;
+    color: #5C6574;
+    border: none;
+
+}
+
+/* .customer-mobile-lable {
     position: relative;
-    top: 57%;
+    top: 52%;
     left: 5%;
     font-size: 1.2rem;
     font-weight: 500;
@@ -401,6 +472,7 @@ input:checked+.slider:before {
     color: #101A24;
 }
 
+
 .customer-name {
     width: 200px;
     height: 40px;
@@ -414,8 +486,9 @@ input:checked+.slider:before {
     color: #101A24;
     font-weight: 600;
     padding-left: 2%;
-    padding-top: 1.5% !important;
-}
+    outline: none;
+    
+} */
 
 .cashier-dinein-right-inner-content-body-middle {
     width: 100%;
@@ -785,7 +858,7 @@ input:checked+.slider:before {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    /* border: 1px solid red; */
+   
     overflow-y: scroll;
     gap: 2%;
     /* gap:5%; */
@@ -877,25 +950,8 @@ input:checked+.slider:before {
     outline: none !important;
 }
 
-#loadAllWaiters {
-    width: 202px !important;
-    height: 42px;
-    /* background-color: #5C6574; */
-    /* border: none; */
-    position: absolute;
-    right: 15px !important;
-    top: 10%;
-    font-size: 1rem;
-    border-radius: 11px;
-    outline: none;
-    padding-left: 10px;
-    font-weight: 600;
-    color: #5C6574;
-    border: none;
-    /* color: white;
-    font-size: 1.5rem;
-    font-weight: 500; */
-}
+
+
 
 
 /* ---------------selected Order DishCard---------------- */
@@ -1145,14 +1201,22 @@ input:checked+.slider:before {
 }
 
 
+.awesomplete li[aria-selected="true"] {
+    background-color: rgb(94, 93, 93) !important;
+    color: white;
+}
+
+
+.awesomplete li mark {
+    color: orange !important;  
+    background-color: transparent !important;
+}
 
 
 
 
 @media only screen and (max-width: 1500px) {
     .customer-mobile-lable {
-        top: 57%;
-        left: 3%;
         font-size: 1.1rem;
         font-weight: 500;
         color: #FFFFFF;
@@ -1161,15 +1225,21 @@ input:checked+.slider:before {
     .customer-mobile-input {
         width: 180px;
         height: 35px;
-        top: 52%;
-        left: 17%;
+
     }
 
     .customer-name {
         width: 180px;
         height: 35px;
-        top: 52%;
-        left: 58%;
+  
+    }
+
+    .waiterName {
+        width: 180px;
+        height: 35px;
+        margin-right: -4%;
+
+    
     }
 
     #keyboard li {
@@ -1178,13 +1248,7 @@ input:checked+.slider:before {
     }
 
 
-    #loadAllWaiters {
-        width: 180px !important;
-        height: 35px;
 
-        right: 5% !important;
-        top: 11%;
-    }
 
     .cashier-groupId {
         width: 90px;
@@ -1216,24 +1280,36 @@ input:checked+.slider:before {
     }
 
     .customer-mobile-input {
-        width: 165px;
+        width: 150px !important;
         font-size: 1rem;
         height: 35px !important;
     }
 
     .customer-name {
-        width: 165px;
+        width: 150px !important;
         font-size: 1rem;
-        padding-top: 1.2%;
         height: 35px !important;
     }
 
-    #loadAllWaiters {
-        width: 166px !important;
-        height: 35px !important;
+    .waiterName {
+        width: 150px;
+        height: 35px;
+        margin-right: -10%;
 
-        right: 5.5% !important;
-        top: 11%;
+    }
+
+    .cashier-orderId {
+        font-size: 1.3rem;
+        margin-left: 4%;
+   
+    }
+    
+    .cashier-groupId {
+        width: 70px;
+    }
+
+    .cashier-groupId::placeholder {
+        font-size: 1.3rem;
     }
 
     .btnPopUpTable {
@@ -1269,26 +1345,40 @@ input:checked+.slider:before {
 
 
 @media only screen and (max-width: 1280px) {
-    #loadAllWaiters {
-        width: 167px !important;
-        height: 30px;
-        right: 4.1% !important;
-        top: 11%;
-    }
+
 
     .customer-mobile-input {
-        width: 165px;
+        width: 144px !important;
         font-size: 1rem;
         height: 30px;
     }
 
     .customer-name {
-        width: 165px;
+        width: 144px !important;
         font-size: 1rem;
-        padding-top: 1.2%;
+
         height: 30px;
+        margin-right: 0%;
     }
 
+    .waiterName {
+        width: 144px;
+        height: 35px;
+    
+    }
+
+    .cashier-orderId {
+        font-size: 1.1rem;
+   
+    }
+    
+    .cashier-groupId {
+        width: 60px;
+    }
+
+    .cashier-groupId::placeholder {
+        font-size: 1.1rem;
+    }
 
 
     .btnPopUpTable {
@@ -1304,13 +1394,7 @@ input:checked+.slider:before {
 
 
 @media only screen and (max-width: 1215px) {
-    #loadAllWaiters {
-        width: 165px !important;
-        height: 38px !important;
-
-        right: 2.6% !important;
-        top: 11%;
-    }
+ 
 
     
     .customer-mobile-input {

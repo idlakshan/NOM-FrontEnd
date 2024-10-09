@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../styles/common-styles.css">
     <link rel="stylesheet" href="../styles/cashier-dinein.css">
     <link rel="stylesheet" href="../styles/extrenal-popup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
 
 </head>
 
@@ -288,24 +289,36 @@
                 <div class="container-body-right">
                     <div class="cashier-dinein-right-inner-content-body" id="chashier-dinein-panel1">
                         <div class="cashier-dinein-right-inner-content-body-top">
-                            <input type="text" name="" class="cashier-orderId" id="dinein_orderId" placeholder="O-001"
-                                disabled>
-                       
 
-                            <input type="text" class="waiterName" list="waiters_list" id="loadAllWaiters"
-                                autocomplete="on" placeholder="Select a waiter" />
-                            <datalist id="waiters_list">
+                            <div class="cart-panel-top">
+                                <div class="cart-panel-top-left">
+                                    <input type="text" name="" class="cashier-orderId" id="dinein_orderId"
+                                        placeholder="O-001" disabled>
+                                    <input type="text" name="" class="cashier-groupId tableId dinein-table-id"
+                                        id="tableId" placeholder="G-000" disabled>
 
-                            </datalist>
-                            <input type="text" name="" class="cashier-groupId tableId dinein-table-id" id="tableId"
-                                placeholder="G-000" disabled>
-                            <label for="cashier-customerId" class="customer-mobile-lable">Mobile</label>
-                            <input type="text" list="customer-mobile" class="customer-mobile-input"
-                                id="inputCustomer-MobileOne" autocomplete="on" />
-                            <datalist id="customer-mobile">
+                                </div>
+                                <div class="cart-panel-top-right">
+                                    <input type="text" class="waiterName" list="waiters_list" id="loadAllWaiters"
+                                    autocomplete="on" placeholder="Select a waiter"/>
+                                <datalist id="waiters_list">
+    
+                                </datalist>
+                                </div>
 
-                            </datalist>
-                            <label type="text" id="customer-name" class="customer-name"></label>
+                            </div>
+                            <div class="cart-panel-bottom">
+                                <div>
+                                    <label for="cashier-customerId" class="customer-mobile-lable">Mobile</label>
+                                    <input type="text" list="customer-mobile" class="customer-mobile-input awesomplete"
+                                        id="inputCustomer-MobileOne" autocomplete="on" />
+                                    <!-- <datalist id="customer-mobile">
+                              
+                                    </datalist> -->
+                                </div>
+                               
+                                <input type="text" id="customer-name" class="customer-name" readonly></input> 
+                            </div>
 
                         </div>
                         <div class="cashier-dinein-right-inner-content-body-middle">
@@ -714,6 +727,8 @@
     <script src="../scripts/cashier-dinein.js"></script>
     <script src="../scripts/shift.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <!-- Include Awesomplete Script -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
 </body>
 
 </html>

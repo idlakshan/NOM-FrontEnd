@@ -2659,7 +2659,7 @@ async function cashSettlementReport(baseUrl) {
         }
 
         const shiftList = await response.json();
-        console.log(shiftList.data);
+        //console.log(shiftList.data);
         
 
         if (!shiftList.data || shiftList.data.length === 0) {

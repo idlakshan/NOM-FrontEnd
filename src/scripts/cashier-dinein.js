@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     searchCustomers(baseUrl);
     loadAllTables(baseUrl);
     addCustomerEvent();
-    dineinSaveCustomerEvent(baseUrl)
+
     selectCustomerMobileEvent();
     loadAllWaiters(baseUrl);
     getOrderId(baseUrl);
@@ -135,8 +135,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
 
-
-
+    customerSaveBtn.addEventListener("click", function () {
+        dineinSaveCustomerEvent(baseUrl)
+    })
+    const isSessionStarted=localStorage.getItem('sessionStarted'); 
+    if (!isSessionStarted) {
+        // console.log("hiiiii");
+        const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
+        tableInnerArea.style.pointerEvents = 'none';
+        
+    }else{
+     
+    }
 
 });
 
@@ -432,22 +442,83 @@ function displayPopup(baseUrl, dishes, index) {
         })
     }
 
-    //select dish size event
+    let plusClickListener, minusClickListener;
     let clickedSelectedDishQtyNumbers = "1";
     let cleared = false;
-
 
     dishSizeBtnContainers.forEach((sizeBtnContainer) => {
         const sizeBtnImg = sizeBtnContainer.querySelector(".size-btn-img");
         let isClicked = false;
 
+
+        function attachNumberPadListeners() {
+            btnInputNumbers.forEach((btnInputNumber) => {
+                btnInputNumber.disabled = false;
+                btnInputNumber.removeEventListener("click", handleNumberClick);
+                btnInputNumber.addEventListener("click", handleNumberClick);
+            });
+            dishSizeInput.addEventListener("input", handleInput);
+            btnBackspaceNumbers.addEventListener("click", handleBackspace);
+        }
+
+
+        function handleNumberClick() {
+            const clickedNumber = this.innerHTML;
+            // console.log("Clicked number:", clickedNumber);
+            if (cleared) {
+                clickedSelectedDishQtyNumbers = clickedNumber;
+                cleared = false;
+            } else {
+                clickedSelectedDishQtyNumbers += clickedNumber;
+            }
+            dishSizeInput.value = clickedSelectedDishQtyNumbers;
+        }
+
+
+        function handleInput() {
+            if (this.value === "") {
+                cleared = true;
+            }
+        }
+
+        function handleBackspace() {
+            clickedSelectedDishQtyNumbers = clickedSelectedDishQtyNumbers.slice(0, -1);
+            dishSizeInput.value = clickedSelectedDishQtyNumbers;
+
+            if (dishSizeInput.value === "") {
+                dishSizeInput.value = "1";
+                clickedSelectedDishQtyNumbers = "1";
+            }
+        }
+
+
+        function attachPlusMinusListeners() {
+            btnPlus.removeEventListener('click', plusClickListener);
+            btnMinus.removeEventListener('click', minusClickListener);
+
+            plusClickListener = function () {
+                const currentValue = parseInt(dishSizeInput.value);
+                clickedSelectedDishQtyNumbers = (currentValue + 1).toString();
+                dishSizeInput.value = clickedSelectedDishQtyNumbers;
+            };
+
+            minusClickListener = function () {
+                const currentValue = parseInt(dishSizeInput.value);
+                if (currentValue > 1) {
+                    clickedSelectedDishQtyNumbers = (currentValue - 1).toString();
+                    dishSizeInput.value = clickedSelectedDishQtyNumbers;
+                }
+            };
+
+            btnPlus.addEventListener('click', plusClickListener);
+            btnMinus.addEventListener('click', minusClickListener);
+        }
+
         sizeBtnContainer.addEventListener("click", function () {
             isClicked = !isClicked;
 
             if (isClicked) {
-
                 lastSelectedSize = sizeBtnContainer;
-                // console.log(lastSelectedSize);
                 btnPlus.disabled = false;
                 btnMinus.disabled = false;
 
@@ -458,61 +529,14 @@ function displayPopup(baseUrl, dishes, index) {
                 btnDinein.disabled = false;
                 btnTakeaway.disabled = false;
                 dishSizeInput.disabled = false;
-                btnBackspaceNumbers.disabled = false
+                btnBackspaceNumbers.disabled = false;
+
                 dishSizeInput.value = "1";
                 clickedSelectedDishQtyNumbers = "1";
                 cleared = false;
-                btnInputNumbers.forEach((btnInputNumber) => {
-                    btnInputNumber.disabled = false;
 
-                    // Change dish qtyInput value by clicked Numbers
-                    btnInputNumber.addEventListener("click", function () {
-                        const clickedNumber = this.innerHTML;
-                        if (cleared) {
-                            clickedSelectedDishQtyNumbers = clickedNumber;
-                            cleared = false;
-                        } else {
-                            clickedSelectedDishQtyNumbers += clickedNumber;
-                        }
-
-                        dishSizeInput.value = clickedSelectedDishQtyNumbers;
-                    });
-                });
-
-
-                dishSizeInput.addEventListener("input", function () {
-                    if (this.value === "") {
-                        cleared = true;
-                    }
-                });
-
-
-                btnBackspaceNumbers.addEventListener("click", function () {
-                    clickedSelectedDishQtyNumbers = clickedSelectedDishQtyNumbers.slice(0, -1);
-                    dishSizeInput.value = clickedSelectedDishQtyNumbers;
-
-                    if (dishSizeInput.value === "") {
-                        dishSizeInput.value = "1";
-                        clickedSelectedDishQtyNumbers = "1";
-                    }
-                });
-
-
-                //change qtyInput value by clicked plus Minus Buttons
-                btnPlus.addEventListener('click', function () {
-                    const currentValue = parseInt(dishSizeInput.value);
-                    dishSizeInput.value = currentValue + 1;
-                });
-
-                btnMinus.addEventListener('click', function () {
-                    const currentValue = parseInt(dishSizeInput.value);
-                    if (currentValue === '') {
-                        dishSizeInput.value = "1";
-                    } else {
-                        dishSizeInput.value = currentValue - 1;
-                    }
-                });
-
+                attachNumberPadListeners();
+                attachPlusMinusListeners();
             } else {
 
                 lastSelectedSize = null;
@@ -524,22 +548,28 @@ function displayPopup(baseUrl, dishes, index) {
                 dishSizeInput.disabled = true;
                 btnPlus.disabled = true;
                 btnMinus.disabled = true;
-                btnBackspaceNumbers.disabled = true
+                btnBackspaceNumbers.disabled = true;
 
                 btnInputNumbers.forEach((btnInputNumber) => {
                     btnInputNumber.disabled = true;
                 });
 
-                dishSizeBtnContainers.forEach((dishSizeBtnContainer) => {
-                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
-                })
 
+                btnPlus.removeEventListener('click', plusClickListener);
+                btnMinus.removeEventListener('click', minusClickListener);
 
+                btnInputNumbers.forEach((btnInputNumber) => {
+                    btnInputNumber.removeEventListener("click", handleNumberClick);
+                });
+
+                dishSizeInput.removeEventListener("input", handleInput);
+                btnBackspaceNumbers.removeEventListener("click", handleBackspace);
             }
-
         });
-
     });
+
+
+
 
     //added cart to selected items
     btnDinein.addEventListener("click", function () {
@@ -861,7 +891,7 @@ function deleteSelectedOrder(baseUrl, selectOrderItemCards) {
                     // Clear input fields and reset UI
                     groupIdInput.value = "";
                     inputMobileElement.value = "";
-                    customerName.innerText = "";
+                    customerName.value = "";
                     waiterListInput.value = "";
                     tableArea.style.display = 'flex';
                     categoryCardListArea.style.display = 'flex';
@@ -889,7 +919,7 @@ function deleteSelectedOrder(baseUrl, selectOrderItemCards) {
 function btnPayButtonValidateEvent() {
     const hasItems = orderItemsContainer.children.length > 0;
     const isMobileEmpty = inputMobileElement.value.trim() === "";
-    const isNameEmpty = customerName.innerText.trim() === "";
+    const isNameEmpty = customerName.value.trim() === "";
     btnPay.disabled = !hasItems || isMobileEmpty || isNameEmpty
 }
 
@@ -1234,7 +1264,7 @@ function confirmPaymet(baseUrl, orderId) {
             })
             .then(data => {
                 //   console.log(data);
-                
+
             })
     } catch (error) {
         console.log("Error " + error);
@@ -1284,18 +1314,18 @@ function downloadAndShowPdf(baseUrl) {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         }
     })
-    .then(response => {
-        if (response.ok) {
-            return response.blob();
-        } else {
-            throw new Error('Failed to fetch PDF');
-        }
-    })
-    .then(blob => {
-        const pdfUrl = URL.createObjectURL(blob);
-        const popupWindow = window.open('', '_blank', 'width=800,height=600');
-        if (popupWindow) {
-            popupWindow.document.write(`
+        .then(response => {
+            if (response.ok) {
+                return response.blob();
+            } else {
+                throw new Error('Failed to fetch PDF');
+            }
+        })
+        .then(blob => {
+            const pdfUrl = URL.createObjectURL(blob);
+            const popupWindow = window.open('', '_blank', 'width=800,height=600');
+            if (popupWindow) {
+                popupWindow.document.write(`
                 <html>
                     <head><title>PDF Report</title></head>
                     <body style="margin:0;">
@@ -1303,19 +1333,19 @@ function downloadAndShowPdf(baseUrl) {
                     </body>
                 </html>
             `);
-        } else {
-            console.error('Failed to open popup window. Please check if popups are blocked.');
-        }
+            } else {
+                console.error('Failed to open popup window. Please check if popups are blocked.');
+            }
 
-        if (popupWindow) {
-            popupWindow.onload = () => URL.revokeObjectURL(pdfUrl);
-        }
-        document.getElementById("confirm-order-panel-dinein").reset();
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error fetching and displaying PDF:', error);
-    });
+            if (popupWindow) {
+                popupWindow.onload = () => URL.revokeObjectURL(pdfUrl);
+            }
+            document.getElementById("confirm-order-panel-dinein").reset();
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error fetching and displaying PDF:', error);
+        });
 }
 
 
@@ -1362,52 +1392,72 @@ async function searchCustomers(baseUrl) {
 
         const customers = await response.json();
 
-        // Extracting necessary customer information
         const mobileNumbers = customers.data.map(customer => customer.cusMobileNo);
         const customerNames = customers.data.map(customer => customer.cusName);
         const customerIds = customers.data.map(customer => customer.cusId);
         const customerCreditStatus = customers.data.map(customer => customer.creditStatus);
 
-        // Populate the datalist with mobile numbers for autocomplete
-        mobileNumbers.forEach(number => {
-            const option = document.createElement("option");
-            option.value = number;
-            customerMobileDataList.appendChild(option);
+        new Awesomplete(inputMobileElement, {
+            list: mobileNumbers,
+            minChars: 1,
+            maxItems: 5,
+            autoFirst: true
         });
 
-        // Dynamically check input value as user types or selects a mobile number
+        inputMobileElement.addEventListener("awesomplete-selectcomplete", function () {
+            handleMobileNumberChange(); 
+        });
+
         inputMobileElement.addEventListener("input", function () {
-            const enteredMobileNumber = inputMobileElement.value;
-            const index = mobileNumbers.indexOf(enteredMobileNumber);
+            handleMobileNumberChange(); 
+        });
+
+        function handleMobileNumberChange() {
+            // console.log("hi");
+            const enteredMobileNumber = inputMobileElement.value.trim();
+            mobileInput.value = enteredMobileNumber;
+            const index = mobileNumbers.indexOf(enteredMobileNumber); 
 
             if (index !== -1) {
-                // If the mobile number exists, populate the corresponding customer details
-                customerName.innerText = customerNames[index];
+              
+                customerName.value = customerNames[index];
+                nameInput.value = customerNames[index];
                 selectedCusId = customerIds[index];
                 selectedCusName = customerNames[index];
                 selectCusCreditStatus = customerCreditStatus[index];
             } else {
-                // Clear fields if the mobile number doesn't match any customer
-                customerName.innerText = "";
+                // console.log("elsee");
+                customerName.value = "";
+                nameInput.value = "";
                 selectedCusId = "";
                 selectedCusName = "";
                 selectCusCreditStatus = "";
             }
+
             btnPayButtonValidateEvent();
-        });
+            checkCustomerInputs();
+        }
+
+
     } catch (error) {
         console.error("Error fetching customer data:", error);
     }
 }
 
 
+inputMobileElement.addEventListener("click", function () {
+    numbericKeypad.style.display = "block";
+});
+
+document.querySelector("#dinein-container").addEventListener('click', function (event) {
+    if (!event.target.closest('.customer-mobile-input') && !event.target.closest('.numberic-keypad-mobile')) {
+        // console.log("hi");
+        numbericKeypad.style.display = "none";
+    }
+});
 
 //===========select customer keypad event===========
 function selectCustomerMobileEvent() {
-    inputMobileElement.addEventListener("click", function () {
-        numbericKeypad.style.display = "block";
-    });
-
     numberkeys.forEach((numberKey) => {
         numberKey.addEventListener("click", function () {
             insertAtCaret(inputMobileElement, numberKey.textContent);
@@ -1435,7 +1485,7 @@ function insertAtCaret(inputElement, value) {
     const start = inputElement.selectionStart;
     const end = inputElement.selectionEnd;
     const text = inputElement.value;
-  
+
     inputElement.value = text.slice(0, start) + value + text.slice(end);
 
     inputElement.selectionStart = inputElement.selectionEnd = start + value.length;
@@ -1449,18 +1499,18 @@ function insertAtCaret(inputElement, value) {
 function handleBackspace(inputElement) {
     const start = inputElement.selectionStart;
     const end = inputElement.selectionEnd;
-    
+
     if (start !== end) {
-     
+
         inputElement.value = inputElement.value.slice(0, start) + inputElement.value.slice(end);
         inputElement.selectionStart = inputElement.selectionEnd = start;
     } else if (start > 0) {
-     
+
         inputElement.value = inputElement.value.slice(0, start - 1) + inputElement.value.slice(end);
         inputElement.selectionStart = inputElement.selectionEnd = start - 1;
     }
 
-    
+
     const inputEvent = new Event('input', { bubbles: true, cancelable: true });
     inputElement.dispatchEvent(inputEvent);
 }
@@ -1608,7 +1658,7 @@ function setTableToOccupied(baseUrl, tableNumber) {
     isFirstAdd = true;
     getOrderId(baseUrl);
     orderItemsContainer.innerHTML = ""
-    customerName.innerText = ""
+    customerName.value = ""
     inputMobileElement.value = ""
     waiterListInput.value = ""
     groupIdInput.value = tableNumber
@@ -1652,7 +1702,7 @@ function setTableToAvailable(baseUrl, tableNumber) {
     isFirstAdd = true;
     getOrderId(baseUrl);
     orderItemsContainer.innerHTML = "";
-    customerName.innerText = "";
+    customerName.value = "";
     inputMobileElement.value = "";
     waiterListInput.value = "";
     fullTakeawayTotalElement.value = "0.00";
@@ -1801,78 +1851,139 @@ function checkInputTableValue() {
 
 
 //=================save customer event============================
-function dineinSaveCustomerEvent(baseUrl) {
-    const dnCustomerMobilePattern = /^(070|071|074|075|076|077|078)[-]?[0-9]{7}$/;
-    const dnCustomerNamePattern = /^([A-z]{2,}\s?)+$/;
+function validateCustomerName(customerName) {
+    return /^[a-zA-Z\s]+$/.test(customerName);
+}
 
-    mobileInput.addEventListener("input", function (e) {
-        const inputMobile = e.target.value;
-        const validInputMobilePattern = dnCustomerMobilePattern.test(inputMobile);
-        updateInputValidity(mobileInput, validInputMobilePattern);
-    });
+function validateCustomerContact(customerContact) {
+    return /^(070|071|074|075|076|077|078)[-]?[0-9]{7}$/.test(customerContact);
+}
 
-    nameInput.addEventListener("input", function (e) {
-        const inputName = e.target.value;
-        const validInputNamePattern = dnCustomerNamePattern.test(inputName);
-        updateInputValidity(nameInput, validInputNamePattern);
-    });
+const customerInputs = document.querySelectorAll('.addCustomer-inputField');
 
-    mobileInput.addEventListener("input", customerValidateInput);
-    nameInput.addEventListener("input", customerValidateInput);
+customerInputs.forEach(input => {
+    const container = input.parentElement;
+    const invalidText = document.createElement('p');
+    invalidText.className = 'invalid-text';
+    invalidText.innerHTML = 'Invalid <i class="fa-solid fa-circle-exclamation" style="color: #ff3300; padding: 5px;"></i>';
+    invalidText.style.display = 'none';
+    invalidText.style.color = '#ff3300';
+    container.appendChild(invalidText);
 
-    function customerValidateInput() {
-        const isValidMobile = dnCustomerMobilePattern.test(mobileInput.value.trim());
-        const isValidName = dnCustomerNamePattern.test(nameInput.value.trim());
+    const validIcon = document.createElement('p');
+    validIcon.className = 'valid-text';
+    validIcon.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #00cc00; padding: 5px;"></i>';
+    validIcon.style.display = 'none';
+    validIcon.style.color = 'green';
+    container.appendChild(validIcon);
 
-        if (isValidMobile && isValidName && mobileInput.value.trim() !== "" && nameInput.value.trim() !== "") {
-            customerSaveBtn.removeAttribute("disabled");
-            mobileInput.parentElement.style.border = "";
-            nameInput.parentElement.style.border = "";
-        } else {
-            customerSaveBtn.setAttribute("disabled", true);
+    input.addEventListener('input', checkCustomerInputs);
+});
+
+function checkCustomerInputs() {
+    let anyInputEmpty = false;
+    let allInputsValid = true;
+
+    customerInputs.forEach(input => {
+        const container = input.parentElement;
+        const value = input.value.trim();
+        const invalidText = container.querySelector('.invalid-text');
+        const validIcon = container.querySelector('.valid-text');
+
+        if (value === '') {
+            anyInputEmpty = true;
         }
-    }
 
-    customerSaveBtn.addEventListener("click", function () {
-        const cusMobileNo = mobileInput.value;
-        const cusName = nameInput.value;
+        let valid = false;
+        if (value !== '') {
+            if (input.id === 'addCustomerMobile') {
+                valid = validateCustomerContact(value);
+            } else if (input.id === 'addCustomerName') {
+                valid = validateCustomerName(value);
+            }
 
-        fetch(baseUrl + "/customer/save", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("jwt")}`
-            },
-            body: JSON.stringify({
-                cusMobileNo: cusMobileNo,
-                cusName: cusName,
-                creditStatus: "Disabled"
-            })
-        })
-            .then(response => response.json())
-            .then(response => {
-                if (response.code === 200) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: "Customer saved successfully!",
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        document.getElementById("customer-save-form").reset();
-                        location.reload();
-                    });
-
-                } else {
-                    alert("Customer not saved");
-
+            if (valid) {
+                container.style.borderColor = '#00cc00';
+                invalidText.style.display = 'none';
+                if (validIcon) {
+                    validIcon.style.display = 'inline-block';
                 }
-            })
-            .catch(error => {
-                console.error("Error saving customer:", error);
-                alert("Customer not saved");
-            });
+            } else {
+                container.style.borderColor = 'red';
+                invalidText.style.display = 'flex';
+                if (validIcon) {
+                    validIcon.style.display = 'none';
+                }
+                allInputsValid = false;
+            }
+        } else {
+            container.style.borderColor = '';
+            invalidText.style.display = 'none';
+            if (validIcon) {
+                validIcon.style.display = 'none';
+            }
+        }
     });
+
+    if (anyInputEmpty || !allInputsValid) {
+        customerSaveBtn.disabled = true;
+    } else {
+        customerSaveBtn.disabled = false;
+
+    }
+}
+
+
+function dineinSaveCustomerEvent(baseUrl) {
+    const cusMobileNo = mobileInput.value;
+    const cusName = nameInput.value;
+
+    fetch(baseUrl + "/customer", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("jwt")}`
+        },
+        body: JSON.stringify({
+            cusMobileNo: cusMobileNo,
+            cusName: cusName,
+            customerActiveStatus: 1,
+            creditStatus: "Disabled"
+        })
+
+    })
+        .then(response => response.json())
+        .then(response => {
+            console.log(response);
+
+            if (response.code === 200) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Customer saved successfully!",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    // document.getElementById("customer-save-form").reset();
+                    // location.reload();
+                    addCustomerBox.style.display = "none";
+                    mobileInput.value = "";
+                    nameInput.value = "";
+                    inputMobileElement.value = response.data.cusMobileNo;
+                    customerName.value = response.data.cusName;
+                    selectedCusId = response.data.cusId
+                    searchCustomers(baseUrl)
+                });
+
+            } else {
+                alert("Customer not saved");
+
+            }
+        })
+        .catch(error => {
+            console.error("Error saving customer:", error);
+            alert("Customer not saved");
+        });
 }
 
 
@@ -1918,7 +2029,7 @@ function handleButtonClick(event) {
             }
         }
 
-    
+
         const inputEvent = new Event('input', {
             bubbles: true,
             cancelable: true,
@@ -1934,7 +2045,7 @@ function handleButtonClick(event) {
             selectedInput.value += buttonValue;
         }
 
-      
+
         const inputEvent = new Event('input', {
             bubbles: true,
             cancelable: true,
@@ -1994,7 +2105,7 @@ async function loadAllWaiters(baseUrl) {
         }
 
         const waiterList = await response.json();
-        console.log(waiterList);
+        //console.log(waiterList);
 
         const waiterMap = new Map();
         waiterList.data.forEach(waiter => {
@@ -2014,6 +2125,20 @@ async function loadAllWaiters(baseUrl) {
         document.querySelector(".waiterName").addEventListener('change', function () {
             selectedWaiterName = this.value;
             selectedWaiterId = waiterMap.get(selectedWaiterName);
+
+            if (!selectedWaiterId) {
+                Swal.fire({
+                    title: "Oops...",
+                    text: "Invalid waiter name. Please select a valid waiter from the list",
+                    icon: "warning",
+                    customClass: {
+                        confirmButton: 'alert-orange-button',
+                    }
+                });
+                document.querySelector(".waiterName").value = '';
+                return;
+
+            }
 
         });
 
@@ -2407,7 +2532,7 @@ function getpreviousOrderDetails(baseUrl, tableNo) {
     orderItemsContainer.innerHTML = "";
     groupIdInput.value = tableNo
     console.log(groupIdInput.value);
-    
+
 
     try {
         fetch(baseUrl + "/table?table_id=" + tableNo, {
@@ -2427,7 +2552,9 @@ function getpreviousOrderDetails(baseUrl, tableNo) {
             .then(data => {
                 console.log(data);
                 inputMobileElement.value = data.data[0][11]
-                customerName.innerText = data.data[0][12]
+                customerName.value = data.data[0][12]
+                mobileInput.value = data.data[0][11]
+                nameInput.value = data.data[0][12]
                 orderIdElement.value = data.data[0][5];
                 const orderItems = data.data;
 
@@ -2482,6 +2609,7 @@ function getpreviousOrderDetails(baseUrl, tableNo) {
                     }
                 });
                 btnPayButtonValidateEvent();
+                checkCustomerInputs();
                 CalculateFullTotal();
 
             })

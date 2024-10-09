@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesomplete Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+    <style>
+    
+        .awesomplete li[aria-selected="true"] {
+            background-color: rgb(94, 93, 93) !important;
+            color: white;
+        }
+
+       
+        .awesomplete li mark {
+            color: orange !important;  
+            background-color: transparent !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Input Field for Autocomplete -->
+    <input class="awesomplete" id="autocomplete" placeholder="Type here..." />
+
+    <!-- Awesomplete Options (Can be dynamic or static) -->
+    <ul id="suggestions" hidden>
+        <li>Apple</li>
+        <li>Banana</li>
+        <li>Cherry</li>
+        <li>Grapes</li>
+        <li>Orange</li>
+        <li>Pineapple</li>
+        <li>Strawberry</li>
+    </ul>
+
+    <!-- Include Awesomplete Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+    
+    <script>
+        // Get suggestions from list
+        var input = document.getElementById("autocomplete");
+        new Awesomplete(input, {
+            list: "#suggestions",  
+            minChars: 1, 
+            maxItems: 5, 
+            autoFirst: true  
+        });
+    </script>
+</body>
+</html>
