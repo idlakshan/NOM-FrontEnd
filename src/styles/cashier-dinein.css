@@ -1202,7 +1202,7 @@ input:checked+.slider:before {
 
 
 .awesomplete li[aria-selected="true"] {
-    background-color: rgb(94, 93, 93) !important;
+    background-color: rgb(138, 138, 138) !important;
     color: white;
 }
 

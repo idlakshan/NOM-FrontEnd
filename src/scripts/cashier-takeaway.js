@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     //loadDishes(baseUrl);
     searchCustomersTakeaway(baseUrl);
     addCustomerEvent();
-    takeawaySaveCustomerEvent(baseUrl);
+    // takeawaySaveCustomerEvent(baseUrl);
     selectCustomerMobileEvent();
     getOrderIdTabOne(baseUrl)
 
@@ -240,6 +240,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         sendEndShift(baseUrl)
     })
 
+    customerSaveBtn.addEventListener("click",function(){
+        takeawaySaveCustomerEvent(baseUrl);
+    });
+ 
 
 });
 async function init(baseUrl) {
@@ -859,7 +863,7 @@ function displayPopupTabOne(baseUrl, dishes, index) {
 function btnPayButtonTabOneValidateEvent(orderItemsContainer) {
     const hasItems = orderItemsContainer.children.length > 0;
     const isMobileEmpty = inputMobileElementTab1.value.trim() === "";
-    const isNameEmpty = customerNameTab1.innerText.trim() === "";
+    const isNameEmpty = customerNameTab1.value.trim() === "";
 
 
     btnPayTabOne.disabled = !hasItems || isMobileEmpty || isNameEmpty
@@ -1130,7 +1134,7 @@ orderConfrimTab1.addEventListener("click", async function () {
                 orderConfrimPanelTabOne.style.display = "none";
                 container.classList.remove("container-disabled");
                 inputMobileElementTab1.value = "";
-                customerNameTab1.innerText = "";
+                customerNameTab1.value = "";
                 totalTab1.value = "";
                 selectedItemsContainer1.innerHTML = "";
                 getOrderIdTabOne(baseUrl)
@@ -1543,7 +1547,7 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
 function btnPayButtonTabTwoValidateEvent(orderItemsContainer) {
     const hasItems = orderItemsContainer.children.length > 0;
     const isMobileEmpty = inputMobileElementTab2.value.trim() === "";
-    const isNameEmpty = customerNameTab2.innerText.trim() === "";
+    const isNameEmpty = customerNameTab2.value.trim() === "";
 
     btnPayTabTwo.disabled = !hasItems || isMobileEmpty || isNameEmpty
 }
@@ -1821,7 +1825,7 @@ orderConfrimTab2.addEventListener("click", async function () {
                 orderConfrimPanelTabTwo.style.display = "none";
                 container.classList.remove("container-disabled");
                 inputMobileElementTab2.value = "";
-                customerNameTab2.innerText = "";
+                customerNameTab2.value = "";
                 totalTab2.value = "";
                 selectedItemsContainer2.innerHTML = "";
                 getOrderIdTabTwo(baseUrl)
@@ -2235,7 +2239,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
 function btnPayButtonTabThreeValidateEvent(orderItemsContainer) {
     const hasItems = orderItemsContainer.children.length > 0;
     const isMobileEmpty = inputMobileElementTab3.value.trim() === "";
-    const isNameEmpty = customerNameTab3.innerText.trim() === "";
+    const isNameEmpty = customerNameTab3.value.trim() === "";
 
     btnPayTabThree.disabled = !hasItems || isMobileEmpty || isNameEmpty
 
@@ -2504,7 +2508,7 @@ orderConfrimTab3.addEventListener("click", async function () {
                 orderConfrimPanelTabThree.style.display = "none";
                 container.classList.remove("container-disabled");
                 inputMobileElementTab3.value = "";
-                customerNameTab3.innerText = "";
+                customerNameTab3.value = "";
                 totalTab3.value = "";
                 selectedItemsContainer3.innerHTML = "";
                 getOrderIdTabThree(baseUrl)
@@ -2696,104 +2700,147 @@ function setupPaymentType(tabNumber, updateBalanceFunction,) {
 
 
 //save customer event
-function takeawaySaveCustomerEvent(baseUrl) {
-    const dnCustomerMobilePattern = /^(070|071|074|075|076|077|078)[-]?[0-9]{7}$/;
-    const dnCustomerNamePattern = /^([A-z]{2,}\s?)+$/;
+function validateCustomerName(customerName) {
+    return /^[a-zA-Z\s]+$/.test(customerName);
+}
 
-    mobileInput.addEventListener("input", function (e) {
-        const inputMobile = e.target.value;
-        const validInputMobilePattern = dnCustomerMobilePattern.test(inputMobile);
-        updateInputValidity(mobileInput, validInputMobilePattern);
-    });
+function validateCustomerContact(customerContact) {
+    return /^(070|071|074|075|076|077|078)[-]?[0-9]{7}$/.test(customerContact);
+}
 
-    nameInput.addEventListener("input", function (e) {
-        const inputName = e.target.value;
-        const validInputNamePattern = dnCustomerNamePattern.test(inputName);
-        updateInputValidity(nameInput, validInputNamePattern);
-    });
+const customerInputsTakeaway = document.querySelectorAll('.addCustomer-inputField');
 
-    mobileInput.addEventListener("input", customerValidateInput);
-    nameInput.addEventListener("input", customerValidateInput);
+customerInputsTakeaway.forEach(input => {
+    const container = input.parentElement;
+    const invalidText = document.createElement('p');
+    invalidText.className = 'invalid-text';
+    invalidText.innerHTML = 'Invalid <i class="fa-solid fa-circle-exclamation" style="color: #ff3300; padding: 5px;"></i>';
+    invalidText.style.display = 'none';
+    invalidText.style.color = '#ff3300';
+    container.appendChild(invalidText);
 
-    function customerValidateInput() {
-        const isValidMobile = dnCustomerMobilePattern.test(mobileInput.value.trim());
-        const isValidName = dnCustomerNamePattern.test(nameInput.value.trim());
+    const validIcon = document.createElement('p');
+    validIcon.className = 'valid-text';
+    validIcon.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #00cc00; padding: 5px;"></i>';
+    validIcon.style.display = 'none';
+    validIcon.style.color = 'green';
+    container.appendChild(validIcon);
 
-        if (isValidMobile && isValidName && mobileInput.value.trim() !== "" && nameInput.value.trim() !== "") {
-            customerSaveBtn.removeAttribute("disabled");
-            mobileInput.parentElement.style.border = "";
-            nameInput.parentElement.style.border = "";
-        } else {
-            customerSaveBtn.setAttribute("disabled", true);
+    input.addEventListener('input', checkCustomerInputsTakeaway);
+});
+
+function checkCustomerInputsTakeaway() {
+    let anyInputEmpty = false;
+    let allInputsValid = true;
+
+    customerInputsTakeaway.forEach(input => {
+        const container = input.parentElement;
+        const value = input.value.trim();
+        const invalidText = container.querySelector('.invalid-text');
+        const validIcon = container.querySelector('.valid-text');
+
+        if (value === '') {
+            anyInputEmpty = true;
         }
-    }
 
-    customerSaveBtn.addEventListener("click", function () {
-        const cusMobileNo = mobileInput.value;
-        const cusName = nameInput.value;
+        let valid = false;
+        if (value !== '') {
+            if (input.id === 'addCustomerMobile') {
+                valid = validateCustomerContact(value);
+            } else if (input.id === 'addCustomerName') {
+                valid = validateCustomerName(value);
+            }
 
-        fetch(baseUrl + "/customer/save", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("jwt")}`
-            },
-            body: JSON.stringify({
-                cusMobileNo: cusMobileNo,
-                cusName: cusName,
-                creditStatus: "Disabled"
-            })
-        })
-            .then(response => response.json())
-            .then(response => {
-                if (response.code === 200) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: "Customer saved successfully!",
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        document.getElementById("customer-save-form").reset();
-                        location.reload();
-                    });
-
-                    // mobileInput.value="";
-                    // nameInput.value="";
-                    // mobileInput.parentElement.style.border = ""; 
-                    // mobileInput.parentElement.style.boxShadow = "none";
-                    // nameInput.parentElement.style.border = "";
-                    // nameInput.parentElement.style.boxShadow = "none";
-                    // customerMobileDataList.innerHTML=''
-                    // searchCustomers()
-
-
-                } else {
-                    alert("Customer not saved");
-
+            if (valid) {
+                container.style.borderColor = '#00cc00';
+                invalidText.style.display = 'none';
+                if (validIcon) {
+                    validIcon.style.display = 'inline-block';
                 }
-            })
-            .catch(error => {
-                console.error("Error saving customer:", error);
-                alert("Customer not saved");
+            } else {
+                container.style.borderColor = 'red';
+                invalidText.style.display = 'flex';
+                if (validIcon) {
+                    validIcon.style.display = 'none';
+                }
+                allInputsValid = false;
+            }
+        } else {
+            container.style.borderColor = '';
+            invalidText.style.display = 'none';
+            if (validIcon) {
+                validIcon.style.display = 'none';
+            }
+        }
+    });
+
+    if (anyInputEmpty || !allInputsValid) {
+        customerSaveBtn.disabled = true;
+    } else {
+        customerSaveBtn.disabled = false;
+    }
+}
+
+function takeawaySaveCustomerEvent(baseUrl) {
+    const cusMobileNo = mobileInput.value;
+    const cusName = nameInput.value;
+
+    fetch(baseUrl + "/customer", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("jwt")}`
+        },
+        body: JSON.stringify({
+            cusMobileNo: cusMobileNo,
+            cusName: cusName,
+            customerActiveStatus: 1,
+            creditStatus: "Disabled"
+        })
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
+        if (response.code === 200) {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Customer saved successfully!",
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                addCustomerBox.style.display = "none";
+                mobileInput.value = "";
+                nameInput.value = "";
+                if (takeawayPayOrderPanelOne.style.display === "block") {
+                    // console.log("wokrs");
+                    
+                    inputMobileElementTab1.value = response.data.cusMobileNo;
+                    customerNameTab1.value = response.data.cusName;
+                    selectedCustomerIdTabOne = response.data.cusId;
+                } else if (takeawayPayOrderPaneTwo.style.display === "block") {
+                    inputMobileElementTab2.value = response.data.cusMobileNo;
+                    customerNameTab2.value = response.data.cusName;
+                    selectedCustomerIdTabTwo = response.data.cusId;
+                } else if (takeawayPayOrderPanelThree.style.display === "block") {
+                    inputMobileElementTab3.value = response.data.cusMobileNo;
+                    customerNameTab3.value = response.data.cusName;
+                    selectedCustomerIdTabThree = response.data.cusId;
+                }
+                searchCustomersTakeaway(baseUrl);
             });
+
+        } else {
+            alert("Customer not saved");
+        }
+    })
+    .catch(error => {
+        console.error("Error saving customer:", error);
+        alert("Customer not saved");
     });
 }
 
-
-//add customer event
-function updateInputValidity(inputElement, isValid) {
-    if (inputElement.value === '') {
-        inputElement.parentElement.style.border = "";
-        inputElement.parentElement.style.boxShadow = "none";
-    } else if (isValid) {
-        inputElement.parentElement.style.border = "1px solid var(--text-field-success)";
-        inputElement.parentElement.style.boxShadow = "0 0 1pt 0.1pt var(--text-field-success)";
-    } else {
-        inputElement.parentElement.style.border = "1px solid var(--text-field-error)";
-        inputElement.parentElement.style.boxShadow = "0 0 1pt 0.1pt var(--text-field-error)";
-    }
-}
 
 function addCustomerEvent() {
     btnAddCustomer.addEventListener("click", function () {
@@ -2866,12 +2913,13 @@ function handleButtonClick(event) {
 async function searchCustomersTakeaway(baseUrl) {
     try {
         const response = await fetch(baseUrl + "/customer/one", {
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                Accept: "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
             },
         });
+
         const customers = await response.json();
 
         const mobileNumbers = customers.data.map(customer => customer.cusMobileNo);
@@ -2879,74 +2927,106 @@ async function searchCustomersTakeaway(baseUrl) {
         const customerIds = customers.data.map(customer => customer.cusId);
         const customerCreditStatus = customers.data.map(customer => customer.creditStatus);
 
-        // Populate datalist with customer mobile numbers
-        mobileNumbers.forEach(function (number) {
-            const option = document.createElement('option');
-            option.value = number;
-            customerMobile.appendChild(option);
+        // Initialize Awesomplete for each tab's mobile input element
+        new Awesomplete(inputMobileElementTab1, {
+            list: mobileNumbers,
+            minChars: 1,
+            maxItems: 5,
+            autoFirst: true
+        });
+        new Awesomplete(inputMobileElementTab2, {
+            list: mobileNumbers,
+            minChars: 1,
+            maxItems: 5,
+            autoFirst: true
+        });
+        new Awesomplete(inputMobileElementTab3, {
+            list: mobileNumbers,
+            minChars: 1,
+            maxItems: 5,
+            autoFirst: true
         });
 
-        // Function to handle input changes for each tab
-        function handleMobileChange(inputElement, customerNameElement, tabIndex) {
-            inputElement.addEventListener('input', function () {
-                const selectedMobileNumber = inputElement.value;
-                const index = mobileNumbers.indexOf(selectedMobileNumber);
+        // Function to handle mobile number changes for each tab
+        function handleMobileNumberChange(inputElement, customerNameElement, tabIndex) {
+            const enteredMobileNumber = inputElement.value.trim();
+            mobileInput.value = enteredMobileNumber;
+            const index = mobileNumbers.indexOf(enteredMobileNumber);
 
-                if (index !== -1) {
-                    // If mobile number found, set customer details
-                    customerNameElement.innerText = customerNames[index];
+            if (index !== -1) {
+                customerNameElement.value = customerNames[index];
+                nameInput.value=customerNames[index];
 
-                    if (tabIndex === 1) {
-                        selectedCustomerNameTabOne = customerNames[index];
-                        selectCusCreditStatusTabOne = customerCreditStatus[index];
-                        selectedCustomerIdTabOne = customerIds[index];
-                        selectedCustomerMobileTabOne = inputElement.value;
-                    } else if (tabIndex === 2) {
-                        selectedCustomerNameTabTwo = customerNames[index];
-                        selectCusCreditStatusTabTwo = customerCreditStatus[index];
-                        selectedCustomerIdTabTwo = customerIds[index];
-                        selectedCustomerMobileTabTwo = inputElement.value;
-                    } else if (tabIndex === 3) {
-                        selectedCustomerNameTabThree = customerNames[index];
-                        selectCusCreditStatusTabThree = customerCreditStatus[index];
-                        selectedCustomerIdTabThree = customerIds[index];
-                        selectedCustomerMobileTabThree = inputElement.value;
-                    }
-                } else {
-                    // If mobile number is not found, clear the name and other related fields
-                    customerNameElement.innerText = '';
-
-                    if (tabIndex === 1) {
-                        selectedCustomerNameTabOne = "";
-                        selectCusCreditStatusTabOne = null;
-                        selectedCustomerIdTabOne = null;
-                        selectedCustomerMobileTabOne = "";
-                    } else if (tabIndex === 2) {
-                        selectedCustomerNameTabTwo = "";
-                        selectCusCreditStatusTabTwo = null;
-                        selectedCustomerIdTabTwo = null;
-                        selectedCustomerMobileTabTwo = "";
-                    } else if (tabIndex === 3) {
-                        selectedCustomerNameTabThree = "";
-                        selectCusCreditStatusTabThree = null;
-                        selectedCustomerIdTabThree = null;
-                        selectedCustomerMobileTabThree = "";
-                    }
+                if (tabIndex === 1) {
+                    selectedCustomerNameTabOne = customerNames[index];
+                    selectCusCreditStatusTabOne = customerCreditStatus[index];
+                    selectedCustomerIdTabOne = customerIds[index];
+                    selectedCustomerMobileTabOne = inputElement.value;
+                } else if (tabIndex === 2) {
+                    selectedCustomerNameTabTwo = customerNames[index];
+                    selectCusCreditStatusTabTwo = customerCreditStatus[index];
+                    selectedCustomerIdTabTwo = customerIds[index];
+                    selectedCustomerMobileTabTwo = inputElement.value;
+                } else if (tabIndex === 3) {
+                    selectedCustomerNameTabThree = customerNames[index];
+                    selectCusCreditStatusTabThree = customerCreditStatus[index];
+                    selectedCustomerIdTabThree = customerIds[index];
+                    selectedCustomerMobileTabThree = inputElement.value;
                 }
-                btnPayButtonTabOneValidateEvent(selectedItemsContainer1);
-                btnPayButtonTabTwoValidateEvent(selectedItemsContainer2);
-                btnPayButtonTabThreeValidateEvent(selectedItemsContainer3);
-            });
+            } else {
+                customerNameElement.value = '';
+
+                if (tabIndex === 1) {
+                    selectedCustomerNameTabOne = "";
+                    selectCusCreditStatusTabOne = null;
+                    selectedCustomerIdTabOne = null;
+                    selectedCustomerMobileTabOne = "";
+                } else if (tabIndex === 2) {
+                    selectedCustomerNameTabTwo = "";
+                    selectCusCreditStatusTabTwo = null;
+                    selectedCustomerIdTabTwo = null;
+                    selectedCustomerMobileTabTwo = "";
+                } else if (tabIndex === 3) {
+                    selectedCustomerNameTabThree = "";
+                    selectCusCreditStatusTabThree = null;
+                    selectedCustomerIdTabThree = null;
+                    selectedCustomerMobileTabThree = "";
+                }
+            }
+
+            btnPayButtonTabOneValidateEvent(selectedItemsContainer1);
+            btnPayButtonTabTwoValidateEvent(selectedItemsContainer2);
+            btnPayButtonTabThreeValidateEvent(selectedItemsContainer3);
+            checkCustomerInputsTakeaway(); 
         }
 
-        // Handle input changes for each tab
-        handleMobileChange(inputMobileElementTab1, customerNameTab1, 1);
-        handleMobileChange(inputMobileElementTab2, customerNameTab2, 2);
-        handleMobileChange(inputMobileElementTab3, customerNameTab3, 3);
+      
+        inputMobileElementTab1.addEventListener("awesomplete-selectcomplete", function () {
+            handleMobileNumberChange(inputMobileElementTab1, customerNameTab1, 1);
+        });
+        inputMobileElementTab1.addEventListener("input", function () {
+            handleMobileNumberChange(inputMobileElementTab1, customerNameTab1, 1);
+        });
+
+        inputMobileElementTab2.addEventListener("awesomplete-selectcomplete", function () {
+            handleMobileNumberChange(inputMobileElementTab2, customerNameTab2, 2);
+        });
+        inputMobileElementTab2.addEventListener("input", function () {
+            handleMobileNumberChange(inputMobileElementTab2, customerNameTab2, 2);
+        });
+
+        inputMobileElementTab3.addEventListener("awesomplete-selectcomplete", function () {
+            handleMobileNumberChange(inputMobileElementTab3, customerNameTab3, 3);
+        });
+        inputMobileElementTab3.addEventListener("input", function () {
+            handleMobileNumberChange(inputMobileElementTab3, customerNameTab3, 3);
+        });
 
     } catch (error) {
         console.error("Error fetching customer data:", error);
     }
+ 
+
 }
 
 

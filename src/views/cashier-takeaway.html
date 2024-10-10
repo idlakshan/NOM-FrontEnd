@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../styles/common-styles.css">
     <link rel="stylesheet" href="../styles/cashier-takeaway.css">
     <link rel="stylesheet" href="../styles/extrenal-popup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
 </head>
 
 <body>
@@ -142,7 +143,7 @@
                 </div>
                 <div class="container-top-right">
                     <ul class="cashier-takeaway-btn-area">
-                    
+
                         <li>
                             <button class="cashier-takeaway-tabbtn active" id="tab1">Tab 1</button>
                         </li>
@@ -316,18 +317,21 @@
                     <!--------- Pay Order Panel Tab 1------------------>
                     <div class="cashier-dinein-right-inner-content-body" id="payOrder-panelOne">
                         <div class="cashier-dinein-right-inner-content-body-top">
-                            <input type="text" name="" class="cashier-orderId" id="orderId_panalOne" disabled>
 
-                            <label for="cashier-customerId" class="customer-mobile-lable">Mobile</label>
-                            <input type="text" list="customer-mobile"
-                                class="customer-mobile-input inputCustomer-Mobile1" id="inputCustomer-Mobile1"
-                                autocomplete="on" />
-                            <datalist id="customer-mobile" class="customer-mobile">
+                            <div class="cart-panel-top">
+                                <input type="text" name="" class="cashier-orderId" id="orderId_panalOne" disabled>
+                            </div>
+                            <div class="cart-panel-bottom">
+                                <div>
+                                    <label for="cashier-customerId" class="customer-mobile-lable">Mobile</label>
+                                    <input type="text" list="customer-mobile"
+                                        class="customer-mobile-input inputCustomer-Mobile1 awesomplete"
+                                        id="inputCustomer-Mobile1" autocomplete="on" />
+                                </div>
+                                <input type="text" id="customer-name-tab1" class="customer-name"
+                                    style="padding-top: 1px; color: var(--secondary-color);" readonly></input>
 
-                            </datalist>
-                            <label type="text" id="customer-name-tab1" class="customer-name"
-                                style="padding-top: 1px; color: var(--secondary-color);"></label>
-
+                            </div>
                         </div>
                         <div class="cashier-dinein-right-inner-content-body-middle" id="takeawayPanelOne-container">
 
@@ -360,17 +364,24 @@
                     <!--------- Pay Order Panel Tab 2------------------>
                     <div class="cashier-dinein-right-inner-content-body" id="payOrder-panelTwo">
                         <div class="cashier-dinein-right-inner-content-body-top">
-                            <input type="text" name="" class="cashier-orderId" id="orderId_panalTwo" disabled>
 
-                            <label for="cashier-customerId" class="customer-mobile-lable">Mobile</label>
-                            <input type="text" list="customer-mobile"
-                                class="customer-mobile-input inputCustomer-Mobile2" id="inputCustomer-Mobile2"
-                                autocomplete="on" />
-                            <datalist id="customer-mobile">
+                            <div class="cart-panel-top">
+                                <input type="text" name="" class="cashier-orderId" id="orderId_panalTwo" disabled>
+                            </div>
+                            <div class="cart-panel-bottom">
+                                <div>
+                                    <label for="cashier-customerId" class="customer-mobile-lable">Mobile</label>
+                                    <input type="text" list="customer-mobile"
+                                        class="customer-mobile-input inputCustomer-Mobile2 awesomplete" id="inputCustomer-Mobile2"
+                                        autocomplete="on" />
+                                    <datalist id="customer-mobile">
 
-                            </datalist>
-                            <label type="text" id="customer-name-tab2" class="customer-name"
-                                style="padding-top: 1px; color: var(--secondary-color);"></label>
+                                    </datalist>
+                                </div>
+                                <input type="text" id="customer-name-tab2" class="customer-name"
+                                    style="padding-top: 1px; color: var(--secondary-color);" readonly></input>
+
+                            </div>
 
                         </div>
                         <div class="cashier-dinein-right-inner-content-body-middle" id="takeawayPanelTwo-container">
@@ -405,17 +416,24 @@
                     <!--------- Pay Order Panel Tab 3------------------>
                     <div class="cashier-dinein-right-inner-content-body" id="payOrder-panelThree">
                         <div class="cashier-dinein-right-inner-content-body-top">
-                            <input type="text" name="" class="cashier-orderId" id="orderId_panalThree" disabled>
+                            <div class="cart-panel-top">
+                                <input type="text" name="" class="cashier-orderId" id="orderId_panalThree" disabled>
+                            </div>
+                            <div class="cart-panel-bottom">
+                                <div>
+                                    <label for="cashier-customerId" class="customer-mobile-lable">Mobile</label>
+                                    <input type="text" list="customer-mobile"
+                                        class="customer-mobile-input inputCustomer-Mobile3 awesomplete" id="inputCustomer-Mobile3"
+                                        autocomplete="on" />
+                                    <datalist id="customer-mobile">
 
-                            <label for="cashier-customerId" class="customer-mobile-lable">Mobile</label>
-                            <input type="text" list="customer-mobile"
-                                class="customer-mobile-input inputCustomer-Mobile3" id="inputCustomer-Mobile3"
-                                autocomplete="on" />
-                            <datalist id="customer-mobile">
+                                    </datalist>
+                                </div>
+                                <input type="text" id="customer-name-tab3" class="customer-name"
+                                    style="padding-top: 1px; color: var(--secondary-color);" readonly></input>
 
-                            </datalist>
-                            <label type="text" id="customer-name-tab3" class="customer-name"
-                                style="padding-top: 1px; color: var(--secondary-color);"></label>
+                            </div>
+
 
                         </div>
                         <div class="cashier-dinein-right-inner-content-body-middle" id="takeawayPanelThree-container">
@@ -692,14 +710,14 @@
                 <div class="form-group">
                     <label for="start-float">Start Float:</label>
                     <div class="input-container-shift" id="star">
-                        <input  class="shift-keyboard-input" type="number" id="shift-start-float" name="start-float">
+                        <input class="shift-keyboard-input" type="number" id="shift-start-float" name="start-float">
                     </div>
 
                 </div>
                 <div class="form-group">
                     <label for="remark">Remark:</label>
                     <div class="input-container-shift textArea-shift" id="">
-                        <textarea  class="shift-keyboard-input" id="remarkShiftStart" name="remark" rows="3"></textarea>
+                        <textarea class="shift-keyboard-input" id="remarkShiftStart" name="remark" rows="3"></textarea>
                     </div>
 
                 </div>
@@ -767,7 +785,7 @@
         </div>
 
         <!--------- Shift End popup------------------>
-        <div class="shift_popup" id="shift_end" style="display: none;" >
+        <div class="shift_popup" id="shift_end" style="display: none;">
             <div class="shift_top">
                 <h4 class="shift-box-title">Shift Closure</h4>
                 <img class="shift-box-close-shiftend" src="../icons/close_icon.png" width="45px" alt=""
@@ -791,14 +809,16 @@
                     <div class="form-group" style="width: 90%;">
                         <label for="start-float">Cash Amount:</label>
                         <div class="input-container-shift" id="shift-clouser-cashinput" style="width: 78%;">
-                            <input class="shift-keyboard-input" type="number" id="shiftend-cash-amount" name="start-float">
+                            <input class="shift-keyboard-input" type="number" id="shiftend-cash-amount"
+                                name="start-float">
                         </div>
                     </div>
 
                     <div class="form-group" style="width: 90%;">
                         <label for="remark">Remark:</label>
                         <div class="input-container-shift textArea-shiftend" id="">
-                            <textarea class="shift-keyboard-input" id="remarkShiftend" name="remark" rows="3"></textarea>
+                            <textarea class="shift-keyboard-input" id="remarkShiftend" name="remark"
+                                rows="3"></textarea>
                         </div>
 
                     </div>
@@ -808,13 +828,15 @@
                     <div class="form-group" style="width: 90%; margin-top: 16%;">
                         <label for="start-float">End Float:</label>
                         <div class="input-container-shift" id="" style="width: 70%;">
-                            <input  class="shift-keyboard-input" type="number" id="shiftend-end-float" name="start-float">
+                            <input class="shift-keyboard-input" type="number" id="shiftend-end-float"
+                                name="start-float">
                         </div>
                     </div>
                     <div class="form-group" style="width: 90%;">
                         <label for="start-float">Card Amount:</label>
                         <div class="input-container-shift" id="shift-clouser-cardinput" style="width: 76%;">
-                            <input  class="shift-keyboard-input" type="number" id="shiftend-card-amount" name="start-float">
+                            <input class="shift-keyboard-input" type="number" id="shiftend-card-amount"
+                                name="start-float">
                         </div>
                     </div>
                 </div>
@@ -1029,6 +1051,7 @@
     <script src="../scripts/cashier-takeaway.js"></script>
     <script src="../scripts/shift.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
 
 </body>
 

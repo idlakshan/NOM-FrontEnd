@@ -1045,7 +1045,8 @@ async function stockHistory(baseUrl) {
         }
 
         const stockDataList = await response.json();
-
+         //console.log(stockDataList);
+        
         if (!stockDataList.data || stockDataList.data.length === 0) {
             console.warn('No stock history data available to populate the table.');
             return;
@@ -1060,7 +1061,7 @@ async function stockHistory(baseUrl) {
                     <td>${stockDataList.data[i][11]}</td>
                     <td>${stockDataList.data[i][6]}</td>
                     <td>${stockDataList.data[i][7]}</td>
-                    <td>${stockDataList.data[i][4]}</td>
+                    <td>${stockDataList.data[i][4].toFixed(3)}</td>
                     <td>${stockDataList.data[i][5]}</td>
                     <td>${stockDataList.data[i][2]}</td>
                     <td>${stockDataList.data[i][1]}</td>
@@ -1071,9 +1072,7 @@ async function stockHistory(baseUrl) {
         const tableBody = document.getElementById('tblStockHistory').querySelector('tbody');
         tableBody.innerHTML = stockReportData;
 
-
         tblStock.clear().rows.add($(tableBody).children()).draw();
-
 
         const ingredientsNames = [];
         document.querySelectorAll('#tblStockHistory tbody tr').forEach(function (row) {
@@ -2014,7 +2013,8 @@ async function stockOverviewReport(baseUrl) {
         }
 
         const dataList = await response.json();
-
+        //console.log(dataList.data);
+        
         if (!dataList.data || dataList.data.length === 0) {
             console.warn('No stock overview data available to populate the table.');
             return;
@@ -2043,7 +2043,7 @@ async function stockOverviewReport(baseUrl) {
             row.appendChild(cell);
 
             cell = document.createElement("td");
-            cell.textContent = parseFloat(data[4]).toFixed(2);
+            cell.textContent = parseFloat(data[4]).toFixed(3);
             row.appendChild(cell);
 
             cell = document.createElement("td");

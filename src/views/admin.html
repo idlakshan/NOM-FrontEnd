@@ -27,6 +27,7 @@
 
     <link rel="stylesheet" href="../styles/admin/reports/layoutReports.css">
     <link rel="stylesheet" href="../styles/admin/reports/reports.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 
 </head>
@@ -1250,14 +1251,10 @@
                                         <option value="">Status</option>
                                         <option value="In Stock">In-Stock</option>
                                         <option value="Out of Stock">Out of Stock</option>
-                                        <!-- <option value="Available">Available</option>
-                                        <option value="Maintaince">Maintaince</option> -->
+                                   
                                     </select>
                                     <select id="search_stock_type" name="tableType">
-                                        <!-- <option value="">Unit</option>
-                                        <option value="Kg">Kg</option>
-                                        <option value="L">L</option>
-                                        <option value="Pieces">Pieces</option> -->
+                             
                                     </select>
 
                                     <div class="input-container" id="stock_search_container">
@@ -1277,9 +1274,9 @@
                                         <div class="input-container input-container-stock" style="height: 49px;">
                                             <input class="addStock-input-field keyboard-input" list="stock-add-ingredients" type="text"
                                                 id="stock-add-ingredientName" placeholder="Ingredient" name="">
-                                            <datalist id="stock-add-ingredients">
+                                            <!-- <datalist id="stock-add-ingredients">
 
-                                            </datalist>
+                                            </datalist> -->
                                         </div>
                                         <div class="input-container input-container-stock" style="height: 49px;">
                                             <input class="addStock-input-field" type="text"
@@ -1325,9 +1322,9 @@
                                             <input class="addStock-input-field keyboard-input keyboard-input" list="stock-update-ingredients"
                                                 type="text" id="stock-update-ingredientName" placeholder="Ingredient"
                                                 name="">
-                                            <datalist id="stock-update-ingredients">
+                                            <!-- <datalist id="stock-update-ingredients">
 
-                                            </datalist>
+                                            </datalist> -->
 
 
                                         </div>
@@ -4332,6 +4329,8 @@
 
     <script src="../lib/jquery-3.6.1.min.js"></script>
 
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
     <!-- import chart js -->
     <script src="https://unpkg.com/chart.js"></script>
 
@@ -4367,7 +4366,9 @@
 
     <script src="../scripts/draggable-keyboard.js"> </script>
 
-
+  
+   
+    
 
 
 </body>

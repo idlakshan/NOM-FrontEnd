@@ -448,7 +448,7 @@ async function deleteIngredient(baseUrl) {
 }
 
 
-//get available ingredients
+//get available ingredients for add ingredient input
 async function getAvailableIngredients(baseUrl) {
     try {
         const response = await fetch(baseUrl + "/ingredients/allIngredients", {
@@ -464,24 +464,39 @@ async function getAvailableIngredients(baseUrl) {
         }
         const responseData = await response.json();
 
-        const datalist = document.getElementById('ing-ingredients');
-        datalist.innerHTML = '';
+        const ingredientNames = responseData.data.map(ingredient => ingredient.ingredientName);
 
-        responseData.data.forEach(ingredient => {
-            const option = document.createElement('option');
-            option.value = ingredient.ingredientName;
-            datalist.appendChild(option);
+        const inputField = $('#ing-ingredientName');
+
+        inputField.autocomplete({
+            source: ingredientNames,
+            minLength: 1,
+            select: function (event, ui) {
+                const selectedIngredient = ui.item.value.toLowerCase();
+
+               
+                if (ingredientNames.some(option => option.toLowerCase() === selectedIngredient)) {
+                    Swal.fire({
+                        title: "Oops...",
+                        text: "The ingredient is already in the list",
+                        icon: "warning",
+                        customClass: {
+                            confirmButton: 'alert-orange-button',
+                        }
+                    });
+                    inputField.val(''); 
+                    checkIngredientInputs(); 
+                    event.preventDefault(); 
+                }
+            }
         });
 
+      
+        inputField.on('input', function () {
+            const inputValue = this.value.toLowerCase();      
+            const isIngredientExist = ingredientNames.some(option => option.toLowerCase() === inputValue);
 
-        const inputField = document.getElementById('ing-ingredientName');
-
-        inputField.addEventListener('input', function () {
-            const inputValue = this.value;
-            const options = Array.from(datalist.options).map(option => option.value);
-
-
-            if (options.some(option => option.toLowerCase() === inputValue.toLowerCase())) {
+            if (isIngredientExist) {
                 Swal.fire({
                     title: "Oops...",
                     text: "The ingredient is already in the list",
@@ -490,7 +505,7 @@ async function getAvailableIngredients(baseUrl) {
                         confirmButton: 'alert-orange-button',
                     }
                 });
-                this.value = '';
+                this.value = ''; 
                 checkIngredientInputs();
                 return;
             }
@@ -500,6 +515,9 @@ async function getAvailableIngredients(baseUrl) {
         console.error('Error:', error);
     }
 }
+
+
+
 
 //searching events
 function filteringIngredientTable() {
@@ -814,56 +832,39 @@ async function getAllActiveIngredients(baseUrl) {
             throw new Error('Network response was not ok');
         }
         const responseData = await response.json();
-        // console.log(responseData);
 
-        const datalist = document.getElementById('stock-add-ingredients');
-        const datalistTwo = document.getElementById('stock-update-ingredients');
-        datalist.innerHTML = '';
-        datalistTwo.innerHTML = '';
+        const ingredientInput = $('#stock-add-ingredientName');
+        const ingredientIdInput = $('#stock-add-ingredientId');
+        const ingredientUnitInput = $('#stock-add-ingredientUnit');
 
-        responseData.data.forEach(ingredient => {
-            const optionOne = document.createElement('option');
-            optionOne.value = ingredient.ingredientName;
-            datalist.appendChild(optionOne);
+        const ingredientNames = responseData.data.map(ingredient => ingredient.ingredientName);
 
-            const optionTwo = document.createElement('option');
-            optionTwo.value = ingredient.ingredientName;
-            datalistTwo.appendChild(optionTwo);
-        });
-
-        const ingredientInput = document.getElementById('stock-add-ingredientName');
-        const ingredientIdInput = document.getElementById('stock-add-ingredientId');
-        const ingredientUnitInput = document.getElementById('stock-add-ingredientUnit');
-
-        // const stockIngredientNameInput = document.getElementById('stock-update-ingredientName');
-        // const stockUpdateIdInput = document.getElementById('stock-update-ingredientId');
-        // const stockIngredientUnitInput = document.getElementById('stock-update-ingredientUnit');
-
-        const updateInputs = (inputElement, idInput, unitInput) => {
-            inputElement.addEventListener('input', () => {
-                const selectedIngredient = responseData.data.find(ingredient => ingredient.ingredientName === inputElement.value);
+        ingredientInput.autocomplete({
+            source: ingredientNames,
+            minLength: 1,
+            max: 5,
+            select: function (event, ui) {
+                const selectedIngredient = responseData.data.find(ingredient => ingredient.ingredientName === ui.item.value);
 
                 if (selectedIngredient) {
-                    idInput.value = selectedIngredient.ingredientId;
-                    unitInput.value = selectedIngredient.ingredientsUnit;
+                    ingredientIdInput.val(selectedIngredient.ingredientId);
+                    ingredientUnitInput.val(selectedIngredient.ingredientsUnit);
                 } else {
-                    idInput.value = '';
-                    unitInput.value = '';
+                    ingredientIdInput.val('');
+                    ingredientUnitInput.val('');
                 }
-            });
-        };
-
-        updateInputs(ingredientInput, ingredientIdInput, ingredientUnitInput);
-
+            }
+        });
 
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching ingredients:', error);
     }
 }
 
 
 
-//get stock ingredients for ingrediet inputs
+
+//get stock ingredients for ingrediet reconcilation inputs
 async function getAllStockIngredients(baseUrl) {
     try {
         const response = await fetch(baseUrl + "/stock/allStock", {
@@ -878,42 +879,33 @@ async function getAllStockIngredients(baseUrl) {
             throw new Error('Network response was not ok');
         }
         const responseData = await response.json();
-        //   console.log(responseData);
 
-        const datalist = document.getElementById('stock-update-ingredients');
-        datalist.innerHTML = '';
+        const stockIngredientNameInput = $('#stock-update-ingredientName');
+        const stockUpdateIdInput = $('#stock-update-ingredientId');
+        const stockIngredientUnitInput = $('#stock-update-ingredientUnit');
 
-        responseData.data.forEach(ingredient => {
-            const optionOne = document.createElement('option');
-            optionOne.value = ingredient[7];
-            datalist.appendChild(optionOne);
+        const ingredientNames = responseData.data.map(ingredient => ({
+            label: ingredient[7],  
+            value: ingredient[7],  
+            id: ingredient[0],    
+            unit: ingredient[5]    
+        }));
+
+     
+        stockIngredientNameInput.autocomplete({
+            source: ingredientNames,
+            minLength: 1,
+            select: function (event, ui) {    
+                stockUpdateIdInput.val(ui.item.id);
+                stockIngredientUnitInput.val(ui.item.unit);
+            }
         });
 
-        const stockIngredientNameInput = document.getElementById('stock-update-ingredientName');
-        const stockUpdateIdInput = document.getElementById('stock-update-ingredientId');
-        const stockIngredientUnitInput = document.getElementById('stock-update-ingredientUnit');
-
-        const updateInputs = (inputElement, idInput, unitInput) => {
-            inputElement.addEventListener('input', () => {
-                const selectedIngredient = responseData.data.find(ingredient => ingredient[7] === inputElement.value);
-
-                if (selectedIngredient) {
-                    idInput.value = selectedIngredient[0];
-                    unitInput.value = selectedIngredient[5];
-                } else {
-                    idInput.value = '';
-                    unitInput.value = '';
-                }
-            });
-        };
-
-        updateInputs(stockIngredientNameInput, stockUpdateIdInput, stockIngredientUnitInput);
-
-
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching ingredients:', error);
     }
 }
+
 
 
 
@@ -1029,6 +1021,7 @@ function validateStockUpdateInputs() {
     }
 };
 
+
 //------update stock------------
 async function updateStock(baseUrl) {
 
@@ -1065,7 +1058,7 @@ async function updateStock(baseUrl) {
             loadAllStockHistory(baseUrl);
             stockHistory(baseUrl);
             stockOverviewReport(baseUrl);
-            // getAllActiveIngredients(baseUrl)
+            getAllActiveIngredients(baseUrl)
             
 
             document.getElementById('stock-update-ingredientName').value = '';

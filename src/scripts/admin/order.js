@@ -85,7 +85,6 @@ async function loadAllOrders(baseUrl) {
 
         const responseData = await response.json();
         const orders = responseData.data;
-       // console.log(orders);
 
         const tblOrderBody = document.getElementById('tblOrderBody');
         if (!tblOrderBody) {
@@ -111,7 +110,6 @@ async function loadAllOrders(baseUrl) {
                     <td style="${tableColor}">${tableDisplay}</td>
                     <td>${order.tblcustomer.cusId} - ${order.tblcustomer.cusName}</td>
                     <td>${formatDate(order.orderDateAndTime)}</td>
-                 
                 </tr>`;
             tblOrderBody.insertAdjacentHTML('beforeend', orderRow);
         });
@@ -120,6 +118,7 @@ async function loadAllOrders(baseUrl) {
         const tableList = [];
         const customerList = [];
 
+      
         document.querySelectorAll('#tblOrderBody tr').forEach(row => {
             const orderId = row.cells[0].textContent.trim();
             if (!ordersList.includes(orderId)) ordersList.push(orderId);
@@ -131,53 +130,52 @@ async function loadAllOrders(baseUrl) {
             if (!customerList.includes(customer)) customerList.push(customer);
         });
 
-        const populateDatalist = (datalistId, items) => {
-            const datalist = document.getElementById(datalistId);
-            if (!datalist) {
-                console.error(`Datalist with ID ${datalistId} not found`);
-                return;
-            }
-            datalist.innerHTML = '';
-            items.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item;
-                datalist.appendChild(option);
+      
+        const applyAutocomplete = (inputId, dataList, filterBy) => {
+            const inputField = $(`#${inputId}`);
+            inputField.autocomplete({
+                source: dataList,
+                minLength: 1,
+                select: function (event, ui) {
+                    const selectedItem = ui.item.value.toLowerCase();
+                    inputField.val(selectedItem);
+
+                    
+                    filterTableRows(filterBy, selectedItem);
+                }
+            });
+
+         
+            inputField.on('input', function () {
+                const inputValue = this.value.toLowerCase();
+                filterTableRows(filterBy, inputValue);
             });
         };
 
-        populateDatalist('dropdown-menu-oid', ordersList);
-        populateDatalist('dropdown-menu-tid', tableList);
-        populateDatalist('dropdown-menu-eid', customerList);
-
-        const addInputFilter = (inputId) => {
-            const input = document.getElementById(inputId);
-            if (!input) {
-                console.error(`Input with ID ${inputId} not found`);
-                return;
-            }
-            input.addEventListener('input', function () {
-                const searchValue = this.value.toLowerCase();
-                document.querySelectorAll('#tblOrderBody tr').forEach(row => {
-                    const rowText = row.textContent.toLowerCase();
-                    row.style.display = searchValue === 'all' || rowText.includes(searchValue) ? '' : 'none';
-                });
+        
+        const filterTableRows = (filterBy, value) => {
+            document.querySelectorAll('#tblOrderBody tr').forEach(row => {
+                const rowValue = row.cells[filterBy].textContent.trim().toLowerCase();
+                if (rowValue.includes(value) || value === '') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             });
         };
 
-        addInputFilter('selectOrderId_order');
-        addInputFilter('selectTable_order');
-        addInputFilter('selectCustomer_order');
+      
+        applyAutocomplete('selectOrderId_order', ordersList, 0); 
+        applyAutocomplete('selectTable_order', tableList, 1); 
+        applyAutocomplete('selectCustomer_order', customerList, 2); 
 
     } catch (error) {
         console.error('Error loading orders:', error);
-        const errorMessageElement = document.getElementById('errorMessage');
-        if (errorMessageElement) {
-            errorMessageElement.textContent = 'Failed to load orders. Please try again later.';
-        } else {
-            console.error('Error message element not found');
-        }
     }
 }
+
+
+
 
 
 

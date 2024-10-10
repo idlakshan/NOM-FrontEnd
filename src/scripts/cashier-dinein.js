@@ -139,13 +139,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         dineinSaveCustomerEvent(baseUrl)
     })
     const isSessionStarted=localStorage.getItem('sessionStarted'); 
-    if (!isSessionStarted) {
-        // console.log("hiiiii");
+    if (isSessionStarted) {
         const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
         tableInnerArea.style.pointerEvents = 'none';
         
     }else{
-     
+        const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
+        tableInnerArea.style.pointerEvents = 'auto';
     }
 
 });

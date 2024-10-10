@@ -14,15 +14,15 @@ const customerInputs = document.querySelectorAll('.customer-input-field');
 const tblCustomers = document.getElementById("tbl_customer_body");
 const tblCustomerRows = tblCustomers.getElementsByTagName("tr");
 
-document.addEventListener('DOMContentLoaded',async function () {
+document.addEventListener('DOMContentLoaded', async function () {
     const baseUrl = await window.api.getBaseUrl();
-    
-    customerNameElement.focus();
-     loadAllCustomerTotable(baseUrl);
- 
-     document.querySelector('#search_customer_contact').addEventListener('input', customerFilterTable);
 
-     customerSaveBtn.addEventListener('click', function () {
+    customerNameElement.focus();
+    loadAllCustomerTotable(baseUrl);
+
+    document.querySelector('#search_customer_contact').addEventListener('input', customerFilterTable);
+
+    customerSaveBtn.addEventListener('click', function () {
         saveCustomer(baseUrl);
     });
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded',async function () {
         upadateCustomer(baseUrl);
     })
 
-    customerDeleteBtn.addEventListener('click',function(){
+    customerDeleteBtn.addEventListener('click', function () {
         deleteCustomer(baseUrl);
     });
 
@@ -42,7 +42,7 @@ function customerFilterTable() {
     var searchedCustomer = document.querySelector('#search_customer_contact').value;
     var customerTableRows = document.querySelectorAll('#tbl_customer_body tr');
     customerTableRows.forEach(function (row) {
-        var customerId = row.cells[3].innerText; 
+        var customerId = row.cells[3].innerText;
         if (customerId.includes(searchedCustomer)) {
             row.style.display = '';
         } else {
@@ -81,8 +81,8 @@ customerInputs.forEach(input => {
 });
 
 function checkCustomerInputs() {
-    let anyInputEmpty = false; 
-    let allInputsValid = true; 
+    let anyInputEmpty = false;
+    let allInputsValid = true;
 
     customerInputs.forEach(input => {
         const container = input.parentElement;
@@ -91,7 +91,7 @@ function checkCustomerInputs() {
         const validIcon = container.querySelector('.valid-text');
 
         if (value === '') {
-            anyInputEmpty = true; 
+            anyInputEmpty = true;
             container.style.borderColor = '';
             invalidText.style.display = 'none';
             if (validIcon) {
@@ -145,25 +145,25 @@ function checkCustomerInputs() {
 }
 
 //customer table click event
-function customerTableClickEvenetHandle(){
+function customerTableClickEvenetHandle() {
     for (let i = 0; i < tblCustomerRows.length; i++) {
         tblCustomerRows[i].addEventListener('click', function () {
             const cells = tblCustomerRows[i].getElementsByTagName("td");
             // const activeStatus = parseInt(cells[4].textContent);
-            
+
             const cusId = cells[1].textContent;
             const cusName = cells[2].textContent;
             const cusContact = cells[3].textContent;
             const cusStatus = cells[4].textContent;
-           
+
             customerIdElement.value = cusId;
             customerNameElement.value = cusName;
             customerContactElement.value = cusContact;
             customerCreditStatuslement.value = cusStatus;
-        
+
 
             checkCustomerInputs();
-              
+
         });
     }
 }
@@ -173,7 +173,7 @@ function saveCustomer(baseUrl) {
     const cusName = customerNameElement.value.trim();
     const cusMobileNo = customerContactElement.value.trim();
 
-    if(customerCreditStatuslement.value==""){
+    if (customerCreditStatuslement.value == "") {
         Swal.fire({
             title: "Oops...",
             text: "Please select Credit Status",
@@ -182,7 +182,7 @@ function saveCustomer(baseUrl) {
                 confirmButton: 'alert-orange-button',
             }
         });
-       return;
+        return;
     }
 
     if (!validateCustomerName(cusName) || !validateCustomerContact(cusMobileNo)) {
@@ -190,12 +190,12 @@ function saveCustomer(baseUrl) {
     }
 
     const customerData = {
-       cusName: customerNameElement.value,
-       cusMobileNo: customerContactElement.value,
-       creditStatus:customerCreditStatuslement.value
+        cusName: customerNameElement.value,
+        cusMobileNo: customerContactElement.value,
+        creditStatus: customerCreditStatuslement.value
     };
 
-    fetch(baseUrl+"/customer/save", {
+    fetch(baseUrl + "/customer/save", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -203,9 +203,9 @@ function saveCustomer(baseUrl) {
             'Authorization': `Bearer ${localStorage.getItem("jwt")}`
         },
         body: JSON.stringify(customerData)
-      
+
     })
-    // console.log(customerData);
+        // console.log(customerData);
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -214,7 +214,7 @@ function saveCustomer(baseUrl) {
         })
         .then(data => {
             console.log('Customer saved successfully:', data);
-            checkCustomerInputs();  
+            checkCustomerInputs();
             loadAllCustomerTotable(baseUrl);
             resetInputStyles();
             Swal.fire({
@@ -223,12 +223,21 @@ function saveCustomer(baseUrl) {
                 title: "Customer saved successfully!",
                 showConfirmButton: false,
                 timer: 1500
-              });
-          
+            });
+
         })
         .catch(error => {
             console.error('Error saving Customer:', error);
-            alert('Failed to save customer. Please try again.');
+           // alert('Failed to save customer. Please try again.');
+
+            Swal.fire({
+                title: "Oops...",
+                text: "Failed to save customer. Please try again.",
+                icon: "warning",
+                customClass: {
+                    confirmButton: 'alert-orange-button',
+                }
+            })
         });
 
 }
@@ -236,7 +245,7 @@ function saveCustomer(baseUrl) {
 
 
 //------------customer update event handle------------ 
-function upadateCustomer(baseUrl){
+function upadateCustomer(baseUrl) {
     const cusName = customerNameElement.value.trim();
     const cusMobileNo = customerContactElement.value.trim();
 
@@ -244,7 +253,7 @@ function upadateCustomer(baseUrl){
         return;
     }
 
-    if(customerCreditStatuslement.value==""){
+    if (customerCreditStatuslement.value == "") {
         Swal.fire({
             title: "Oops...",
             text: "Please select Credit Status",
@@ -253,52 +262,52 @@ function upadateCustomer(baseUrl){
                 confirmButton: 'alert-orange-button',
             }
         });
-       return;
+        return;
     }
 
     const customerUpdateData = {
         cusId: customerIdElement.value,
         cusName: customerNameElement.value,
         cusMobileNo: customerContactElement.value,
-        creditStatus:customerCreditStatuslement.value
-     };
- 
+        creditStatus: customerCreditStatuslement.value
+    };
+
     // console.log(customerIdElement.value);
-     fetch(baseUrl+"/customer/update", {
-         method: 'PUT',
-         headers: {
-             'Content-Type': 'application/json',
-             'Accept': 'application/json',
-             'Authorization': `Bearer ${localStorage.getItem("jwt")}`
-         },
-         body: JSON.stringify(customerUpdateData)
-       
-     })
-         .then(response => {
-             if (!response.ok) {
+    fetch(baseUrl + "/customer/update", {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("jwt")}`
+        },
+        body: JSON.stringify(customerUpdateData)
+
+    })
+        .then(response => {
+            if (!response.ok) {
                 alert("This customer is inactive!");
                 resetInputStyles();
-                 throw new Error('Network response was not ok');
-                 
-             }
-             return response.json();
-         })
-         .then(data => {
+                throw new Error('Network response was not ok');
+
+            }
+            return response.json();
+        })
+        .then(data => {
             Swal.fire({
                 position: "top-end",
                 icon: "success",
                 title: "Customer updated successfully!",
                 showConfirmButton: false,
                 timer: 1500
-              });
+            });
             //  console.log('Customer saved successfully:', data);
-             loadAllCustomerTotable(baseUrl)
-             resetInputStyles();
-         })
-         .catch(error => {
-             console.error('Error saving Customer:', error);
-         });
- 
+            loadAllCustomerTotable(baseUrl)
+            resetInputStyles();
+        })
+        .catch(error => {
+            console.error('Error saving Customer:', error);
+        });
+
 }
 
 //------------customer delete event handle------------ 
@@ -381,10 +390,10 @@ async function loadAllCustomerTotable(baseUrl) {
         for (let i = 0; i < customersList.data.length; i++) {
             const customer = customersList.data[i];
             const creditStatus = customer.creditStatus;
-            
+
             const statusColor = creditStatus === "Disabled" ? "#101A24" : "#EA6D27";
-            
-           
+
+
             const isDisabled = customer.cusId === 1 && customer.cusName === "unKnown";
 
             customerList += `
@@ -409,12 +418,12 @@ async function loadAllCustomerTotable(baseUrl) {
 
 //------------reset inputs function-----------
 function resetInputStyles() {
-    customerIdElement.value='';
+    customerIdElement.value = '';
     customerNameElement.value = '';
     customerContactElement.value = '';
-    customerCreditStatuslement.value=""
+    customerCreditStatuslement.value = ""
     customerNameElement.focus();
-   
+
     customerInputs.forEach(input => {
         const container = input.parentElement;
         container.style.borderColor = '';
@@ -426,16 +435,16 @@ function resetInputStyles() {
 }
 
 
-customerNameElement.addEventListener('input', function() {
+customerNameElement.addEventListener('input', function () {
     if (customerNameElement.value === '' && customerContactElement.value === '') {
         customerIdElement.value = '';
-        customerCreditStatuslement.value=""
+        customerCreditStatuslement.value = ""
     }
 });
 
-customerContactElement.addEventListener('input', function() {
+customerContactElement.addEventListener('input', function () {
     if (customerNameElement.value === '' && customerContactElement.value === '') {
         customerIdElement.value = '';
-          customerCreditStatuslement.value=""
+        customerCreditStatuslement.value = ""
     }
 });

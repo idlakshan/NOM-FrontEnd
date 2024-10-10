@@ -457,7 +457,6 @@ function dishClickEventHandler(baseUrl, dishId, dishImagePath) {
 
 
 
-
 let validIngredients = [];
 let selectedIngredients = []; 
 
@@ -477,26 +476,65 @@ async function loadAllDishIngredients(baseUrl) {
         }
 
         const responseData = await response.json();
+        const inputs = document.querySelectorAll('.ingredients-input');
         validIngredients = responseData.data.map(ingredient => ingredient.ingredientName); 
 
-        ingredientListArr.forEach(ingredientId => {
-            const ingredientDataInput = document.getElementById(ingredientId);
-            ingredientDataInput.innerHTML = '';
+       
+        inputs.forEach(input => {
+            $(input).autocomplete({
+                source: validIngredients,   
+                minLength: 1,             
+                select: async function (event, ui) {
+                    const selectedIngredient = ui.item.value;
+                    if (!selectedIngredients.includes(selectedIngredient)) {
+                        selectedIngredients.push(selectedIngredient);  
+                    }
 
-            validIngredients.forEach(option => {
-                const optionElement = document.createElement("option");
-                optionElement.value = option;
-                optionElement.textContent = option; 
-                ingredientDataInput.appendChild(optionElement);
+                    const inputId = this.id;
+                    const idElementId = `ingredients-id-${inputId.split('-').pop()}`;
+                    const unitInputElementId = `ingredients-unit-input-${inputId.split('-').pop()}`;
+
+                    try {
+                        const response = await fetch(`${baseUrl}/ingredients/?ingredientsName=${selectedIngredient}`, {
+                            method: 'GET',
+                            headers: {
+                                Accept: "application/json",
+                                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                            }
+                        });
+
+                        if (!response.ok) {
+                            Swal.fire({
+                                title: "Oops...",
+                                text: "Error fetching ingredient data.",
+                                icon: "warning",
+                                customClass: {
+                                    confirmButton: 'alert-orange-button',
+                                }
+                            });
+                            throw new Error('Network response was not ok');
+                        } 
+
+                        const responseData = await response.json();
+                        const { ingredientId, ingredientsUnit } = responseData.data;
+
+                        document.getElementById(idElementId).value = ingredientId;
+                        document.getElementById(unitInputElementId).value = ingredientsUnit;
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                },
+                focus: function (event, ui) {
+                   
+                }
             });
         });
+
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error loading ingredients:', error);
     }
 }
-
-
-
 
 //---get selected ingredient's details(popup)-------------
 async function getSelectedIngredientData(baseUrl, startIndex) {
@@ -509,23 +547,24 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
         const qtyMdInput = document.getElementById(`ingredients-qty-md-${i}`);
         const qtyLgInput = document.getElementById(`ingredients-qty-lg-${i}`);
 
-        document.getElementById(inputId).addEventListener('change', async function () {
+        const inputElement = document.getElementById(inputId);
+
+     
+        inputElement.addEventListener('change', async function () {
             const selectedOption = this.value.trim();
 
             if (selectedOption === '') {
-                // Handle empty input
                 const previousOption = this.dataset.previousValue;
                 if (previousOption) {
                     selectedIngredients = selectedIngredients.filter(ingredient => ingredient !== previousOption);
                 }
                 this.dataset.previousValue = '';
-                document.getElementById(idElementId).value = '';
-                document.getElementById(unitInputElementId).value = '';
+                resetIngredientFields(idElementId, unitInputElementId, qtySmInput, qtyMdInput, qtyLgInput);
                 return;
             }
 
             if (!validIngredients.includes(selectedOption)) {
-                // Handle invalid ingredient input
+              
                 Swal.fire({
                     title: "Invalid Input",
                     text: "Please select a valid ingredient.",
@@ -534,22 +573,13 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
                         confirmButton: 'alert-orange-button',
                     }
                 });
-                document.getElementById(idElementId).value = '';
-                document.getElementById(unitInputElementId).value = '';
+                resetIngredientFields(idElementId, unitInputElementId, qtySmInput, qtyMdInput, qtyLgInput);
                 this.value = '';
-                qtySmInput.value=''
-                qtyMdInput.value=''
-                qtyLgInput.value=''
-                checkAndValidateIngredientInputs()
-
-                if (this.dataset.previousValue) {
-                    selectedIngredients = selectedIngredients.filter(ingredient => ingredient !== this.dataset.previousValue);
-                }
-                this.dataset.previousValue = '';
+                checkAndValidateIngredientInputs();
                 return;
             }
 
-            // Check if the selected ingredient is already in any other input field
+            
             for (let j = startIndex; j < startIndex + 20; j++) {
                 if (j !== i) {
                     const otherInputId = `ingredients-input-${j}`;
@@ -564,53 +594,44 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
                                 confirmButton: 'alert-orange-button',
                             }
                         });
+                        resetIngredientFields(idElementId, unitInputElementId, qtySmInput, qtyMdInput, qtyLgInput);
                         this.value = ''; 
-                        document.getElementById(idElementId).value = '';
-                        document.getElementById(unitInputElementId).value = '';
-                        checkAndValidateIngredientInputs()
+                        checkAndValidateIngredientInputs();
                         return;
                     }
                 }
             }
 
-         
             selectedIngredients.push(selectedOption);
             this.dataset.previousValue = selectedOption;
 
-        
-            try {
-                const response = await fetch(`${baseUrl}/ingredients/?ingredientsName=${selectedOption}`, {
-                    method: 'GET',
-                    headers: {
-                        Accept: "application/json",
-                        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-                    }
-                });
+        });
 
-                if (!response.ok) {
-                    Swal.fire({
-                        title: "Oops...",
-                        text: "Error fetching ingredient data.",
-                        icon: "warning",
-                        customClass: {
-                            confirmButton: 'alert-orange-button',
-                        }
-                    });
-                    this.value = '';
-                    throw new Error('Network response was not ok');
-                } 
-
-                const responseData = await response.json();
-                const { ingredientId, ingredientsUnit } = responseData.data;
-
-                document.getElementById(idElementId).value = ingredientId;
-                document.getElementById(unitInputElementId).value = ingredientsUnit;
-            } catch (error) {
-                console.error('Error:', error);
+       
+        inputElement.addEventListener('input', function () {
+            const selectedOption = this.value.trim();
+            if (selectedOption === '') {
+                resetIngredientFields(idElementId, unitInputElementId, qtySmInput, qtyMdInput, qtyLgInput);
             }
         });
     }
 }
+
+// Helper function to reset ingredient fields
+function resetIngredientFields(idElementId, unitInputElementId, qtySmInput, qtyMdInput, qtyLgInput) {
+    document.getElementById(idElementId).value = '';
+    document.getElementById(unitInputElementId).value = '';
+    qtySmInput.value = '';
+    qtyMdInput.value = '';
+    qtyLgInput.value = '';
+}
+
+
+
+
+
+
+
 
 
 
