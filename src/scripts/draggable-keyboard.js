@@ -1,22 +1,23 @@
 
 const keyBoardButtons = document.querySelectorAll('.admin-keyboard-button');
+let selectedInput = null;  
+let inputCleared = false;  
 
-let selectedInput;
 
 document.addEventListener("DOMContentLoaded", function () {
     draggableKeyboard();
-   //setupInputFieldDishFocus();
+
 
     document.querySelectorAll('.keyboard-input').forEach(input => {
         input.addEventListener('focus', function () {
-            selectInput(input);
+            selectInput(input);  
         });
     });
 
+  
     document.querySelectorAll('.admin-keyboard-button').forEach(button => {
-        button.addEventListener('click', handleKeyboardButtonClick);
+        button.addEventListener('click', handleKeyboardButtonClick);  
     });
-
 });
 
 
@@ -37,6 +38,7 @@ function draggableKeyboard() {
             posY = e.clientY - draggableKeyboard.getBoundingClientRect().top;
         });
 
+
         document.addEventListener('mousemove', function (e) {
             if (isDragging) {
                 e.preventDefault();
@@ -44,12 +46,14 @@ function draggableKeyboard() {
                 let newX = e.clientX - posX - containerRect.left;
                 let newY = e.clientY - posY - containerRect.top;
 
+    
                 newX = Math.max(0, Math.min(newX, containerRect.width - draggableKeyboard.offsetWidth));
                 newY = Math.max(0, Math.min(newY, containerRect.height - draggableKeyboard.offsetHeight));
 
                 draggableKeyboard.style.left = newX + 'px';
                 draggableKeyboard.style.top = newY + 'px';
 
+ 
                 keyboardOuter.style.left = (newX + draggableKeyboard.offsetWidth) + 'px';
                 keyboardOuter.style.top = newY + 'px';
             }
@@ -59,12 +63,9 @@ function draggableKeyboard() {
             isDragging = false;
         });
 
+
         draggableKeyboard.addEventListener('dblclick', function () {
-            if (keyboardOuter.style.display === 'none' || keyboardOuter.style.display === '') {
-                keyboardOuter.style.display = 'block';
-            } else {
-                keyboardOuter.style.display = 'none';
-            }
+            keyboardOuter.style.display = (keyboardOuter.style.display === 'none' || keyboardOuter.style.display === '') ? 'block' : 'none';
         });
 
         symbolButton.addEventListener('click', function () {
@@ -79,44 +80,26 @@ function draggableKeyboard() {
 
 
 function toggleAdminSymbol(keyboard) {
-    //console.log("toggleAdminSymbol function called");
     const symbols = ['.', '@', '#', '$', '%', '-', '&', '*', '(', ')'];
     const buttons = keyboard.querySelectorAll('.admin-keyboard-button-number');
 
-    buttons.forEach(function (button, index) {
-        if (button.textContent === '123') { 
+    buttons.forEach((button, index) => {
+        if (!isNaN(parseInt(button.textContent))) {
             button.textContent = symbols[index];
-        } else if (button.textContent === symbols.join('')) {
-            button.textContent = '123';
         } else {
-            if (!isNaN(parseInt(button.textContent))) {
-                button.textContent = symbols[index];
-            } else {
-                button.textContent = index === 9 ? '0' : (index + 1);
-            }
+            button.textContent = index === 9 ? '0' : (index + 1).toString();
         }
     });
 
-    if (keyboard.querySelector('.admin-keyboard-button-special').textContent === '123') { 
-        keyboard.querySelector('.admin-keyboard-button-special').textContent = '!#*';
-    } else {
-        keyboard.querySelector('.admin-keyboard-button-special').textContent = '123';
-
-    }
+    const specialButton = keyboard.querySelector('.admin-keyboard-button-special');
+    specialButton.textContent = specialButton.textContent === '123' ? '!#*' : '123';
 }
-
 
 function toggleAdminLetters(keyboard) {
     const letterButtons = keyboard.querySelectorAll('.admin-keyboard-button:not(.admin-keyboard-button-enter):not(.admin-keyboard-button-backspace)');
 
-    letterButtons.forEach(function (button) {
-        if (button.textContent === 'abc?') {
-            button.textContent = 'ABC?';
-        } else if (button.textContent === 'ABC?') {
-            button.textContent = 'abc?';
-        } else {
-            button.textContent = button.textContent === button.textContent.toUpperCase() ? button.textContent.toLowerCase() : button.textContent.toUpperCase();
-        }
+    letterButtons.forEach(button => {
+        button.textContent = (button.textContent === button.textContent.toLowerCase()) ? button.textContent.toUpperCase() : button.textContent.toLowerCase();
     });
 }
 
@@ -124,8 +107,7 @@ function toggleAdminLetters(keyboard) {
 function handleKeyboardButtonClick(event) {
     const keyboardButtonValue = event.target.textContent;
 
-    // Exclude special buttons
-    if (keyboardButtonValue === 'abc?' || keyboardButtonValue === '!#*' || keyboardButtonValue === 'ABC?' || keyboardButtonValue === '123') {
+    if (['abc?', '!#*', 'ABC?', '123'].includes(keyboardButtonValue)) {
         return;
     }
 
@@ -133,56 +115,64 @@ function handleKeyboardButtonClick(event) {
         const cursorPositionStart = selectedInput.selectionStart;
         const cursorPositionEnd = selectedInput.selectionEnd;
 
-        if (keyboardButtonValue === 'Backspace') { 
-            if (cursorPositionStart !== cursorPositionEnd) { 
-                const newValue = selectedInput.value.slice(0, cursorPositionStart) + selectedInput.value.slice(cursorPositionEnd);
-                selectedInput.value = newValue;
-                selectedInput.setSelectionRange(cursorPositionStart, cursorPositionStart);
-            } else if (cursorPositionStart > 0) {  
-                const newValue = selectedInput.value.slice(0, cursorPositionStart - 1) + selectedInput.value.slice(cursorPositionStart);
-                selectedInput.value = newValue;
-                selectedInput.setSelectionRange(cursorPositionStart - 1, cursorPositionStart - 1);
+
+        if (keyboardButtonValue === 'Backspace') {
+            if (cursorPositionStart !== cursorPositionEnd) {
+                selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + selectedInput.value.slice(cursorPositionEnd);
+            } else if (cursorPositionStart > 0) {
+                selectedInput.value = selectedInput.value.slice(0, cursorPositionStart - 1) + selectedInput.value.slice(cursorPositionStart);
             }
-        } else if (keyboardButtonValue === 'Space') {
-            const newValue = selectedInput.value.slice(0, cursorPositionStart) + ' ' + selectedInput.value.slice(cursorPositionEnd);
-            selectedInput.value = newValue;
-            selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
-        } else { 
-            if (selectedInput.classList.contains('input-num') || selectedInput.type === 'number') {
-                if (keyboardButtonValue === '.' && !selectedInput.value.includes('.')) {
-                    const newValue = selectedInput.value.slice(0, cursorPositionStart) + '.' + selectedInput.value.slice(cursorPositionEnd);
-                    selectedInput.value = newValue;
-                    selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
-                } else if (!isNaN(keyboardButtonValue)) {
-                    const newValue = selectedInput.value.slice(0, cursorPositionStart) + keyboardButtonValue + selectedInput.value.slice(cursorPositionEnd);
-                    selectedInput.value = newValue;
-                    selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
-                }
-            } else {
-                const newValue = selectedInput.value.slice(0, cursorPositionStart) + keyboardButtonValue + selectedInput.value.slice(cursorPositionEnd);
-                selectedInput.value = newValue;
-                selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
+            selectedInput.setSelectionRange(cursorPositionStart - 1, cursorPositionStart - 1);
+
+            if (selectedInput.value === "") {
+                selectedInput.value = "0.00";
             }
         }
 
+        else if (keyboardButtonValue === 'Space') {
+            selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + ' ' + selectedInput.value.slice(cursorPositionEnd);
+            selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
+        }
       
-        const inputEvent = new Event('input', {
-            bubbles: true,
-            cancelable: true,
-        });
-        selectedInput.dispatchEvent(inputEvent);
+        else {
+        
+            if (selectedInput.classList.contains('input-num') || selectedInput.type === 'number') {
+         
+                if (selectedInput.value === '0.00') {
+                    selectedInput.value = keyboardButtonValue;
+                } 
+     
+                else if (keyboardButtonValue === '.' && !selectedInput.value.includes('.')) {
+                    selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + '.' + selectedInput.value.slice(cursorPositionEnd);
+                } 
+     
+                else if (!isNaN(keyboardButtonValue)) {
+                    selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + keyboardButtonValue + selectedInput.value.slice(cursorPositionEnd);
+                }
+            } else {
+                selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + keyboardButtonValue + selectedInput.value.slice(cursorPositionEnd);
+            }
+
+            selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
+        }
+
+
+        selectedInput.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
     }
 }
 
 
 function selectInput(input) {
     selectedInput = input;
+
+    if (!inputCleared && selectedInput.value === '0.00') {
+        selectedInput.value = ''; 
+        inputCleared = true;  
+    }
 }
 
-
 document.querySelectorAll('.keyboard-input').forEach(input => {
-        input.addEventListener('focus', function() {
-            selectInput(input);
-        });
+    input.addEventListener('focus', function () {
+        selectInput(input);
+    });
 });
-

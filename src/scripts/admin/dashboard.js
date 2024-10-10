@@ -63,7 +63,7 @@ async function countAllEmployee(baseUrl) {
         const totalEmployees = parseInt(data, 10); 
 
        
-        countUpAnimation(countElement, totalEmployees);
+        countUpAnimationEmployee(countElement, totalEmployees);
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
         countElement.innerText = 'Error'; 
@@ -71,7 +71,7 @@ async function countAllEmployee(baseUrl) {
 }
 
 // Function for count-up animation
-function countUpAnimation(element, targetCount) {
+function countUpAnimationEmployee(element, targetCount) {
     let currentCount = 0;
     const increment = 1; 
     const duration = 1000; 
@@ -90,6 +90,9 @@ function countUpAnimation(element, targetCount) {
 
 // Function to count all orders
 async function countAllOrdersId(baseUrl) {
+    const countElement = document.getElementById('count_orders');
+    countElement.innerText = '0'; 
+
     try {
         const response = await fetch(baseUrl + "/orders/orders", {
             method: "GET",
@@ -104,18 +107,49 @@ async function countAllOrdersId(baseUrl) {
         }
 
         const data = await response.json();
-       // console.log(data);
-        
-        const displayCount = data.data >= 999 ? '999+' : data.data;
-        document.getElementById('count_orders').innerText = displayCount;
+        const totalOrders = parseInt(data.data, 10);  
 
+        const displayCount = totalOrders >= 999 ? '999+' : totalOrders;
+
+        countUpAnimationOrders(countElement, displayCount);  
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
+        countElement.innerText = 'Error'; 
     }
 }
 
+// Function for count-up animation
+function countUpAnimationOrders(element, targetCount) {
+    let currentCount = 0;
+    const duration = 1000; 
+    let increment = 1; 
+
+    if (targetCount > 100) {
+        increment = 50;
+    } else if (targetCount > 10) {
+        increment = 5;
+    }
+
+    const stepTime = Math.abs(Math.floor(duration / (targetCount / increment)));
+
+    const timer = setInterval(() => {
+        if (currentCount + increment > targetCount) {
+            currentCount = targetCount;
+            element.innerText = currentCount;
+            clearInterval(timer); 
+        } else {
+            currentCount += increment;
+            element.innerText = currentCount;
+        }
+    }, stepTime);
+}
+
+
 // Function to count all dishes
 async function countAllDishes(baseUrl) {
+    const countElement = document.getElementById('count_dishes');
+    countElement.innerText = '0'; 
+
     try {
         const response = await fetch(baseUrl + "/dish/dishes", {
             method: "GET",
@@ -130,11 +164,42 @@ async function countAllDishes(baseUrl) {
         }
 
         const data = await response.json();
-        document.getElementById('count_dishes').innerText = data;
+        const totalDishes = parseInt(data, 10); 
+
+        countUpAnimationDishes(countElement, totalDishes); 
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
+        countElement.innerText = 'Error'; 
     }
 }
+
+
+function countUpAnimationDishes(element, targetCount) {
+    let currentCount = 0;
+    const duration = 1000; 
+    let increment = 1;  
+
+    if (targetCount > 100) {
+        increment = 20;
+    } else if (targetCount > 10) {
+        increment = 5;
+    }
+
+    const stepTime = Math.abs(Math.floor(duration / (targetCount / increment)));
+
+    const timer = setInterval(() => {
+        if (currentCount + increment > targetCount) {
+            currentCount = targetCount;
+            element.innerText = currentCount;
+            clearInterval(timer); 
+        } else {
+
+            currentCount += increment;
+            element.innerText = currentCount;
+        }
+    }, stepTime);
+}
+
 
 
 // Function to load all in-door tables

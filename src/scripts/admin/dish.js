@@ -152,22 +152,30 @@ const imageUploadInput = document.getElementById('image-upload');
 const dishPricesInputs = document.querySelectorAll('.input-field-dish');
 
 function setDishpriceDefaultValues() {
+
     dishPricesInputs.forEach(input => {
         input.addEventListener('focus', function () {
             if (this.value === "0.00") {
                 this.value = "";
-                checkDishInputs();
             }
         });
 
+        input.addEventListener('input', function () {
+            if (this.value.trim() === "") {
+                this.value = "";
+            }
+        });
+
+   
         input.addEventListener('blur', function () {
             if (this.value.trim() === "") {
                 this.value = "0.00";
-                checkDishInputs();
+                 checkDishInputs()
             }
         });
     });
 }
+
 
 dishInputs.forEach(input => {
     const container = input.parentElement;
@@ -618,16 +626,18 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
 }
 
 // Helper function to reset ingredient fields
-function resetIngredientFields(idElementId, unitInputElementId, qtySmInput, qtyMdInput, qtyLgInput) {
+function resetIngredientFields(idElementId, unitInputElementId, qtyInput) {
     document.getElementById(idElementId).value = '';
     document.getElementById(unitInputElementId).value = '';
-    qtySmInput.value = '';
-    qtyMdInput.value = '';
-    qtyLgInput.value = '';
+    qtyInput.value = '';
 }
 
 
-
+function clearQtyInput(qtyInput) {
+    if (qtyInput) {
+        qtyInput.value = '';  // Clear the value of the corresponding quantity input
+    }
+}
 
 
 
@@ -647,12 +657,18 @@ function ingredientsQtyEventHandle() {
     toggleIngredientInputs(dishLargePrice, 'lg');
 }
 
-
 function toggleIngredientInputs(price, size) {
     for (let i = 1; i <= 20; i++) {
         const input = document.getElementById(`ingredients-qty-${size}-${i}`);
+        const qtyInput = document.getElementById(`ingredients-qty-${size}-${i}`);
+
         if (input) {
-            input.disabled = price <= 0;
+            if (price <= 0) {
+                input.disabled = true;
+                clearQtyInput(qtyInput);  // Clear the quantity input value only
+            } else {
+                input.disabled = false;
+            }
         }
     }
 }
