@@ -59,7 +59,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     employeeSaveBtn.addEventListener('click', function () {
-        saveEmployee(baseUrl);
+        employeeSaveBtn.disabled = true;   
+        saveEmployee(baseUrl).finally(() => {
+            employeeSaveBtn.disabled = false;
+        });
     });
 
     employeeUpdateBtn.addEventListener('click', function () {
@@ -162,7 +165,7 @@ function validateEmployeeName(employeeName) {
 }
 
 function validateEmployeeContact(employeeContact) {
-    return /^(070|071|074|075|076|077|078)[-]?[0-9]{7}$/.test(employeeContact);
+    return /^(070|071|074|075|076|077|078|072)[-]?[0-9]{7}$/.test(employeeContact);
 }
 
 function validateEmployeeAddress(employeeAddress) {
@@ -300,7 +303,7 @@ async function saveEmployee(baseUrl) {
             tblAuthUserRolesDTOS: [
                 {
                     id: "",
-                    userRoleId: roleIds[employeeRoleElementOne.value],  // Get role ID from fetched data
+                    userRoleId: roleIds[employeeRoleElementOne.value],
                     userId: ""
                 },
             ],
@@ -341,7 +344,6 @@ async function saveEmployee(baseUrl) {
             timer: 1500
         });
 
-        // Additional actions after saving employee
         loadAllEmployees(baseUrl);
         resetEmployeeInput();
         checkEmployeeInputs();

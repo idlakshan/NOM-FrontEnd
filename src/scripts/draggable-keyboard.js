@@ -103,7 +103,6 @@ function toggleAdminLetters(keyboard) {
     });
 }
 
-
 function handleKeyboardButtonClick(event) {
     const keyboardButtonValue = event.target.textContent;
 
@@ -115,7 +114,6 @@ function handleKeyboardButtonClick(event) {
         const cursorPositionStart = selectedInput.selectionStart;
         const cursorPositionEnd = selectedInput.selectionEnd;
 
-
         if (keyboardButtonValue === 'Backspace') {
             if (cursorPositionStart !== cursorPositionEnd) {
                 selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + selectedInput.value.slice(cursorPositionEnd);
@@ -124,7 +122,7 @@ function handleKeyboardButtonClick(event) {
             }
             selectedInput.setSelectionRange(cursorPositionStart - 1, cursorPositionStart - 1);
 
-            if (selectedInput.value === "") {
+            if (selectedInput.value === "" && ['dishSmallPrice', 'dishMediumPrice', 'dishLargePrice'].includes(selectedInput.id)) {
                 selectedInput.value = "0.00";
             }
         }
@@ -133,19 +131,15 @@ function handleKeyboardButtonClick(event) {
             selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + ' ' + selectedInput.value.slice(cursorPositionEnd);
             selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
         }
-      
+
         else {
-        
             if (selectedInput.classList.contains('input-num') || selectedInput.type === 'number') {
-         
                 if (selectedInput.value === '0.00') {
                     selectedInput.value = keyboardButtonValue;
-                } 
-     
+                }
                 else if (keyboardButtonValue === '.' && !selectedInput.value.includes('.')) {
                     selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + '.' + selectedInput.value.slice(cursorPositionEnd);
-                } 
-     
+                }
                 else if (!isNaN(keyboardButtonValue)) {
                     selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + keyboardButtonValue + selectedInput.value.slice(cursorPositionEnd);
                 }
@@ -156,10 +150,10 @@ function handleKeyboardButtonClick(event) {
             selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
         }
 
-
         selectedInput.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
     }
 }
+
 
 
 function selectInput(input) {

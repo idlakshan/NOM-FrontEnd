@@ -267,9 +267,10 @@ async function init(baseUrl) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     checkCashierSession(baseUrl, userId);
+                    localStorage.setItem('sessionStarted', 'true');
                 } else {
                     dishCardListArea.style.pointerEvents = "none";
-                    localStorage.setItem('sessionStarted', false); 
+                    localStorage.setItem('sessionStarted', 'false');
                 }
             });
         } else {

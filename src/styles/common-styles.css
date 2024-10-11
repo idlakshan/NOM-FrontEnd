@@ -77,6 +77,10 @@ table th:first-child {
     border-top-left-radius: 10px;
 }
 
+tbody{
+    overflow-y: scroll;
+}
+
 table th:last-child {
     border-top-right-radius: 10px;
 }

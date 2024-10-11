@@ -898,15 +898,19 @@ virtualKeyboard.forEach(button => {
         } else {
             if (key === "←") {
                 activeCreditOrderInput.value = activeCreditOrderInput.value.slice(0, -1);
+                
+                // If the input becomes empty after backspace, reset it to 0.00
+                if (activeCreditOrderInput.value === "") {
+                    activeCreditOrderInput.value = "0.00";
+                }
             } else if (key === "." && activeCreditOrderInput.value.includes(".")) {
-           
+                // Do nothing if there is already a decimal point
             } else {
-           
                 activeCreditOrderInput.value += key;
             }
         }
 
-   
+        // Trigger the input event after updating the value
         const inputEvent = new Event('input', {
             bubbles: true,
             cancelable: true,

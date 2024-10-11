@@ -138,16 +138,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     customerSaveBtn.addEventListener("click", function () {
         dineinSaveCustomerEvent(baseUrl)
     })
-    const isSessionStarted=localStorage.getItem('sessionStarted'); 
-    if (isSessionStarted) {
-        const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
-        tableInnerArea.style.pointerEvents = 'none';
-        
-    }else{
+    const isSessionStarted = localStorage.getItem('sessionStarted');
+
+    if (isSessionStarted === "true") {
+        console.log("start");
         const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
         tableInnerArea.style.pointerEvents = 'auto';
+    } else {
+        console.log("not start");
+        const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
+        tableInnerArea.style.pointerEvents = 'none';
     }
-
 });
 
 async function init(baseUrl) {
