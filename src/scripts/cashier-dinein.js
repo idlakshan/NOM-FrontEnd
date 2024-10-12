@@ -966,6 +966,7 @@ btnPay.addEventListener('click', function () {
 
 function btnPayClickHandler(subTotalValue, orderId, tableId) {
     // console.log("click");
+    
     orderConfrimPanel.style.display = "flex";
     container.classList.add("container-disabled");
     document.querySelector("#confirmOrderId").innerText = orderId;

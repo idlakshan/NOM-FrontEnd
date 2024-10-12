@@ -908,6 +908,16 @@ function btnPayClickHandlerTabOne(subTotalValue) {
 
 
 btnPayTabOne.addEventListener('click', function () {
+
+    const inputPayCash = document.querySelector('#inputpaycashOne');
+    const inputPayCar = document.querySelector('#inputpaycardOne');
+    const inputPayCredit = document.querySelector('#inputpaycreditOne');
+
+    if (inputPayCash) inputPayCash.value = '0.00';
+    if (inputPayCar) inputPayCar.value = '0.00';
+    if (inputPayCredit) inputPayCredit.value = '0.00'
+
+
     if (!inputMobileElementTab1.value) {
         Swal.fire({
             title: "Oops...",
@@ -1589,6 +1599,14 @@ function btnPayClickHandlerTabTwo(subTotalValue) {
 
 
 btnPayTabTwo.addEventListener('click', function () {
+
+    const inputPayCash = document.querySelector('#inputpaycashTwo');
+    const inputPayCar = document.querySelector('#inputpaycardTwo');
+    const inputPayCredit = document.querySelector('#inputpaycreditTwo');
+
+    if (inputPayCash) inputPayCash.value = '0.00';
+    if (inputPayCar) inputPayCar.value = '0.00';
+    if (inputPayCredit) inputPayCredit.value = '0.00';
 
     if (!inputMobileElementTab2.value) {
         Swal.fire({
@@ -2283,6 +2301,14 @@ function btnPayClickHandlerTabThree(subTotalValue) {
 }
 
 btnPayTabThree.addEventListener('click', function () {
+    const inputPayCash = document.querySelector('#inputpaycashThree');
+    const inputPayCar = document.querySelector('#inputpaycardThree');
+    const inputPayCredit = document.querySelector('#inputpaycreditThree');
+
+    if (inputPayCash) inputPayCash.value = '0.00';
+    if (inputPayCar) inputPayCar.value = '0.00';
+    if (inputPayCredit) inputPayCredit.value = '0.00';
+
     if (!inputMobileElementTab3.value) {
         Swal.fire({
             title: "Oops...",
@@ -2292,17 +2318,19 @@ btnPayTabThree.addEventListener('click', function () {
                 confirmButton: 'alert-orange-button',
             }
         });
-        return
+        return;
     }
 
     if (selectCusCreditStatusTabThree === "Disabled" || inputMobileElementTab3.value === "unKnown") {
-        inputCreditTabThree.disabled = true
+        inputCreditTabThree.disabled = true;
     } else if (selectCusCreditStatusTabThree === "Enabled") {
-        inputCreditTabThree.disabled = false
+        inputCreditTabThree.disabled = false;
     }
+
     const subTotalValue = document.querySelector("#subTotalTab3").innerText;
     btnPayClickHandlerTabThree(subTotalValue);
 });
+
 
 orderConfrimPanelCloseTab3.addEventListener("click", function () {
     orderConfrimPanelTabThree.style.display = "none"

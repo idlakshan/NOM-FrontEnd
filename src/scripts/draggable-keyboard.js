@@ -80,7 +80,7 @@ function draggableKeyboard() {
 
 
 function toggleAdminSymbol(keyboard) {
-    const symbols = ['.', '@', '#', '$', '%', '-', '&', '*', '(', ')'];
+    const symbols = ['.', '@', '#', '/', '%', '-', '&', '*', '(', ')'];
     const buttons = keyboard.querySelectorAll('.admin-keyboard-button-number');
 
     buttons.forEach((button, index) => {

@@ -169,7 +169,7 @@ function validateEmployeeContact(employeeContact) {
 }
 
 function validateEmployeeAddress(employeeAddress) {
-    return /^([A-z]{2,}|[0-9]{1,4}|[0-9]{1,4}[/|,|\s]?|[0-9]{1,4}[/|,][A-z]{1,3}?|[0-9]{1,4}[/|,][A-z]{1,3}\s?|[0-9]{1,4}[/|,][A-z]{1,3}\s?[A-z]{3,}|[0-9]{1,4}[/|,|\s]?[A-z]{1,})$/.test(employeeAddress);
+    return /^[A-Za-z0-9][A-Za-z0-9\s,./-]*$/.test(employeeAddress);
 }
 
 function validatePassword(password) {

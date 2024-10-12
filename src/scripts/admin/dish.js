@@ -567,7 +567,8 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
                     selectedIngredients = selectedIngredients.filter(ingredient => ingredient !== previousOption);
                 }
                 this.dataset.previousValue = '';
-                resetIngredientFields(idElementId, unitInputElementId, qtySmInput, qtyMdInput, qtyLgInput);
+                document.getElementById(idElementId).value = '';
+                document.getElementById(unitInputElementId).value = '';
                 return;
             }
 
@@ -581,9 +582,17 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
                         confirmButton: 'alert-orange-button',
                     }
                 });
-                resetIngredientFields(idElementId, unitInputElementId, qtySmInput, qtyMdInput, qtyLgInput);
+                document.getElementById(idElementId).value = '';
+                document.getElementById(unitInputElementId).value = '';
                 this.value = '';
+                qtySmInput.value=''
+                qtyMdInput.value=''
+                qtyLgInput.value=''
                 checkAndValidateIngredientInputs();
+                if (this.dataset.previousValue) {
+                    selectedIngredients = selectedIngredients.filter(ingredient => ingredient !== this.dataset.previousValue);
+                }
+                this.dataset.previousValue = '';
                 return;
             }
 
@@ -602,9 +611,10 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
                                 confirmButton: 'alert-orange-button',
                             }
                         });
-                        resetIngredientFields(idElementId, unitInputElementId, qtySmInput, qtyMdInput, qtyLgInput);
                         this.value = ''; 
-                        checkAndValidateIngredientInputs();
+                        document.getElementById(idElementId).value = '';
+                        document.getElementById(unitInputElementId).value = '';
+                        checkAndValidateIngredientInputs()
                         return;
                     }
                 }
@@ -613,36 +623,42 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
             selectedIngredients.push(selectedOption);
             this.dataset.previousValue = selectedOption;
 
-        });
+            try {
+                const response = await fetch(`${baseUrl}/ingredients/?ingredientsName=${selectedOption}`, {
+                    method: 'GET',
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                    }
+                });
 
-       
-        inputElement.addEventListener('input', function () {
-            const selectedOption = this.value.trim();
-            if (selectedOption === '') {
-                resetIngredientFields(idElementId, unitInputElementId, qtySmInput, qtyMdInput, qtyLgInput);
+                if (!response.ok) {
+                    Swal.fire({
+                        title: "Oops...",
+                        text: "Error fetching ingredient data.",
+                        icon: "warning",
+                        customClass: {
+                            confirmButton: 'alert-orange-button',
+                        }
+                    });
+                    this.value = '';
+                    throw new Error('Network response was not ok');
+                } 
+
+                const responseData = await response.json();
+                const { ingredientId, ingredientsUnit } = responseData.data;
+
+                document.getElementById(idElementId).value = ingredientId;
+                document.getElementById(unitInputElementId).value = ingredientsUnit;
+            } catch (error) {
+                console.error('Error:', error);
             }
+
         });
+
+   
     }
 }
-
-// Helper function to reset ingredient fields
-function resetIngredientFields(idElementId, unitInputElementId, qtyInput) {
-    document.getElementById(idElementId).value = '';
-    document.getElementById(unitInputElementId).value = '';
-    qtyInput.value = '';
-}
-
-
-function clearQtyInput(qtyInput) {
-    if (qtyInput) {
-        qtyInput.value = '';  // Clear the value of the corresponding quantity input
-    }
-}
-
-
-
-
-
 
 
 
@@ -661,11 +677,12 @@ function toggleIngredientInputs(price, size) {
     for (let i = 1; i <= 20; i++) {
         const input = document.getElementById(`ingredients-qty-${size}-${i}`);
         const qtyInput = document.getElementById(`ingredients-qty-${size}-${i}`);
+    
 
-        if (input) {
+        if (input) {      
             if (price <= 0) {
                 input.disabled = true;
-                clearQtyInput(qtyInput);  // Clear the quantity input value only
+                clearQtyInput(qtyInput);  
             } else {
                 input.disabled = false;
             }
@@ -673,35 +690,13 @@ function toggleIngredientInputs(price, size) {
     }
 }
 
-//----------dish image upload event-----------
-let imageUploadFlag=false;
-function dishImageUploadevent() {
-    const errorMessage = document.getElementById('error-message');
-    fileInput.addEventListener('change', function () {
-        if (fileInput.files && fileInput.files[0]) {
-            const file = fileInput.files[0];
 
-            errorMessage.style.display = 'none';
-            imagePreview.src = ''; 
-            
-            if (file.size > 3 * 1024 * 1024) {
-            
-                errorMessage.style.display = 'block';
-                imageUploadFlag=true
-
-                // errorMessage.textContent = 'File size should not exceed 3MB';
-            } else {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    imagePreview.src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-                imageUploadFlag = false;
-            }
-            checkDishInputs()
-        }
-    });
+function clearQtyInput(qtyInput) {
+    if (qtyInput) {
+        qtyInput.value = '';  
+    }
 }
+
 
 
 //------validate ingredients popup inputs----------
@@ -746,6 +741,38 @@ function checkAndValidateIngredientInputs() {
   
     addButton.disabled = hasInvalidInput || !hasValidInput || !allValid;
 }
+
+//----------dish image upload event-----------
+let imageUploadFlag=false;
+function dishImageUploadevent() {
+    const errorMessage = document.getElementById('error-message');
+    fileInput.addEventListener('change', function () {
+        if (fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+
+            errorMessage.style.display = 'none';
+            imagePreview.src = ''; 
+            
+            if (file.size > 3 * 1024 * 1024) {
+            
+                errorMessage.style.display = 'block';
+                imageUploadFlag=true
+
+                // errorMessage.textContent = 'File size should not exceed 3MB';
+            } else {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+                imageUploadFlag = false;
+            }
+            checkDishInputs()
+        }
+    });
+}
+
+
 
 
 //-------get dish categories------------
