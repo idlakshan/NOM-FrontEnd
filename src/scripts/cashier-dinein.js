@@ -138,30 +138,33 @@ document.addEventListener("DOMContentLoaded", async function () {
     customerSaveBtn.addEventListener("click", function () {
         dineinSaveCustomerEvent(baseUrl)
     })
-    const isSessionStarted = localStorage.getItem('sessionStarted');
 
-    if (isSessionStarted === "true") {
-        console.log("start");
-        const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
-        tableInnerArea.style.pointerEvents = 'auto';
-    } else {
-        console.log("not start");
-        const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
-        tableInnerArea.style.pointerEvents = 'none';
-    }
 });
 
 async function init(baseUrl) {
-    const isActiveAdmin = await checkAdminSession(baseUrl, localStorage.getItem("userId"));
-    // console.log(isActiveAdmin);
+    const isSessionStarted = localStorage.getItem('sessionStarted');
+    const isCashier = localStorage.getItem('role');
+    const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
 
+    if (isCashier === 'cashier') {
+        tableInnerArea.style.pointerEvents = 'auto';
+    } else if (isSessionStarted === "true") {
+        console.log("start");
+        tableInnerArea.style.pointerEvents = 'auto';
+    } else {
+        console.log("not start");
+        tableInnerArea.style.pointerEvents = 'none';
+    }
+
+    const isActiveAdmin = await checkAdminSession(baseUrl, localStorage.getItem("userId"));
     if (!isActiveAdmin) {
-        dishCardListArea.style.pointerEvents = "none"
+        dishCardListArea.style.pointerEvents = "none";
         tableAreaView.style.display = 'none';
         btnTableDropdown.classList.remove("btnPopUpTable-rotate");
-        return
+        return;
     }
 }
+
 
 
 //============date and time============
@@ -1801,9 +1804,11 @@ async function showChangeTablePopup(baseUrl, button, tableNumber) {
 
 
 async function updateOrderWhenChangeTable(baseUrl, newTableId, tableNumber) {
+    console.log(newTableId+"  "+tableNumber);
+    
     const orderId = orderIdElement.value;
     groupIdInput.value = newTableId
-    //console.log(newTableId+" "+orderId);
+    console.log(newTableId+" "+orderId);
 
     try {
         const response = await fetch(baseUrl + "/dineIn/Order?orderId=" + orderId + "&tableId=" + newTableId, {
@@ -1969,8 +1974,9 @@ function dineinSaveCustomerEvent(baseUrl) {
                     // document.getElementById("customer-save-form").reset();
                     // location.reload();
                     addCustomerBox.style.display = "none";
-                    mobileInput.value = "";
-                    nameInput.value = "";
+                    // mobileInput.value = "";
+                    // nameInput.value = "";
+                    // resetCustomerValidation();
                     inputMobileElement.value = response.data.cusMobileNo;
                     customerName.value = response.data.cusName;
                     selectedCusId = response.data.cusId
@@ -1988,6 +1994,23 @@ function dineinSaveCustomerEvent(baseUrl) {
         });
 }
 
+//reset the validation state
+function resetCustomerValidation() {
+    customerInputs.forEach(input => {
+        const container = input.parentElement;
+        const invalidText = container.querySelector('.invalid-text');
+        const validIcon = container.querySelector('.valid-text');
+
+        // Reset styles and validation state
+        container.style.borderColor = '';
+        invalidText.style.display = 'none';
+        if (validIcon) {
+            validIcon.style.display = 'none';
+        }
+    });
+
+    customerSaveBtn.disabled = true;
+}
 
 let selectedInput;
 //--------add-customerbox Popup and Close Events------

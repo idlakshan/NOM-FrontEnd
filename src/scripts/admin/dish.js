@@ -80,12 +80,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     });
 
-    btnAddingredients.addEventListener('click', function () {
-        ingredientsPopup.style.display = 'none'
-        dishBackgroundOverlay.classList.remove("overlay")
-        dishSideNavBr.style.pointerEvents = "auto"
-        dishNavbar.style.pointerEvents = "auto"
-    })
+    // btnAddingredients.addEventListener('click', function () {
+    //     ingredientsPopup.style.display = 'none'
+    //     dishBackgroundOverlay.classList.remove("overlay")
+    //     dishSideNavBr.style.pointerEvents = "auto"
+    //     dishNavbar.style.pointerEvents = "auto"
+    // })
 
     btnDeleteDish.addEventListener('click', function () {
         deleteDish(baseUrl);
@@ -342,12 +342,14 @@ function dishClickEventHandler(baseUrl, dishId, dishImagePath) {
         const qtyMdInput = document.getElementById(`ingredients-qty-md-${i}`);
         const qtyLgInput = document.getElementById(`ingredients-qty-lg-${i}`);
         const ingNameInput = document.getElementById(`ingredients-input-${i}`);
+        const ingUnitInput = document.getElementById(`ingredients-unit-input-${i}`);
 
         if (ingIdInput) ingIdInput.value = '';
         if (qtySmInput) qtySmInput.value = '';
         if (qtyMdInput) qtyMdInput.value = '';
         if (qtyLgInput) qtyLgInput.value = '';
         if (ingNameInput) ingNameInput.value = '';
+        if (ingUnitInput) ingUnitInput.value = '';
     }
 
     fetch(baseUrl + "/dish?dishId=" + dishId, {
@@ -721,7 +723,7 @@ function checkAndValidateIngredientInputs() {
         }
     });
 
-    // Validate ingredient inputs and their corresponding quantities
+
     for (let i = 1; i <= totalIngredients; i++) {
         const ingredientInput = document.getElementById(`ingredients-input-${i}`);
         const qtySmInput = document.getElementById(`ingredients-qty-sm-${i}`);
@@ -775,7 +777,6 @@ function dishImageUploadevent() {
 
 
 
-//-------get dish categories------------
 async function loadAllDishCategory(baseUrl) {
     try {
         const response = await fetch(baseUrl + "/Categorry", {
@@ -791,25 +792,24 @@ async function loadAllDishCategory(baseUrl) {
         }
 
         const responseData = await response.json();
-   
+        const categories = responseData.data.map(category => category.categorryName);
 
-        const datalist = document.getElementById("dish-categoryList");
-        datalist.innerHTML = '';
+        const inputField = $("#dish_category");
 
-        responseData.data.forEach(category => {
-            const option = document.createElement("option");
-            option.value = category.categorryName;
-            datalist.appendChild(option);
+        inputField.autocomplete({
+            source: categories, 
+            minLength: 1,       
+            select: function (event, ui) {
+                const selectedItem = ui.item.value.toLowerCase();
+                inputField.val(selectedItem); 
+                checkDishInputs();
+            }
         });
-        
-        
-       
+
     } catch (error) {
         console.error('Error:', error);
     }
 }
-
-
 
 
 
@@ -819,6 +819,7 @@ btnAddingredients.addEventListener("click", function () {
     
     let invalidIngredients = [];
     let hasInvalidIngredients = false;
+    let addedIngredients = new Set();
 
     for (let i = 1; i <= 20; i++) {
         const ingredientId = document.getElementById(`ingredients-id-${i}`).value;
@@ -826,47 +827,87 @@ btnAddingredients.addEventListener("click", function () {
         const unitInput = document.getElementById(`ingredients-unit-input-${i}`);
         const qtySmInput = document.getElementById(`ingredients-qty-sm-${i}`);
         const qtyMdInput = document.getElementById(`ingredients-qty-md-${i}`);
-        const qtyLgInput = document.getElementById(`ingredients-qty-lg-${i}`);
+        const qtyLgInput = document.getElementById(`ingredients-qty-lg-${i}`); 
         const unit = unitInput.value;
 
-        // Check if ingredient name is not empty
         if (ingredientName.trim() !== "") {
-            // Check if the ingredientName is in the validIngredients list
             if (!validIngredients.includes(ingredientName)) {
                 invalidIngredients.push({ ingredientName, inputIndex: i });
                 hasInvalidIngredients = true;
-                continue; // Skip adding this ingredient
+                continue; 
             }
 
-            // If valid, push ingredient details to the array
+            let isDuplicate = false;
+
             if (!qtySmInput.disabled && qtySmInput.value.trim() !== "") {
-                ingredientsArray.push({
-                    ingredientId: ingredientId,
-                    ingredientName: ingredientName,
-                    ingredientsQty: qtySmInput.value,
-                    ingredientsUnit: unit,
-                    dishSize: "Small"
-                });
+                let ingredientKey = `${ingredientName}_Small`;
+                if (addedIngredients.has(ingredientKey)) {
+                    isDuplicate = true;
+                } else {
+                    ingredientsArray.push({
+                        ingredientId: ingredientId,
+                        ingredientName: ingredientName,
+                        ingredientsQty: qtySmInput.value,
+                        ingredientsUnit: unit,
+                        dishSize: "Small"
+                    });
+                    addedIngredients.add(ingredientKey); 
+                }
             }
 
             if (!qtyMdInput.disabled && qtyMdInput.value.trim() !== "") {
-                ingredientsArray.push({
-                    ingredientId: ingredientId,
-                    ingredientName: ingredientName,
-                    ingredientsQty: qtyMdInput.value,
-                    ingredientsUnit: unit,
-                    dishSize: "Medium"
-                });
+                let ingredientKey = `${ingredientName}_Medium`;
+                if (addedIngredients.has(ingredientKey)) {
+                    isDuplicate = true;
+                } else {
+                    ingredientsArray.push({
+                        ingredientId: ingredientId,
+                        ingredientName: ingredientName,
+                        ingredientsQty: qtyMdInput.value,
+                        ingredientsUnit: unit,
+                        dishSize: "Medium"
+                    });
+                    addedIngredients.add(ingredientKey); 
+                }
             }
 
             if (!qtyLgInput.disabled && qtyLgInput.value.trim() !== "") {
-                ingredientsArray.push({
-                    ingredientId: ingredientId,
-                    ingredientName: ingredientName,
-                    ingredientsQty: qtyLgInput.value,
-                    ingredientsUnit: unit,
-                    dishSize: "Large"
+                let ingredientKey = `${ingredientName}_Large`;
+                if (addedIngredients.has(ingredientKey)) {
+                    isDuplicate = true;
+                } else {
+                    ingredientsArray.push({
+                        ingredientId: ingredientId,
+                        ingredientName: ingredientName,
+                        ingredientsQty: qtyLgInput.value,
+                        ingredientsUnit: unit,
+                        dishSize: "Large"
+                    });
+                    addedIngredients.add(ingredientKey);
+                }
+            }
+
+            if (isDuplicate) {
+                Swal.fire({
+                    title: "Duplicate Ingredient",
+                    text: `The ingredient "${ingredientName}" has already been added.`,
+                    icon: "warning",
+                    customClass: {
+                        confirmButton: 'alert-orange-button',
+                    }
                 });
+
+                document.getElementById(`ingredients-input-${i}`).value = "";
+                qtySmInput.value = "";
+                qtyMdInput.value = "";
+                qtyLgInput.value = "";
+                unitInput.value = "";
+                addedIngredients.delete(`${ingredientName}_Small`);
+                addedIngredients.delete(`${ingredientName}_Medium`);
+                addedIngredients.delete(`${ingredientName}_Large`);
+                checkAndValidateIngredientInputs();
+
+                return; 
             }
         }
     }
@@ -874,22 +915,12 @@ btnAddingredients.addEventListener("click", function () {
     if (hasInvalidIngredients) {
         Swal.fire({
             title: "Invalid Input",
-            text: `${invalidIngredients.map(item => item.ingredientName).join(', ')} are invalid Please correct these entries.`,
+            text: `${invalidIngredients.map(item => item.ingredientName).join(', ')} are invalid. Please correct these entries.`,
             icon: "warning",
             customClass: {
                 confirmButton: 'alert-orange-button',
             }
         });
-
-   
-        dishBackgroundOverlay.classList.remove("overlay");
-        dishSideNavBr.style.pointerEvents = "auto";
-        dishNavbar.style.pointerEvents = "auto";
-
-        // btnSaveDish.disabled = true;
-        // btnUpdateDish.disabled = true;
-        // btnDeleteDish.disabled = true;
-
         return;
     } else if (ingredientsArray.length === 0) {
         Swal.fire({
@@ -900,21 +931,18 @@ btnAddingredients.addEventListener("click", function () {
                 confirmButton: 'alert-orange-button',
             }
         });
+        return;
+    } else {
+        console.log(ingredientsArray);
 
+        ingredientsPopup.style.display = 'none'; 
         dishBackgroundOverlay.classList.remove("overlay");
         dishSideNavBr.style.pointerEvents = "auto";
         dishNavbar.style.pointerEvents = "auto";
-
-
-    } else {
-   
-        console.log(ingredientsArray);
-        
-        // btnSaveDish.disabled = true;
-        // btnUpdateDish.disabled = false;
-        // btnDeleteDish.disabled = false;
     }
 });
+
+
 
 
 

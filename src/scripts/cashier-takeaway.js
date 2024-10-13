@@ -240,10 +240,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         sendEndShift(baseUrl)
     })
 
-    customerSaveBtn.addEventListener("click",function(){
+    customerSaveBtn.addEventListener("click", function () {
         takeawaySaveCustomerEvent(baseUrl);
     });
- 
+
 
 });
 async function init(baseUrl) {
@@ -2734,7 +2734,7 @@ function validateCustomerName(customerName) {
 }
 
 function validateCustomerContact(customerContact) {
-    return /^(070|071|074|075|076|077|078)[-]?[0-9]{7}$/.test(customerContact);
+    return /^(070|071|074|075|076|077|078|072)[-]?[0-9]{7}$/.test(customerContact);
 }
 
 const customerInputsTakeaway = document.querySelectorAll('.addCustomer-inputField');
@@ -2827,47 +2827,47 @@ function takeawaySaveCustomerEvent(baseUrl) {
             creditStatus: "Disabled"
         })
     })
-    .then(response => response.json())
-    .then(response => {
-        console.log(response);
+        .then(response => response.json())
+        .then(response => {
+            console.log(response);
 
-        if (response.code === 200) {
-            Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "Customer saved successfully!",
-                showConfirmButton: false,
-                timer: 1500
-            }).then(() => {
-                addCustomerBox.style.display = "none";
-                mobileInput.value = "";
-                nameInput.value = "";
-                if (takeawayPayOrderPanelOne.style.display === "block") {
-                    // console.log("wokrs");
-                    
-                    inputMobileElementTab1.value = response.data.cusMobileNo;
-                    customerNameTab1.value = response.data.cusName;
-                    selectedCustomerIdTabOne = response.data.cusId;
-                } else if (takeawayPayOrderPaneTwo.style.display === "block") {
-                    inputMobileElementTab2.value = response.data.cusMobileNo;
-                    customerNameTab2.value = response.data.cusName;
-                    selectedCustomerIdTabTwo = response.data.cusId;
-                } else if (takeawayPayOrderPanelThree.style.display === "block") {
-                    inputMobileElementTab3.value = response.data.cusMobileNo;
-                    customerNameTab3.value = response.data.cusName;
-                    selectedCustomerIdTabThree = response.data.cusId;
-                }
-                searchCustomersTakeaway(baseUrl);
-            });
+            if (response.code === 200) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Customer saved successfully!",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    addCustomerBox.style.display = "none";
+                    // mobileInput.value = "";
+                    // nameInput.value = "";
+                    if (takeawayPayOrderPanelOne.style.display === "block") {
+                        // console.log("wokrs");
 
-        } else {
+                        inputMobileElementTab1.value = response.data.cusMobileNo;
+                        customerNameTab1.value = response.data.cusName;
+                        selectedCustomerIdTabOne = response.data.cusId;
+                    } else if (takeawayPayOrderPaneTwo.style.display === "block") {
+                        inputMobileElementTab2.value = response.data.cusMobileNo;
+                        customerNameTab2.value = response.data.cusName;
+                        selectedCustomerIdTabTwo = response.data.cusId;
+                    } else if (takeawayPayOrderPanelThree.style.display === "block") {
+                        inputMobileElementTab3.value = response.data.cusMobileNo;
+                        customerNameTab3.value = response.data.cusName;
+                        selectedCustomerIdTabThree = response.data.cusId;
+                    }
+                    searchCustomersTakeaway(baseUrl);
+                });
+
+            } else {
+                alert("Customer not saved");
+            }
+        })
+        .catch(error => {
+            console.error("Error saving customer:", error);
             alert("Customer not saved");
-        }
-    })
-    .catch(error => {
-        console.error("Error saving customer:", error);
-        alert("Customer not saved");
-    });
+        });
 }
 
 
@@ -2939,6 +2939,40 @@ function handleButtonClick(event) {
 
 
 //============Search Customers By Mobile============
+let activeTakeAwayTab = 1; 
+
+function syncCustomerSavePopupWithActiveTab() {
+    if (activeTakeAwayTab === 1) {
+        mobileInput.value = inputMobileElementTab1.value;
+        nameInput.value = customerNameTab1.value;
+    } else if (activeTakeAwayTab === 2) {
+        mobileInput.value = inputMobileElementTab2.value;
+        nameInput.value = customerNameTab2.value;
+    } else if (activeTakeAwayTab === 3) {
+        mobileInput.value = inputMobileElementTab3.value;
+        nameInput.value = customerNameTab3.value;
+    }
+}
+
+// set the active tab
+function setActiveTab(tabIndex) {
+    activeTakeAwayTab = tabIndex;
+    syncCustomerSavePopupWithActiveTab();
+    checkCustomerInputsTakeaway()
+}
+
+
+tabOne.addEventListener("click", function () {
+    setActiveTab(1);
+});
+tabTwo.addEventListener("click", function () {
+    setActiveTab(2);
+});
+tabThree.addEventListener("click", function () {
+    setActiveTab(3);
+});
+
+
 async function searchCustomersTakeaway(baseUrl) {
     try {
         const response = await fetch(baseUrl + "/customer/one", {
@@ -2956,7 +2990,6 @@ async function searchCustomersTakeaway(baseUrl) {
         const customerIds = customers.data.map(customer => customer.cusId);
         const customerCreditStatus = customers.data.map(customer => customer.creditStatus);
 
-        // Initialize Awesomplete for each tab's mobile input element
         new Awesomplete(inputMobileElementTab1, {
             list: mobileNumbers,
             minChars: 1,
@@ -2976,7 +3009,6 @@ async function searchCustomersTakeaway(baseUrl) {
             autoFirst: true
         });
 
-        // Function to handle mobile number changes for each tab
         function handleMobileNumberChange(inputElement, customerNameElement, tabIndex) {
             const enteredMobileNumber = inputElement.value.trim();
             mobileInput.value = enteredMobileNumber;
@@ -2984,7 +3016,7 @@ async function searchCustomersTakeaway(baseUrl) {
 
             if (index !== -1) {
                 customerNameElement.value = customerNames[index];
-                nameInput.value=customerNames[index];
+                nameInput.value = customerNames[index];  // Sync with popup
 
                 if (tabIndex === 1) {
                     selectedCustomerNameTabOne = customerNames[index];
@@ -3026,10 +3058,9 @@ async function searchCustomersTakeaway(baseUrl) {
             btnPayButtonTabOneValidateEvent(selectedItemsContainer1);
             btnPayButtonTabTwoValidateEvent(selectedItemsContainer2);
             btnPayButtonTabThreeValidateEvent(selectedItemsContainer3);
-            checkCustomerInputsTakeaway(); 
+            checkCustomerInputsTakeaway();
         }
 
-      
         inputMobileElementTab1.addEventListener("awesomplete-selectcomplete", function () {
             handleMobileNumberChange(inputMobileElementTab1, customerNameTab1, 1);
         });
@@ -3054,9 +3085,10 @@ async function searchCustomersTakeaway(baseUrl) {
     } catch (error) {
         console.error("Error fetching customer data:", error);
     }
- 
-
 }
+
+
+
 
 
 // =============select Customer keyboard Event =============

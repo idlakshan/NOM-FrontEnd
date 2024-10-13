@@ -122,6 +122,7 @@ function handleKeyboardButtonClick(event) {
             }
             selectedInput.setSelectionRange(cursorPositionStart - 1, cursorPositionStart - 1);
 
+         
             if (selectedInput.value === "" && ['dishSmallPrice', 'dishMediumPrice', 'dishLargePrice'].includes(selectedInput.id)) {
                 selectedInput.value = "0.00";
             }
@@ -134,10 +135,11 @@ function handleKeyboardButtonClick(event) {
 
         else {
             if (selectedInput.classList.contains('input-num') || selectedInput.type === 'number') {
-                if (selectedInput.value === '0.00') {
-                    selectedInput.value = keyboardButtonValue;
+                if (['0', '0.0', '0.00','0.', ''].includes(selectedInput.value)) {
+                    selectedInput.value = '';
                 }
-                else if (keyboardButtonValue === '.' && !selectedInput.value.includes('.')) {
+
+                if (keyboardButtonValue === '.' && !selectedInput.value.includes('.')) {
                     selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + '.' + selectedInput.value.slice(cursorPositionEnd);
                 }
                 else if (!isNaN(keyboardButtonValue)) {
@@ -150,9 +152,15 @@ function handleKeyboardButtonClick(event) {
             selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
         }
 
+       
+        if (selectedInput.value === '' && ['dishSmallPrice', 'dishMediumPrice', 'dishLargePrice'].includes(selectedInput.id)) {
+            selectedInput.value = '0.00';
+        }
+
         selectedInput.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
     }
 }
+
 
 
 

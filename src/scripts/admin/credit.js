@@ -898,14 +898,22 @@ virtualKeyboard.forEach(button => {
         } else {
             if (key === "←") {
                 activeCreditOrderInput.value = activeCreditOrderInput.value.slice(0, -1);
-                
-                // If the input becomes empty after backspace, reset it to 0.00
-                if (activeCreditOrderInput.value === "") {
+
+                // Only assign "0.00" if the input is not 'search_credit_orderid'
+                if (activeCreditOrderInput.value === "" && activeCreditOrderInput.id !== 'search_credit_orderid') {
                     activeCreditOrderInput.value = "0.00";
                 }
-            } else if (key === "." && activeCreditOrderInput.value.includes(".")) {
-                // Do nothing if there is already a decimal point
-            } else {
+            } 
+            
+            else if (key === "." && activeCreditOrderInput.value.includes(".")) {
+                // Prevent multiple decimals
+            } 
+          
+            else {
+                // Reset for all fields except 'search_credit_orderid'
+                if (['0', '0.0', '0.00', '0.', ''].includes(activeCreditOrderInput.value) && activeCreditOrderInput.id !== 'search_credit_orderid') {
+                    activeCreditOrderInput.value = '';
+                }
                 activeCreditOrderInput.value += key;
             }
         }
@@ -924,4 +932,6 @@ virtualKeyboard.forEach(button => {
         activeCreditOrderInput.dispatchEvent(inputEvent);
     });
 });
+
+
 
