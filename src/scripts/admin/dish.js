@@ -486,6 +486,8 @@ async function loadAllDishIngredients(baseUrl) {
         }
 
         const responseData = await response.json();
+        console.log(responseData);
+        
         const inputs = document.querySelectorAll('.ingredients-input');
         validIngredients = responseData.data.map(ingredient => ingredient.ingredientName); 
 

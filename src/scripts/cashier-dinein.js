@@ -191,7 +191,7 @@ function updateTime() {
 //============load all categories============
 async function loadAllCategory(baseUrl, dishImagePath) {
     try {
-        const response = await fetch(baseUrl + "/Categorry", {
+        const response = await fetch(baseUrl + "/dish/categories", {
             method: "GET",
             headers: {
                 Accept: "application/json",
@@ -199,14 +199,14 @@ async function loadAllCategory(baseUrl, dishImagePath) {
             },
         });
         const category = await response.json();
-        // console.log(category);
+        // console.log(category.data);
 
         let categoryList = "";
 
         for (let i = 0; i < category.data.length; i++) {
             categoryList += `
             <div class="catergory-card">
-            <h3 class="catergory-card-title">${category.data[i].categorryName}</h3>
+            <h3 class="catergory-card-title">${category.data[i]}</h3>
             </div>
             `;
         }
@@ -957,12 +957,42 @@ function CalculateFullTotal() {
     subTotal.innerText = (fullTakeawayTotal + fullDineinTotal).toFixed(2);
 }
 
-btnPay.addEventListener('click', function () {
-    if (selectCusCreditStatus === "Disabled" || inputMobileElement.value === "unKnown") {
-        document.querySelector("#inputpaycreditOne").disabled = true;
-    } else if (selectCusCreditStatus === "Enabled") {
-        document.querySelector("#inputpaycreditOne").disabled = false;
+//check customer credit status
+async function creditStatusHandle(baseUrl) {
+    const mobileNumber=mobileInput.value;
+
+    try {
+        const response = await fetch(baseUrl + "/customer?contactNo="+mobileNumber, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        });
+        const isCreditedCustomer = await response.json();
+         console.log(isCreditedCustomer);
+         if (isCreditedCustomer.data === false || inputMobileElement.value === "unKnown") {
+            document.querySelector("#inputpaycreditOne").disabled = true;
+        } else if (isCreditedCustomer.data === true) {
+            document.querySelector("#inputpaycreditOne").disabled = false;
+        }
+
+
+    } catch (error) {
+        console.error("Error fetching category data:", error);
     }
+}
+
+
+
+btnPay.addEventListener('click',async function () {
+    const baseUrl = await window.api.getBaseUrl();
+    creditStatusHandle(baseUrl);
+    // if (selectCusCreditStatus === "Disabled" || inputMobileElement.value === "unKnown") {
+    //     document.querySelector("#inputpaycreditOne").disabled = true;
+    // } else if (selectCusCreditStatus === "Enabled") {
+    //     document.querySelector("#inputpaycreditOne").disabled = false;
+    // }
 
     const subTotalValue = document.querySelector(".subTotal").innerText;
     const orderId = document.querySelector("#dinein_orderId").value;
@@ -973,7 +1003,10 @@ btnPay.addEventListener('click', function () {
 
 function btnPayClickHandler(subTotalValue, orderId, tableId) {
     // console.log("click");
-    
+    document.querySelector('#inputpaycashOne').value = "0.00";
+    document.querySelector('#inputpaycardOne').value = "0.00";
+    document.querySelector('#inputpaycreditOne').value = "0.00";
+
     orderConfrimPanel.style.display = "flex";
     container.classList.add("container-disabled");
     document.querySelector("#confirmOrderId").innerText = orderId;
@@ -1414,38 +1447,14 @@ async function searchCustomers(baseUrl) {
         });
 
         inputMobileElement.addEventListener("awesomplete-selectcomplete", function () {
-            handleMobileNumberChange(); 
+            handleMobileNumberChange(mobileNumbers, customerNames, customerIds, customerCreditStatus);
         });
 
         inputMobileElement.addEventListener("input", function () {
-            handleMobileNumberChange(); 
+            handleMobileNumberChange(mobileNumbers, customerNames, customerIds, customerCreditStatus);
         });
 
-        function handleMobileNumberChange() {
-            // console.log("hi");
-            const enteredMobileNumber = inputMobileElement.value.trim();
-            mobileInput.value = enteredMobileNumber;
-            const index = mobileNumbers.indexOf(enteredMobileNumber); 
 
-            if (index !== -1) {
-              
-                customerName.value = customerNames[index];
-                nameInput.value = customerNames[index];
-                selectedCusId = customerIds[index];
-                selectedCusName = customerNames[index];
-                selectCusCreditStatus = customerCreditStatus[index];
-            } else {
-                // console.log("elsee");
-                customerName.value = "";
-                nameInput.value = "";
-                selectedCusId = "";
-                selectedCusName = "";
-                selectCusCreditStatus = "";
-            }
-
-            btnPayButtonValidateEvent();
-            checkCustomerInputs();
-        }
 
 
     } catch (error) {
@@ -1453,6 +1462,32 @@ async function searchCustomers(baseUrl) {
     }
 }
 
+
+function handleMobileNumberChange(mobileNumbers, customerNames, customerIds, customerCreditStatus) {
+    // console.log("hi");
+    const enteredMobileNumber = inputMobileElement.value.trim();
+    mobileInput.value = enteredMobileNumber;
+    const index = mobileNumbers.indexOf(enteredMobileNumber);
+
+    if (index !== -1) {
+
+        customerName.value = customerNames[index];
+        nameInput.value = customerNames[index];
+        selectedCusId = customerIds[index];
+        selectedCusName = customerNames[index];
+        selectCusCreditStatus = customerCreditStatus[index];
+    } else {
+        // console.log("elsee");
+        customerName.value = "";
+        nameInput.value = "";
+        selectedCusId = "";
+        selectedCusName = "";
+        selectCusCreditStatus = "";
+    }
+
+    btnPayButtonValidateEvent();
+    checkCustomerInputs();
+}
 
 inputMobileElement.addEventListener("click", function () {
     numbericKeypad.style.display = "block";
@@ -1634,6 +1669,7 @@ async function loadAllTables(baseUrl) {
                 table.addEventListener('click', function () {
                     const tableNumber = this.getAttribute('data-table-number');
                     getpreviousOrderDetails(baseUrl, tableNumber);
+
                 });
             });
 
@@ -1642,7 +1678,7 @@ async function loadAllTables(baseUrl) {
                     event.stopPropagation();
                     const tableCard = event.target.closest(".dinein-table");
                     const tableNumber = tableCard.querySelector("#tableId").textContent;
-                    
+
                     const orderId = tableCard.getAttribute("data-order-id");
                     console.log(orderId);
                     showChangeTablePopup(baseUrl, button, tableNumber, orderId);
@@ -1810,7 +1846,7 @@ async function showChangeTablePopup(baseUrl, button, tableNumber, orderId) {
 
 
 async function updateOrderWhenChangeTable(baseUrl, newTableId, tableNumber, orderId) {
-    console.log("New table :"+newTableId + "  " + "old Table : "+ tableNumber+" "+orderId);
+    console.log("New table :" + newTableId + "  " + "old Table : " + tableNumber + " " + orderId);
 
     try {
         const response = await fetch(baseUrl + "/dineIn/Order?orderId=" + orderId + "&tableId=" + newTableId, {
@@ -2557,6 +2593,8 @@ function saveOrderDetailsBySelectDishPopup(baseUrl, format, qtyDifference, price
 
 //get previousOrder details
 function getpreviousOrderDetails(baseUrl, tableNo) {
+
+
     orderItemsContainer.innerHTML = "";
     groupIdInput.value = tableNo
     console.log(groupIdInput.value);

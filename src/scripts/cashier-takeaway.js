@@ -358,7 +358,7 @@ function tabEvenet(baseUrl) {
 // =============Load All Categories=============
 async function loadAllCategory(baseUrl, dishImagePath) {
     try {
-        const response = await fetch(baseUrl + "/Categorry", {
+        const response = await fetch(baseUrl + "/dish/categories", {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -372,7 +372,7 @@ async function loadAllCategory(baseUrl, dishImagePath) {
         for (let i = 0; i < categories.data.length; i++) {
             categoryList += `
             <div class="catergory-card">
-            <h3 class="catergory-card-title">${categories.data[i].categorryName}</h3>
+            <h3 class="catergory-card-title">${categories.data[i]}</h3>
             </div>
             `;
 
