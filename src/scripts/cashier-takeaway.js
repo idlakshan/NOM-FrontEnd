@@ -641,7 +641,6 @@ function displayPopupTabOne(baseUrl, dishes, index) {
 
         function handleNumberClickTabOne() {
             const clickedNumber = this.innerHTML;
-            // console.log("Clicked number:", clickedNumber);
             if (clearedTabOne) {
                 clickedSelectedDishQtyNumbersTabOne = clickedNumber;
                 clearedTabOne = false;
@@ -739,6 +738,14 @@ function displayPopupTabOne(baseUrl, dishes, index) {
 
                 dishSizeInputTabOne.removeEventListener("input", handleInputTabOne);
                 btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabOne);
+
+                // sizeBtns.forEach((btn) => {
+                //     btn.disabled = false;
+                // });
+
+                sizeBtnContainersTabOne.forEach((dishSizeBtnContainer) => {
+                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
+                })
             }
 
         });
@@ -1157,6 +1164,9 @@ orderConfrimTab1.addEventListener("click", async function () {
                 inputCardTabOne.value = "0.00";
                 inputCreditTabOne.value = "0.00";
                 orderConfrimTab1.disabled = true
+                mobileInput.value = "";
+                nameInput.value = "";
+                checkCustomerInputsTakeaway();
                 downloadAndShowPdf(baseUrl)
 
             }
@@ -1433,6 +1443,10 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
 
                 dishSizeInputTabTwo.removeEventListener("input", handleInputTabTwo);
                 btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabTwo);
+
+                sizeBtnContainersTabTwo.forEach((dishSizeBtnContainer) => {
+                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
+                })
             }
 
         });
@@ -1856,6 +1870,9 @@ orderConfrimTab2.addEventListener("click", async function () {
                 inputCardTabTwo.value = "0.00";
                 inputCreditTabTwo.value = "0.00";
                 orderConfrimTab2.disabled = true
+                mobileInput.value = "";
+                nameInput.value = "";
+                checkCustomerInputsTakeaway();
                 downloadAndShowPdf(baseUrl)
             }
         });
@@ -2135,6 +2152,10 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 dishSizeInputTabThree.removeEventListener("input", handleInputTabThree);
                 btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabThree);
             }
+
+            sizeBtnContainersTabThree.forEach((dishSizeBtnContainer) => {
+                dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
+            })
 
         });
 
@@ -2549,6 +2570,9 @@ orderConfrimTab3.addEventListener("click", async function () {
                 inputCardTabThree.value = "0.00";
                 inputCreditTabThree.value = "0.00";
                 orderConfrimTab3.disabled = true
+                mobileInput.value = "";
+                nameInput.value = "";
+                checkCustomerInputsTakeaway();
                 downloadAndShowPdf(baseUrl)
             }
         });
@@ -3042,16 +3066,19 @@ async function searchCustomersTakeaway(baseUrl) {
                     selectCusCreditStatusTabOne = null;
                     selectedCustomerIdTabOne = null;
                     selectedCustomerMobileTabOne = "";
+                   
                 } else if (tabIndex === 2) {
                     selectedCustomerNameTabTwo = "";
                     selectCusCreditStatusTabTwo = null;
                     selectedCustomerIdTabTwo = null;
                     selectedCustomerMobileTabTwo = "";
+                   
                 } else if (tabIndex === 3) {
                     selectedCustomerNameTabThree = "";
                     selectCusCreditStatusTabThree = null;
                     selectedCustomerIdTabThree = null;
                     selectedCustomerMobileTabThree = "";
+               
                 }
             }
 

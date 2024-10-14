@@ -568,6 +568,10 @@ function displayPopup(baseUrl, dishes, index) {
 
                 dishSizeInput.removeEventListener("input", handleInput);
                 btnBackspaceNumbers.removeEventListener("click", handleBackspace);
+
+                dishSizeBtnContainers.forEach((dishSizeBtnContainer) => {
+                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
+                })
             }
         });
     });
@@ -1541,7 +1545,7 @@ async function loadAllTables(baseUrl) {
             },
         });
         const tables = await response.json();
-        // console.log(tables);
+        console.log(tables);
 
         const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
         const check = document.querySelector("#checkbox-dinein-tables");
@@ -1558,7 +1562,7 @@ async function loadAllTables(baseUrl) {
                 if (tables.data[i].tableTYpe === tableType) {
                     if (tables.data[i].status === 'Occupied') {
                         tableList += `
-                              <div class="dinein-table table-markasAvailable" data-name="${tables.data[i].status}">
+                              <div class="dinein-table table-markasAvailable" data-name="${tables.data[i].status}" data-order-id="${tables.data[i].orderId}">
                                 <div class="dinein-table-header" style="background-color:#F6C4AE;">
                                    <h5 id="tableId">${tables.data[i].tableId}</h5>
                                 </div>
@@ -1575,7 +1579,7 @@ async function loadAllTables(baseUrl) {
                        `;
                     } else if (tables.data[i].status === 'Pending') {
                         tableList += `
-                        <div class="dinein-table pending-table" data-name="${tables.data[i].status}" data-table-number="${tables.data[i].tableId}">
+                        <div class="dinein-table pending-table" data-name="${tables.data[i].status}" data-table-number="${tables.data[i].tableId}" data-order-id="${tables.data[i].orderId}">
                             <div class="dinein-table-header" style="background-color:#F6C4AE;">
                                <h5 id="tableId">${tables.data[i].tableId}</h5>
                             </div>
@@ -1592,7 +1596,7 @@ async function loadAllTables(baseUrl) {
                    `;
                     } else if (tables.data[i].status === 'Available') {
                         tableList += `
-                        <div class="dinein-table available-dinein-table" data-name="${tables.data[i].status}" data-table-number="${tables.data[i].tableId}">
+                        <div class="dinein-table available-dinein-table" data-name="${tables.data[i].status}" data-table-number="${tables.data[i].tableId}" data-order-id="${tables.data[i].orderId}">
                             <div class="dinein-table-header" style="background-color:#5C6574;">
                                 <h5 id="tableId" style="color:white">${tables.data[i].tableId}</h5>
                             </div>
@@ -1636,8 +1640,12 @@ async function loadAllTables(baseUrl) {
             document.querySelectorAll('.btnChangeTable').forEach(button => {
                 button.addEventListener('click', function (event) {
                     event.stopPropagation();
-                    const tableNumber = event.target.closest(".dinein-table").querySelector("#tableId").textContent;
-                    showChangeTablePopup(baseUrl, button, tableNumber);
+                    const tableCard = event.target.closest(".dinein-table");
+                    const tableNumber = tableCard.querySelector("#tableId").textContent;
+                    
+                    const orderId = tableCard.getAttribute("data-order-id");
+                    console.log(orderId);
+                    showChangeTablePopup(baseUrl, button, tableNumber, orderId);
                 });
             });
 
@@ -1754,7 +1762,7 @@ btnTableDropdown.addEventListener("click", function () {
 
 
 //=========table Click Event======================
-async function showChangeTablePopup(baseUrl, button, tableNumber) {
+async function showChangeTablePopup(baseUrl, button, tableNumber, orderId) {
     const popup = document.querySelector('.changeTablePopup');
     const tableCard = button.closest('.dinein-table');
     const popupInner = document.querySelector('.changeTablePopup-inner');
@@ -1776,7 +1784,6 @@ async function showChangeTablePopup(baseUrl, button, tableNumber) {
             },
         });
         const tables = await response.json();
-        console.log(tables);
         let availableTables = ""
         for (let i = 0; i < tables.data.length; i++) {
             if (tables.data[i].status === 'Available' && tables.data[i].tableSize != "empty") {
@@ -1792,23 +1799,18 @@ async function showChangeTablePopup(baseUrl, button, tableNumber) {
         document.querySelectorAll(".available-table").forEach(availableTable => {
             availableTable.addEventListener("click", function () {
                 const newTableId = availableTable.getAttribute('data-table-id');
-                updateOrderWhenChangeTable(baseUrl, newTableId, tableNumber)
-
-            })
-        })
-
+                updateOrderWhenChangeTable(baseUrl, newTableId, tableNumber, orderId);
+            });
+        });
     } catch (error) {
         console.error("Error loading tables:", error);
     }
 }
 
 
-async function updateOrderWhenChangeTable(baseUrl, newTableId, tableNumber) {
-    console.log(newTableId+"  "+tableNumber);
-    
-    const orderId = orderIdElement.value;
-    groupIdInput.value = newTableId
-    console.log(newTableId+" "+orderId);
+
+async function updateOrderWhenChangeTable(baseUrl, newTableId, tableNumber, orderId) {
+    console.log("New table :"+newTableId + "  " + "old Table : "+ tableNumber+" "+orderId);
 
     try {
         const response = await fetch(baseUrl + "/dineIn/Order?orderId=" + orderId + "&tableId=" + newTableId, {
@@ -1818,17 +1820,18 @@ async function updateOrderWhenChangeTable(baseUrl, newTableId, tableNumber) {
                 Authorization: `Bearer ${localStorage.getItem("jwt")}`,
             },
         });
-        const tableDelatis = await response.json();
+        const tableDetails = await response.json();
+        console.log(tableDetails);
+
         loadAllTables(baseUrl);
         changeTableOrderIdWhenChangeTable(baseUrl, tableNumber);
         const popup = document.querySelector('.changeTablePopup');
-        popup.style.display = 'none'
+        popup.style.display = 'none';
     } catch (error) {
-
+        console.error("Error updating table:", error);
     }
-
-
 }
+
 
 async function changeTableOrderIdWhenChangeTable(baseUrl, tableNumber) {
     try {
@@ -1863,7 +1866,7 @@ function validateCustomerName(customerName) {
 }
 
 function validateCustomerContact(customerContact) {
-    return /^(070|071|074|075|076|077|078)[-]?[0-9]{7}$/.test(customerContact);
+    return /^(070|071|074|075|076|077|072|078)[-]?[0-9]{7}$/.test(customerContact);
 }
 
 const customerInputs = document.querySelectorAll('.addCustomer-inputField');

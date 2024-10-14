@@ -284,7 +284,7 @@ async function salesReport(baseUrl) {
 
     const orderIds = [];
     document.querySelectorAll('#tblSales tbody tr').forEach(row => {
-        if (row.cells.length > 1) {  // Ensure cell exists
+        if (row.cells.length > 1) {  
             const orders = row.cells[1].textContent.trim();
             if (!orderIds.includes(orders)) {
                 orderIds.push(orders);
