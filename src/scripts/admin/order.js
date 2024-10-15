@@ -95,6 +95,7 @@ async function loadAllOrders(baseUrl) {
 
         orders.forEach(order => {
             if (order.orderStatus === "Pending") return;
+            if (order.orderStatus === "deleted") return;
 
             let tableDisplay = order.tableId;
             let tableColor = '';

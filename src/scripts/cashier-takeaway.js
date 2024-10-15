@@ -3294,7 +3294,7 @@ async function createOrderId(baseUrl, orderId, tabNo) {
 async function getTkOrderId(baseUrl, tabNo, orderIdElementId) {
     try {
         const response = await fetchOrders(baseUrl);
-        // console.log(response);
+         console.log(response);
 
         const existingOrders = response.data || [];
 
@@ -3325,7 +3325,7 @@ function getOrderIdForTab(baseUrl, tabNo, orderIdElementId) {
     return getTkOrderId(baseUrl, tabNo, orderIdElementId);
 }
 
-// Example usage for different tabs
+
 function getOrderIdTabOne(baseUrl) {
     return getOrderIdForTab(baseUrl, "1", "orderId_panalOne");
 }

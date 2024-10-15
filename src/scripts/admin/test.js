@@ -223,10 +223,10 @@ async function loadAllCategory(baseUrl, dishImagePath) {
 
 // =============select CategoryCard Event=============
 function selectCategoryCardEvent(baseUrl, categoryCardList, dishImagePath) {
-    let waiterListInputValue = waiterListInput.value; // Store the value of the waiter input
-
     categoryCardList.forEach((categoryCard) => {
         categoryCard.addEventListener("click", function () {
+
+            const currentCategoryCard = categoryCard;
 
             const inputsToCheck = [
                 { element: groupIdInput, message: "Please select the Table" },
@@ -248,17 +248,17 @@ function selectCategoryCardEvent(baseUrl, categoryCardList, dishImagePath) {
                 }
             }
 
-            // Preserve the waiter input value before performing any other actions
-            waiterListInputValue = waiterListInput.value;
 
+            //  console.log(categoryCard);
             categoryCardListArea.style.display = "none";
             tableArea.style.display = "none";
             dishCardListArea.style.display = "flex";
             alphabetArea.style.display = "flex";
 
-            const selectedCategoryCardName = categoryCard.querySelector(".catergory-card-title").innerText;
-            loadDishes(baseUrl, selectedCategoryCardName, dishImagePath);
+            const selectedCategoryCardName = currentCategoryCard.querySelector(".catergory-card-title").innerText;
 
+            //console.log(selectedCategoryCardName);
+            loadDishes(baseUrl, selectedCategoryCardName, dishImagePath);
         });
     });
 
@@ -268,11 +268,7 @@ function selectCategoryCardEvent(baseUrl, categoryCardList, dishImagePath) {
         dishCardListArea.style.display = "none";
         alphabetArea.style.display = "none";
     });
-
-    // Ensure waiterListInput keeps its value
-    waiterListInput.value = waiterListInputValue;
 }
-
 
 // =============Load All dishes=============
 async function loadDishes(baseUrl, selectedCategoryCardName, dishImagePath) {
@@ -1201,13 +1197,15 @@ async function ConfirmOrder() {
         cusMobileNo: selectCusContact,
         cusName: selectedCusName,
         cusStatus: 1
-    };
+    }
 
-    const orderId = orderIdElement.value;
+    const orderId = orderIdElement.value
     const netTotal = parseFloat(orderNetTotal.innerText);
 
+
+
     try {
-        const response = await fetch(baseUrl + "/dineIn/Order/updateDineIn", {
+        fetch(baseUrl + "/dineIn/Order/updateDineIn", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -1224,36 +1222,39 @@ async function ConfirmOrder() {
                 cashierName: localStorage.getItem("userName"),
                 userId: localStorage.getItem("userId"),
                 tblcustomer: customerObj,
+
             }),
-        });
+        })
 
-        if (!response.ok) {
-            throw new Error('Failed to update the order');
-        }
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                //  console.log(data);
+                selectedTableId = data.tableId;
+                selectedTableNumber = data.tabNo
+                confirmPaymet(baseUrl, orderId);
 
-        const data = await response.json();
-        selectedTableId = data.tableId;
-        selectedTableNumber = data.tabNo;
-
-        
-        await confirmPayment(baseUrl, orderId);
+            })
     } catch (error) {
-        console.error("Error in ConfirmOrder: ", error);
-        throw error; 
+        console.log("Error " + error);
     }
 }
 
-async function confirmPayment(baseUrl, orderId) {
+function confirmPaymet(baseUrl, orderId) {
     function getCurrentDate() {
         const now = new Date();
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+        return `${year}-${month}-${day}`
     }
+    const date = getCurrentDate();
 
-    const date = getCurrentDate(); 
-    const cashierName = localStorage.getItem("userName");
+    const cashierName = localStorage.getItem("userName")
     const cash = document.getElementById("inputpaycashOne").value;
     const card = document.getElementById("inputpaycardOne").value;
     const credit = document.getElementById("inputpaycreditOne").value;
@@ -1262,7 +1263,7 @@ async function confirmPayment(baseUrl, orderId) {
     const total = document.getElementById("netTotalOne").textContent;
 
     try {
-        const response = await fetch(baseUrl + "/payment/", {
+        fetch(baseUrl + "/payment/", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1293,31 +1294,30 @@ async function confirmPayment(baseUrl, orderId) {
                         creditCustomerStatus: "Active"
                     }
                 ]
+
             }),
-        });
+        })
 
-      
-        if (!response.ok) {
-            throw new Error('Failed to process the payment');
-        }
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                //   console.log(data);
 
-        const data = await response.json();
-
-        console.log("Payment Success", data);
-
+            })
     } catch (error) {
-        console.error("Error in confirmPayment: ", error);
-        throw error; 
+        console.log("Error " + error);
     }
+
 }
-
-
 
 
 btnConfrim.addEventListener("click", async function () {
     try {
         const baseUrl = await window.api.getBaseUrl();
-
         checkInputTableValue();
         await ConfirmOrder();
 
@@ -1336,17 +1336,16 @@ btnConfrim.addEventListener("click", async function () {
             }
         });
     } catch (error) {
-      
         Swal.fire({
             title: "Error",
-            text: `There was an issue placing the order. Error: ${error.message}`,
+            text: "There was an issue placing the order. Please try again.",
             icon: "error",
             confirmButtonColor: "#EA6D27",
             confirmButtonText: "OK"
         });
     }
-});
 
+});
 
 //download and print PDF
 function downloadAndShowPdf(baseUrl) {
@@ -1880,17 +1879,7 @@ async function changeTableOrderIdWhenChangeTable(baseUrl, tableNumber) {
             },
         });
         const tableDelatis = await response.json();
-        getOrderId(baseUrl);
-        orderItemsContainer.innerHTML = "";
-        customerName.value = "";
-        inputMobileElement.value = "";
-        waiterListInput.value = "";
-        fullTakeawayTotalElement.value = "0.00";
-        fullDineinTotalElement.value = "0.00";
-    
         loadAllTables(baseUrl);
-
-
     } catch (error) {
 
     }
@@ -2154,7 +2143,7 @@ async function getOrderId(baseUrl) {
             },
         });
         const orderId = await response.json();
-           console.log(orderId);
+        //   console.log(orderId);
         orderIdElement.value = orderId.data
     } catch (error) {
         console.error("Error fetching Order id data:", error);
@@ -2351,26 +2340,27 @@ async function deleteSelectedDish(baseUrl, customerWiseOrderDetailsId, qty, dish
             const newQty = currentQty - 1;
             const newPrice = currentPrice - parseFloat(dishPrice);
 
+            // Update the UI with the new quantity and price
             selectItemQty.innerText = newQty;
             priceElement.innerText = newPrice;
 
             const rowQty = parseInt(row.getAttribute("data-qty"));
 
             if (rowQty > 1) {
-            
+                // Update the row quantity and table display
                 row.setAttribute("data-qty", rowQty - 1);
                 row.querySelector('td:nth-child(5)').innerText = rowQty - 1;
             } else {
-          
+                // Remove the row if no items are left
                 row.remove();
-                updateWaiterNames();  
+                updateWaiterNames();  // Update waiter names if necessary
             }
 
             if (newQty === 0) {
-                selectOrderItemCards.remove();
+                selectOrderItemCards.remove();  // Remove the card if no quantity is left
             }
 
-            CalculateFullTotal(); 
+            CalculateFullTotal();  // Recalculate the total
 
         } else {
             console.error("Failed to delete resource:", response.statusText);
