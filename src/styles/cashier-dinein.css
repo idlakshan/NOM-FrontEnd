@@ -376,15 +376,16 @@ input:checked+.slider:before {
 }
 
 .cashier-groupId {
-    width: 80px;
+    width: 95px;
     height: 40px;
     background-color: #5C6574;
     border: none;
     font-size: 1.3rem;
-    margin-right: -2%;
+    margin-right: -2% !important;
     font-size: 1.5rem;
     color: white;
     outline: none;
+ 
 
 
 }

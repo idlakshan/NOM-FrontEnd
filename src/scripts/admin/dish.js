@@ -468,12 +468,12 @@ function dishClickEventHandler(baseUrl, dishId, dishImagePath) {
 
 
 let validIngredients = [];
-let selectedIngredients = []; 
+let selectedIngredients = [];
 
 //------load all ingredients to popup input----------------
 async function loadAllDishIngredients(baseUrl) {
     try {
-        const response = await fetch(baseUrl + "/ingredients/getStatusOne", {
+        const response = await fetch(baseUrl + "/stock/stockWithIngredientName", {
             method: 'GET',
             headers: {
                 Accept: "application/json",
@@ -487,19 +487,21 @@ async function loadAllDishIngredients(baseUrl) {
 
         const responseData = await response.json();
         console.log(responseData);
-        
-        const inputs = document.querySelectorAll('.ingredients-input');
-        validIngredients = responseData.data.map(ingredient => ingredient.ingredientName); 
 
-       
+        // Extract valid ingredient names from the response
+        validIngredients = responseData.data.map(ingredientArray => ingredientArray[7]);  // ingredient name is the 8th item in the array
+
+        const inputs = document.querySelectorAll('.ingredients-input');
+
         inputs.forEach(input => {
             $(input).autocomplete({
-                source: validIngredients,   
-                minLength: 1,             
+                source: validIngredients,
+                minLength: 1,
                 select: async function (event, ui) {
                     const selectedIngredient = ui.item.value;
+
                     if (!selectedIngredients.includes(selectedIngredient)) {
-                        selectedIngredients.push(selectedIngredient);  
+                        selectedIngredients.push(selectedIngredient);
                     }
 
                     const inputId = this.id;
@@ -507,7 +509,7 @@ async function loadAllDishIngredients(baseUrl) {
                     const unitInputElementId = `ingredients-unit-input-${inputId.split('-').pop()}`;
 
                     try {
-                        const response = await fetch(`${baseUrl}/ingredients/?ingredientsName=${selectedIngredient}`, {
+                        const response = await fetch(`${baseUrl}/stock?ingredientName=${selectedIngredient}`, {
                             method: 'GET',
                             headers: {
                                 Accept: "application/json",
@@ -525,20 +527,31 @@ async function loadAllDishIngredients(baseUrl) {
                                 }
                             });
                             throw new Error('Network response was not ok');
-                        } 
+                        }
 
                         const responseData = await response.json();
-                        const { ingredientId, ingredientsUnit } = responseData.data;
+                        console.log(responseData);
 
-                        document.getElementById(idElementId).value = ingredientId;
-                        document.getElementById(unitInputElementId).value = ingredientsUnit;
+                        // Find the selected ingredient's array by name
+                        const ingredientData = responseData.data.find(arr => arr[7] === selectedIngredient);
+
+                        if (ingredientData) {
+                            console.log(ingredientData);
+
+                            const ingredientId = ingredientData[3];  // ingredient ID is the 4th item
+                            const ingredientsUnit = ingredientData[5];  // unit is the 6th item
+
+                            // Update the input fields with ingredient ID and unit
+                            document.getElementById(idElementId).value = ingredientId;
+                            document.getElementById(unitInputElementId).value = ingredientsUnit;
+                        }
 
                     } catch (error) {
                         console.error('Error:', error);
                     }
                 },
                 focus: function (event, ui) {
-                   
+                    // Optional: handle focus events
                 }
             });
         });
@@ -561,7 +574,6 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
 
         const inputElement = document.getElementById(inputId);
 
-     
         inputElement.addEventListener('change', async function () {
             const selectedOption = this.value.trim();
 
@@ -577,7 +589,6 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
             }
 
             if (!validIngredients.includes(selectedOption)) {
-              
                 Swal.fire({
                     title: "Invalid Input",
                     text: "Please select a valid ingredient.",
@@ -589,9 +600,9 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
                 document.getElementById(idElementId).value = '';
                 document.getElementById(unitInputElementId).value = '';
                 this.value = '';
-                qtySmInput.value=''
-                qtyMdInput.value=''
-                qtyLgInput.value=''
+                qtySmInput.value = '';
+                qtyMdInput.value = '';
+                qtyLgInput.value = '';
                 checkAndValidateIngredientInputs();
                 if (this.dataset.previousValue) {
                     selectedIngredients = selectedIngredients.filter(ingredient => ingredient !== this.dataset.previousValue);
@@ -600,35 +611,11 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
                 return;
             }
 
-            
-            for (let j = startIndex; j < startIndex + 20; j++) {
-                if (j !== i) {
-                    const otherInputId = `ingredients-input-${j}`;
-                    const otherSelectedOption = document.getElementById(otherInputId).value.trim();
-
-                    if (otherSelectedOption === selectedOption) {
-                        Swal.fire({
-                            title: "Duplicate Ingredient",
-                            text: "This ingredient has already been selected",
-                            icon: "warning",
-                            customClass: {
-                                confirmButton: 'alert-orange-button',
-                            }
-                        });
-                        this.value = ''; 
-                        document.getElementById(idElementId).value = '';
-                        document.getElementById(unitInputElementId).value = '';
-                        checkAndValidateIngredientInputs()
-                        return;
-                    }
-                }
-            }
-
             selectedIngredients.push(selectedOption);
             this.dataset.previousValue = selectedOption;
 
             try {
-                const response = await fetch(`${baseUrl}/ingredients/?ingredientsName=${selectedOption}`, {
+                const response = await fetch(`${baseUrl}/stock?ingredientName=${selectedOption}`, {
                     method: 'GET',
                     headers: {
                         Accept: "application/json",
@@ -647,22 +634,24 @@ async function getSelectedIngredientData(baseUrl, startIndex) {
                     });
                     this.value = '';
                     throw new Error('Network response was not ok');
-                } 
+                }
 
                 const responseData = await response.json();
-                const { ingredientId, ingredientsUnit } = responseData.data;
+                const ingredientData = responseData.data.find(arr => arr[7] === selectedOption);
 
-                document.getElementById(idElementId).value = ingredientId;
-                document.getElementById(unitInputElementId).value = ingredientsUnit;
+                if (ingredientData) {
+                    document.getElementById(idElementId).value = ingredientData[3];  // Set ingredient ID
+                    document.getElementById(unitInputElementId).value = ingredientData[5];  // Set unit
+                }
+
             } catch (error) {
                 console.error('Error:', error);
             }
 
         });
-
-   
     }
 }
+
 
 
 
@@ -1048,7 +1037,7 @@ async function saveDish(baseUrl, ingredientsArray) {
     }
 
     const result = await response.text();
-    // console.log(result);
+     console.log(result);
     // console.log(fileInput.files[0]);    
 
     return result;
@@ -1151,7 +1140,7 @@ async function updateDish(baseUrl, ingredientsArray) {
     }
 
     const result = await response.text();
-    // console.log(result);
+     console.log(result);
     return result;
 }
 

@@ -970,6 +970,7 @@ async function saveStock(baseUrl) {
             stockHistory(baseUrl);
             stockOverviewReport(baseUrl);
             expensesReport(baseUrl)
+            loadAllDishIngredients(baseUrl)
 
         })
         .catch(error => {
