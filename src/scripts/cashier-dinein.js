@@ -2192,10 +2192,10 @@ function getPreviousOrderDetails(baseUrl, tableNo) {
             .then(data => {
                 console.log(data);
 
-                // Ensure data exists and is properly structured
+          
                 const tableData = data.data[0];
                 if (tableData) {
-                    inputMobileElement.value = tableData[11] || ""; // Handle missing data safely
+                    inputMobileElement.value = tableData[11] || "";
                     customerName.value = tableData[12] || "";
                     mobileInput.value = tableData[11] || "";
                     nameInput.value = tableData[12] || "";
@@ -2204,12 +2204,12 @@ function getPreviousOrderDetails(baseUrl, tableNo) {
                     const orderItems = data.data;
 
                     orderItems.forEach(item => {
-                        // Check if the item already exists in the orderItemsContainer
+                       
                         const existingItem = Array.from(orderItemsContainer.children).find(child => {
                             return child.querySelector(".selectItemId").innerText === item[1];
                         });
 
-                        // Only create the card if it doesn't already exist
+               
                         if (!existingItem) {
                             const selectOrderItemCards = document.createElement("div");
                             selectOrderItemCards.classList.add("selectItemCard");
@@ -2249,12 +2249,12 @@ function getPreviousOrderDetails(baseUrl, tableNo) {
 
                             qtyChangeEventHandler(baseUrl, btnQtyMinus, btnQtyPlus, selectItemQty, item[9], priceElement, selectOrderItemCards);
                             dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItemName, selectedDishId, selectedDishSize, selectItemQty, priceElement, selectOrderItemCards);
-                            // Trigger card select event
+                         
                             previousDishCardSelectEvent(baseUrl, selectOrderItemCards);
                         }
                     });
 
-                    // Handle button validations and order total calculation
+              
                     handlePayButtonValidation();
                     checkCustomerInputs();
                     handleCalculateorderCartTotal();
@@ -2343,14 +2343,14 @@ async function previousDishCardSelectEvent(baseUrl, selectOrderItemCards) {
             }
         });
 
-        // Deselect and enable all cards when clicking outside
+
         document.querySelector("#dinein-container").addEventListener("click", (event) => {
             if (!event.target.closest(".selectItemCard") && !event.target.closest(".waiterName")) {
                 if (previouslySelectedCard) {
                     previouslySelectedCard.style.border = "";
                     previouslySelectedCard = null;
                     waiterListInput.value = "";
-                    handleEnabledSelectedOrderItemsCard(); // Enable all cards again
+                    handleEnabledSelectedOrderItemsCard(); 
                 }
                 loadAllWaiters(baseUrl); 
             }
@@ -2366,8 +2366,8 @@ function handleDisabledSelectedOrderItemsCard(selectedCard) {
     const allCards = document.querySelectorAll(".selectItemCard");
     allCards.forEach(card => {
         if (card !== selectedCard) {
-            card.style.pointerEvents = "none"; // Disable click events on other cards
-            card.style.opacity = "0.5"; // Dim the appearance of disabled cards
+            card.style.pointerEvents = "none"; 
+            card.style.opacity = "0.6"; 
         }
     });
 }
