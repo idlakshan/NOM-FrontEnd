@@ -125,6 +125,7 @@ async function initializePage(baseUrl) {
     if (!isActiveAdmin) {
         dishCardListArea.style.pointerEvents = "none";
         tableAreaView.style.display = 'none';
+        alphabetArea.style.pointerEvents ='none';
         btnTableDropdown.classList.remove("btnPopUpTable-rotate");
         return;
     }
@@ -816,6 +817,7 @@ async function handleLoadDishes(baseUrl, selectedCategoryCardName, dishImagePath
         }
         const dishCards = document.querySelectorAll(".dishcard");
         handleSelectedDishPopup(baseUrl, dishes.data, dishCards);
+        searchDishByLetter(dishCards)
 
     } catch (error) {
         console.error("Error fetching category data:", error);
@@ -2903,6 +2905,35 @@ async function creditStatusHandle(baseUrl) {
     }
 }
 
+
+//function to search dish by click alphabet
+function searchDishByLetter(dishCards) {
+    letterButtons.forEach(letterButton => {
+        letterButton.addEventListener('click', function () {
+            const clickedLetter = letterButton.textContent.toLowerCase();
+            //console.log("Clicked Letter:", clickedLetter);
+
+            dishCards.forEach(dishCard => {
+                const dishName = dishCard.getAttribute("data-name").toLowerCase();
+                //console.log("dishName  " + dishName)
+
+                if (dishName.startsWith(clickedLetter)) {
+                    dishCard.style.display = "block";
+                } else {
+                    dishCard.style.display = "none";
+                }
+            });
+        });
+    });
+
+    dishContentArea.addEventListener("click", () => {
+
+        dishCards.forEach(dishCard => {
+            dishCard.style.display = "block";
+        });
+
+    });
+}
 
 
 

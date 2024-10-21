@@ -1137,6 +1137,7 @@ async function confirmPaymetTabOne(baseUrl, orderId) {
 
 //================Order Confirmation and Payment Handling==============
 orderConfrimTab1.addEventListener("click", async function () {
+    orderConfrimTab1.disabled = true; 
     try {
         const baseUrl = await window.api.getBaseUrl();
         await ConfirmOrderTabOne(baseUrl);
@@ -1181,6 +1182,8 @@ orderConfrimTab1.addEventListener("click", async function () {
             confirmButtonColor: "#EA6D27",
             confirmButtonText: "OK"
         });
+    } finally{
+        orderConfrimTab1.disabled = false; 
     }
 });
 
@@ -1843,6 +1846,7 @@ async function confirmPaymetTabTwo(baseUrl, orderId) {
 
 //================Order Confirmation and Payment Handling==============
 orderConfrimTab2.addEventListener("click", async function () {
+    orderConfrimTab2.disabled = true; 
     try {
         const baseUrl = await window.api.getBaseUrl();
         await ConfirmOrderTabTwo(baseUrl);
@@ -1887,6 +1891,8 @@ orderConfrimTab2.addEventListener("click", async function () {
             confirmButtonColor: "#EA6D27",
             confirmButtonText: "OK"
         });
+    }finally{
+        orderConfrimTab2.disabled = false; 
     }
 });
 
@@ -2543,6 +2549,7 @@ async function confirmPaymetTabThree(baseUrl, orderId) {
 
 //================Order Confirmation and Payment Handling==============
 orderConfrimTab3.addEventListener("click", async function () {
+    orderConfrimTab3.disabled = true; 
     try {
         const baseUrl = await window.api.getBaseUrl();
         await ConfirmOrderTabThree(baseUrl);
@@ -2586,6 +2593,8 @@ orderConfrimTab3.addEventListener("click", async function () {
             confirmButtonColor: "#EA6D27",
             confirmButtonText: "OK"
         });
+    }finally{
+        orderConfrimTab3.disabled = false; 
     }
 });
 

@@ -1137,7 +1137,8 @@ document.getElementById("searchIngredientStockReport").addEventListener("input",
 
 document.getElementById("searchUnitTypeStockHistoryReport").addEventListener("change", function () {
     const searchValue = this.value;
-    tblStock.search(searchValue === "All" ? '' : searchValue).draw();
+    const columnIndex = 2;
+    tblStock.column(columnIndex).search(searchValue === "All" ? '' : '^' + searchValue + '$', true, false).draw();
 });
 
 document.getElementById("searchStatusStockHistoryReport").addEventListener("change", function () {
@@ -2114,7 +2115,7 @@ async function stockOverviewReport(baseUrl) {
 
 
         const statusSelectbox = document.getElementById('searchStatusStockOverviewReport');
-        statusSelectbox.innerHTML = '<option value="All">Status</option>';  // Reset options
+        statusSelectbox.innerHTML = '<option value="All">Status</option>'; 
         stockStatus.forEach(status => {
             statusSelectbox.innerHTML += `<option value="${status}">${status}</option>`;
         });
@@ -2133,8 +2134,10 @@ document.getElementById("currentStockList").addEventListener("input", function (
 
 document.getElementById("searchUnitStockOverviewReport").addEventListener("change", function () {
     const searchValue = this.value;
-    tableCurrentStock.search(searchValue === "All" ? '' : searchValue).draw();
+    const columnIndex = 2;
+    tableCurrentStock.column(columnIndex).search(searchValue === "All" ? '' : '^' + searchValue + '$', true, false).draw();
 });
+
 
 document.getElementById("searchStatusStockOverviewReport").addEventListener("change", function () {
     const searchValue = this.value;
