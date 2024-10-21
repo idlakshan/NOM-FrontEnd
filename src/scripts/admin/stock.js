@@ -1417,8 +1417,6 @@ async function loadAllingredientsName(baseUrl) {
 
 
 
-
-
 //stock history table filterig
 function filterStockHistoryTable() {
     const statusValue = statusSelect.value.toLowerCase();

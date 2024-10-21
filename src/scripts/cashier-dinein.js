@@ -1427,7 +1427,7 @@ function qtyChangeEventHandler(baseUrl, btnQtyMinus, btnQtyPlus, selectItemQty, 
         if (waiterListInput.value === "") {
             Swal.fire({
                 title: "Oops...",
-                text: "Please select an item and choose a valid waiter1!",
+                text: "Please select an item and choose a valid waiter!",
                 icon: "warning",
                 customClass: {
                     confirmButton: 'alert-orange-button',
@@ -1442,7 +1442,7 @@ function qtyChangeEventHandler(baseUrl, btnQtyMinus, btnQtyPlus, selectItemQty, 
 
             Swal.fire({
                 title: "Oops...",
-                text: "Please select an item and choose a valid waiter2!",
+                text: "Please select an item and choose a valid waiter!",
                 icon: "warning",
                 customClass: {
                     confirmButton: 'alert-orange-button',
@@ -1462,15 +1462,18 @@ function qtyChangeEventHandler(baseUrl, btnQtyMinus, btnQtyPlus, selectItemQty, 
             previousDishCardSelectEvent(baseUrl, selectOrderItemCards)
             handleCalculateorderCartTotal();
             saveDefaultOrderItems(baseUrl, "mines", true, selectOrderItemCards);
+            handleEnabledSelectedOrderItemsCard()
         } else {
             if (orderItemsContainer.children.length === 1) {
                 deleteSelectedOrder(baseUrl, selectOrderItemCards);
+                handleEnabledSelectedOrderItemsCard()
             } else {
                 previousDishCardSelectEvent(baseUrl, selectOrderItemCards)
                 saveDefaultOrderItems(baseUrl, "mines", true, selectOrderItemCards);
                 selectOrderItemCards.remove();
                 handleCalculateorderCartTotal();
                 handlePayButtonValidation();
+                handleEnabledSelectedOrderItemsCard()
             }
         }
 
@@ -1682,7 +1685,7 @@ function deleteSelectedOrder(baseUrl, selectOrderItemCards) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                // Sending DELETE request to delete the order
+              
                 const response = await fetch(`${baseUrl}/orders?orderId=${orderIdElement.value}`, {
                     method: 'DELETE',
                     headers: {
@@ -1691,10 +1694,10 @@ function deleteSelectedOrder(baseUrl, selectOrderItemCards) {
                     },
                 });
 
-                // Parsing the response from the server
+           
                 const data = await response.json();
 
-                // If the deletion was successful
+              
                 if (data.message === "success") {
                     Swal.fire({
                         title: "Deleted!",
@@ -1703,7 +1706,7 @@ function deleteSelectedOrder(baseUrl, selectOrderItemCards) {
                         confirmButtonColor: "#EA6D27"
                     });
 
-                    // Update UI after successful deletion
+                
                     selectOrderItemCards.remove();
                     handleCalculateorderCartTotal();
                     getWaitersForSelectDishCard(baseUrl, selectOrderItemCards);
@@ -1711,7 +1714,6 @@ function deleteSelectedOrder(baseUrl, selectOrderItemCards) {
                     fetchOrderId(baseUrl);
                     handleLoadAllTables(baseUrl);
 
-                    // Clear input fields and reset UI
                     groupIdInput.value = "";
                     inputMobileElement.value = "";
                     customerName.value = "";
@@ -2282,11 +2284,14 @@ async function previousDishCardSelectEvent(baseUrl, selectOrderItemCards) {
 
             if (previouslySelectedCard) {
                 previouslySelectedCard.style.border = "";
+                handleEnabledSelectedOrderItemsCard();
             }
 
             previouslySelectedCard = selectOrderItemCards;
             selectOrderItemCards.style.border = "2px solid orange";
             waiterListInput.value = "";
+
+            handleDisabledSelectedOrderItemsCard(selectOrderItemCards); 
 
             const orderId = document.getElementById("dinein_orderId").value;
             const selectedDishId = selectOrderItemCards.querySelector(".selectItemId").innerText;
@@ -2320,8 +2325,6 @@ async function previousDishCardSelectEvent(baseUrl, selectOrderItemCards) {
                         }
                     });
 
-               
-
                     const waitersDatalist = document.getElementById("waiters_list");
                     waitersDatalist.innerHTML = ""; 
 
@@ -2340,13 +2343,14 @@ async function previousDishCardSelectEvent(baseUrl, selectOrderItemCards) {
             }
         });
 
-       
+        // Deselect and enable all cards when clicking outside
         document.querySelector("#dinein-container").addEventListener("click", (event) => {
             if (!event.target.closest(".selectItemCard") && !event.target.closest(".waiterName")) {
                 if (previouslySelectedCard) {
                     previouslySelectedCard.style.border = "";
                     previouslySelectedCard = null;
                     waiterListInput.value = "";
+                    handleEnabledSelectedOrderItemsCard(); // Enable all cards again
                 }
                 loadAllWaiters(baseUrl); 
             }
@@ -2356,6 +2360,29 @@ async function previousDishCardSelectEvent(baseUrl, selectOrderItemCards) {
         console.error("Error in previousDishCardSelectEvent:", error);
     }
 }
+
+// Function to disable all other cards except the selected one
+function handleDisabledSelectedOrderItemsCard(selectedCard) {
+    const allCards = document.querySelectorAll(".selectItemCard");
+    allCards.forEach(card => {
+        if (card !== selectedCard) {
+            card.style.pointerEvents = "none"; // Disable click events on other cards
+            card.style.opacity = "0.5"; // Dim the appearance of disabled cards
+        }
+    });
+}
+
+// Function to enable all cards
+function handleEnabledSelectedOrderItemsCard() {
+    const allCards = document.querySelectorAll(".selectItemCard");
+    allCards.forEach(card => {
+        card.style.pointerEvents = ""; // Re-enable click events
+        card.style.opacity = ""; // Reset the appearance
+    });
+}
+
+
+
 
 
 //=selected dishcard popup event(filter by waiter name and delete dish details)============
