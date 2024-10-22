@@ -350,7 +350,7 @@ function resetForm(){
 
 //----------table form Validation---------------
 function validateTableSize(tableSize) {
-    return /^[a-zA-Z\s]+$/.test(tableSize);
+    return /^[a-zA-Z\s]{2,15}$/.test(tableSize);
 }
 
 function validateTableNumber(tableNumber) {

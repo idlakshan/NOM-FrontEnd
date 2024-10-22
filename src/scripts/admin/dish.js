@@ -938,6 +938,7 @@ btnAddingredients.addEventListener("click", function () {
 
 
 btnSaveDish.addEventListener("click", async function () {
+    btnSaveDish.disabled = true;
     try {
         if (ingredientsArray.length === 0) {
 
@@ -993,6 +994,8 @@ btnSaveDish.addEventListener("click", async function () {
             title: 'Error',
             text: 'An error occurred while saving the Dish. Please try again.',
         });
+    } finally{
+        btnSaveDish.disabled = false;
     }
 });
 

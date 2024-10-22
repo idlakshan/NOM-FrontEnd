@@ -1611,11 +1611,14 @@ function getWaitersForSelectDishCard(baseUrl, selectOrderItemCards) {
 
             if (currentlySelectedCard) {
                 currentlySelectedCard.style.border = "";
+                handleEnabledSelectedOrderItemsCard();
             }
 
             currentlySelectedCard = card;
             card.style.border = "2px solid orange";
             waiterListInput.value = "";
+
+            handleDisabledSelectedOrderItemsCard(selectOrderItemCards); 
 
             const orderId = document.getElementById("dinein_orderId").value;
             const selectedDishId = card.querySelector(".selectItemId").innerText;
@@ -1664,6 +1667,7 @@ function getWaitersForSelectDishCard(baseUrl, selectOrderItemCards) {
                 currentlySelectedCard.style.border = "";
                 currentlySelectedCard = null;
                 waiterListInput.value = "";
+                handleEnabledSelectedOrderItemsCard(); 
             }
             loadAllWaiters(baseUrl);
         }
@@ -2376,8 +2380,8 @@ function handleDisabledSelectedOrderItemsCard(selectedCard) {
 function handleEnabledSelectedOrderItemsCard() {
     const allCards = document.querySelectorAll(".selectItemCard");
     allCards.forEach(card => {
-        card.style.pointerEvents = ""; // Re-enable click events
-        card.style.opacity = ""; // Reset the appearance
+        card.style.pointerEvents = ""; 
+        card.style.opacity = ""; 
     });
 }
 
