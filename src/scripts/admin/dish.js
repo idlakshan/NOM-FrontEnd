@@ -88,7 +88,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     // })
 
     btnDeleteDish.addEventListener('click', function () {
-        deleteDish(baseUrl);
+        btnDeleteDish.disabled = true;   
+        deleteDish(baseUrl).finally(() => {
+            btnDeleteDish.disabled = false;
+        });
     });
 
 
@@ -1049,7 +1052,7 @@ async function saveDish(baseUrl, ingredientsArray) {
 
 //------------dish update with ingredients event handler--------------------
 btnUpdateDish.addEventListener("click", async function () {
-   
+    btnUpdateDish.disabled = true;
     try {
         if (ingredientsArray.length === 0) {
 
@@ -1099,6 +1102,8 @@ btnUpdateDish.addEventListener("click", async function () {
     } catch (error) {
         console.error("Error saving dish:", error);
         // alert("Failed to save dish. Please try again.");
+    } finally{
+        btnUpdateDish.disabled = false;
     }
 });
 

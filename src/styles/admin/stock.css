@@ -108,6 +108,7 @@
 #search_ingredient_type,
 #search_ingredient_status,
 #search_stockHistory_status,
+#stock-history-ingredientUnit,
 #search_stockHistory_type{
     outline: none;
     width: 150px;
@@ -154,12 +155,12 @@
     background-color: #FFFFFF;
     border-radius: 10px;
     width: 60%;
-    height: 100%;
-    margin: 0 0 0 10px;
-  
+    height: 99%;
+    margin: 5px 0 0 10px;
     display: flex;
     flex-direction: column;
     padding: 10px;
+    padding-top: 0;
     overflow-y: auto;
     overflow-x: hidden;
     justify-content: flex-start;
@@ -321,6 +322,7 @@
     #search_ingredient_type,
     #search_ingredient_status,
     #search_stockHistory_status,
+    #stock-history-ingredientUnit,
     #search_stockHistory_type{
         height: 40px;
     }
@@ -337,6 +339,7 @@
     #search_ingredient_type,
     #search_ingredient_status,
     #search_stockHistory_status,
+    #stock-history-ingredientUnit,
     #search_stockHistory_type{
         height: 38px;
         width: 120px;

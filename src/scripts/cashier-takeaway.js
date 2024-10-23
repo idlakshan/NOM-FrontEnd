@@ -366,7 +366,8 @@ async function loadAllCategory(baseUrl, dishImagePath) {
             },
         });
         const categories = await response.json();
-
+         console.log(categories);
+         
         let categoryList = "";
 
         for (let i = 0; i < categories.data.length; i++) {

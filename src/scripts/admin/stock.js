@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     populateSelectElement('ing-ingredient-unit', 'Units', units,true);
     populateSelectElement('search_stock_type', 'Unit', units,false);
     populateSelectElement('search_stockHistory_type', 'Unit', units,false);
+        populateSelectElement('stock-history-ingredientUnit', 'Unit', units,true);
 
 
     tabMoveEventHandle();
@@ -1060,12 +1061,14 @@ async function updateStock(baseUrl) {
             stockHistory(baseUrl);
             stockOverviewReport(baseUrl);
             getAllActiveIngredients(baseUrl)
-            
+           
 
             document.getElementById('stock-update-ingredientName').value = '';
             document.getElementById('stock-update-ingredientUnit').value = '';
             document.getElementById('stock-update-ingredientQty').value = '0.000';
             document.getElementById('stock-update-ingredientId').value = '';
+
+            validateStockUpdateInputs();
 
         })
         .catch(error => {
