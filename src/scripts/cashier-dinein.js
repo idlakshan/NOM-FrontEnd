@@ -968,7 +968,7 @@ function handleDisplayPopup(baseUrl, dishes, index) {
                 btnInputNumber.addEventListener("click", handleNumberClick);
             });
             dishSizeInput.addEventListener("input", handleInput);
-            dishSizeInput.addEventListener("blur", handleBlur); // Add blur event listener
+            dishSizeInput.addEventListener("blur", handleBlur);
             btnBackspaceNumbers.addEventListener("click", handleBackspace);
         }
     
@@ -990,8 +990,7 @@ function handleDisplayPopup(baseUrl, dishes, index) {
         }
     
         function handleBlur() {
-            if (this.value === "") {
-                // Reset to default value if input is empty
+            if (this.value === "" || this.value === "0") {  
                 dishSizeInput.value = "1";
                 clickedSelectedDishQtyNumbers = "1";
                 cleared = false;
@@ -1002,7 +1001,7 @@ function handleDisplayPopup(baseUrl, dishes, index) {
             clickedSelectedDishQtyNumbers = clickedSelectedDishQtyNumbers.slice(0, -1);
             dishSizeInput.value = clickedSelectedDishQtyNumbers;
     
-            if (dishSizeInput.value === "") {
+            if (dishSizeInput.value === "" || dishSizeInput.value === "0") { 
                 dishSizeInput.value = "1";
                 clickedSelectedDishQtyNumbers = "1";
             }
@@ -1077,7 +1076,7 @@ function handleDisplayPopup(baseUrl, dishes, index) {
                 });
     
                 dishSizeInput.removeEventListener("input", handleInput);
-                dishSizeInput.removeEventListener("blur", handleBlur); // Remove blur event listener
+                dishSizeInput.removeEventListener("blur", handleBlur);
                 btnBackspaceNumbers.removeEventListener("click", handleBackspace);
     
                 dishSizeBtnContainers.forEach((dishSizeBtnContainer) => {
@@ -1088,11 +1087,24 @@ function handleDisplayPopup(baseUrl, dishes, index) {
     });
     
 
+    
+
 
 
 
     //added cart to selected items
     btnDinein.addEventListener("click", function () {
+        if (/^0+(\.0+)?$/.test(dishSizeInput.value)) {
+            Swal.fire({
+                title: "Invalid Quantity",
+                text: "Dish quantity cannot be zero.",
+                icon: "warning",
+                customClass: {
+                    confirmButton: 'alert-orange-button',
+                }
+            });
+            return;  
+        }
         if (lastSelectedDishSize) {
 
             addItemToOrderItems(baseUrl, "Dine-In");
@@ -1109,6 +1121,17 @@ function handleDisplayPopup(baseUrl, dishes, index) {
     });
 
     btnTakeaway.addEventListener("click", function () {
+        if (/^0+(\.0+)?$/.test(dishSizeInput.value)) {
+            Swal.fire({
+                title: "Invalid Quantity",
+                text: "Dish quantity cannot be zero.",
+                icon: "warning",
+                customClass: {
+                    confirmButton: 'alert-orange-button',
+                }
+            });
+            return; 
+        }
         if (lastSelectedDishSize) {
             addItemToOrderItems(baseUrl, "Take-Away");
         } else {

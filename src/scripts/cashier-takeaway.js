@@ -775,6 +775,18 @@ function displayPopupTabOne(baseUrl, dishes, index) {
 
     //added cart to selected items-TabOne
     btnAddItem.addEventListener("click", function () {
+        if (/^0+(\.0+)?$/.test(dishSizeInputTabOne.value)) {
+            Swal.fire({
+                title: "Invalid Quantity",
+                text: "Dish quantity cannot be zero.",
+                icon: "warning",
+                customClass: {
+                    confirmButton: 'alert-orange-button',
+                }
+            });
+            return; 
+        }
+
         if (lastSelectedSizeTabOne) {
             addItemToOrderItemsTabOne(baseUrl, "Take-Away");
         } else {
@@ -1486,6 +1498,17 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
     //============added cart to selected items============
 
     btnAddItem.addEventListener("click", function () {
+        if (/^0+(\.0+)?$/.test(dishSizeInputTabTwo.value)) {
+            Swal.fire({
+                title: "Invalid Quantity",
+                text: "Dish quantity cannot be zero.",
+                icon: "warning",
+                customClass: {
+                    confirmButton: 'alert-orange-button',
+                }
+            });
+            return; 
+        }
         if (lastSelectedSizeTabTwo) {
             addItemToOrderItemsTabTwo(baseUrl, "Take-Away");
         } else {
@@ -2015,7 +2038,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
         </div>
         </div>
         <div class="dishesBox-footer">
-            <button class="btn-addItem btn-addItem-dinein" disabled>Add Item</button>
+            <button class="btn-addItem btn-addItemTab3 btn-addItem-dinein" disabled>Add Item</button>
         </div>
 
         `;
@@ -2033,7 +2056,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
     const sizeBtnContainersTabThree = document.querySelectorAll(".size-input-container");
     const sizeBtns = document.querySelectorAll(".size-btn");
     const dishSizeInputTabThree = document.querySelector(".qty-input");
-    const btnAddItem = document.querySelector(".btn-addItem");
+    const btnAddItem = document.querySelector(".btn-addItemTab3");
     const btnInputNumbers = document.querySelectorAll(".btn-number:not(.btn-number-backspace)");
     const btnBackspaceNumbers = document.querySelector(".btn-number-backspace");
     const btnPlus = document.querySelector("#qty-input-btn-plus");
@@ -2058,9 +2081,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
         sizeBtnContainersTabThree.forEach((selectDishSizeBtnContainerTabThree) => {
             if (selectDishSizeBtnContainerTabThree !== dishSizeBtnContainerTabThree) {
                 selectDishSizeBtnContainerTabThree.classList.add('disabledDishSizeContainer');
-                selectDishSizeBtnContainerTabThree.style.pointerEvents = 'none';
-                selectDishSizeBtnContainerTabThree.style.opacity = '0.6';
-                console.log("workks");
+             
                 
             }
         });
@@ -2082,7 +2103,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 btnInputNumber.addEventListener("click", handleNumberClickTabThree);
             });
             dishSizeInputTabThree.addEventListener("input", handleInputTabThree);
-            dishSizeInputTabThree.addEventListener("blur", handleBlurTabThree); // Add blur event listener
+            dishSizeInputTabThree.addEventListener("blur", handleBlurTabThree); 
             btnBackspaceNumbers.addEventListener("click", handleBackspaceTabThree);
         }
 
@@ -2150,7 +2171,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 btnPlus.disabled = false;
                 btnMinus.disabled = false;
 
-                // Change popupBox sizebtn color and icon when clicked
+             
                 sizeBtnContainerTabThree.style.border = "2px solid var(--text-field-success)";
                 sizeBtnImg.src = "../icons/correct.png";
                 sizeBtnImg.style.width = "40px";
@@ -2158,7 +2179,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 dishSizeInputTabThree.disabled = false;
                 btnBackspaceNumbers.disabled = false;
                 btnAddItem.disabled = false;
-                dishSizeInputTabThree.value = "1"; // Default to 1 on selection
+                dishSizeInputTabThree.value = "1"; 
                 clickedSelectedDishQtyNumbersTabThree = "1";
                 clearedTabThree = false;
 
@@ -2171,7 +2192,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 sizeBtnImg.src = "../icons/plusicon.png";
                 sizeBtnImg.style.width = "50px";
                 sizeBtnImg.style.height = "50px";
-                dishSizeInputTabThree.value = ""; // Clear input on deselection
+                dishSizeInputTabThree.value = ""; 
                 dishSizeInputTabThree.disabled = true;
                 btnPlus.disabled = true;
                 btnMinus.disabled = true;
@@ -2189,13 +2210,15 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 });
 
                 dishSizeInputTabThree.removeEventListener("input", handleInputTabThree);
-                dishSizeInputTabThree.removeEventListener("blur", handleBlurTabThree); // Remove blur event listener
+                dishSizeInputTabThree.removeEventListener("blur", handleBlurTabThree); 
                 btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabThree);
+
+                sizeBtnContainersTabThree.forEach((dishSizeBtnContainer) => {
+                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer');
+                });
             }
 
-            sizeBtnContainersTabThree.forEach((dishSizeBtnContainer) => {
-                dishSizeBtnContainer.classList.remove('disabledDishSizeContainer');
-            });
+         
         });
     });
 
@@ -2204,8 +2227,22 @@ function displayPopupTabThree(baseUrl, dishes, index) {
     //============added cart to selected items============
 
     btnAddItem.addEventListener("click", function () {
+      
+        if (/^0+(\.0+)?$/.test(dishSizeInputTabThree.value)) {
+            Swal.fire({
+                title: "Invalid Quantity",
+                text: "Dish quantity cannot be zero.",
+                icon: "warning",
+                customClass: {
+                    confirmButton: 'alert-orange-button',
+                }
+            });
+            return; 
+        }
+    
+  
         if (lastSelectedSizeTabThree) {
-            addItemToOrderItemsTabThree(baseUrl, "Take-Away"); addItemToOrderItemsTabThree("Take-Away");
+            addItemToOrderItemsTabThree(baseUrl, "Take-Away");
         } else {
             Swal.fire({
                 title: "Invalid Select",
@@ -2216,8 +2253,8 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 }
             });
         }
-
     });
+    
 
     function addItemToOrderItemsTabThree(baseUrl,itemType) {
         if (!lastSelectedSizeTabThree) {
