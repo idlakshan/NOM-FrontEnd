@@ -366,8 +366,8 @@ async function loadAllCategory(baseUrl, dishImagePath) {
             },
         });
         const categories = await response.json();
-         console.log(categories);
-         
+        console.log(categories);
+
         let categoryList = "";
 
         for (let i = 0; i < categories.data.length; i++) {
@@ -621,7 +621,23 @@ function displayPopupTabOne(baseUrl, dishes, index) {
         });
     }
 
-    //select dish size event
+    sizeBtnContainersTabOne.forEach((sizeBtnContainerTabOne) => {
+        sizeBtnContainerTabOne.addEventListener("click", function () {
+            sizeBtnContainerTabOne.classList.remove('disabledDishSizeContainer');
+
+            disableOtherDishSizeContaiersTabOne(sizeBtnContainerTabOne);
+        });
+    });
+
+    function disableOtherDishSizeContaiersTabOne(selectDishSizeBtnContainerTabOne) {
+        sizeBtnContainersTabOne.forEach((dishSizebuttonContainerTabOne) => {
+            if (dishSizebuttonContainerTabOne !== selectDishSizeBtnContainerTabOne) {
+                dishSizebuttonContainerTabOne.classList.add('disabledDishSizeContainer');
+            }
+        });
+    }
+
+
     let plusClickListenerTabOne, minusClickListenerTabOne;
     let clickedSelectedDishQtyNumbersTabOne = "1";
     let clearedTabOne = false;
@@ -638,6 +654,9 @@ function displayPopupTabOne(baseUrl, dishes, index) {
             });
             dishSizeInputTabOne.addEventListener("input", handleInputTabOne);
             btnBackspaceNumbers.addEventListener("click", handleBackspaceTabOne);
+
+
+            dishSizeInputTabOne.addEventListener("blur", handleBlurTabOne);
         }
 
         function handleNumberClickTabOne() {
@@ -654,6 +673,14 @@ function displayPopupTabOne(baseUrl, dishes, index) {
         function handleInputTabOne() {
             if (this.value === "") {
                 clearedTabOne = true;
+            }
+        }
+
+        function handleBlurTabOne() {
+
+            if (dishSizeInputTabOne.value === "") {
+                clickedSelectedDishQtyNumbersTabOne = "1";
+                dishSizeInputTabOne.value = "1";
             }
         }
 
@@ -689,22 +716,21 @@ function displayPopupTabOne(baseUrl, dishes, index) {
             btnMinus.addEventListener('click', minusClickListenerTabOne);
         }
 
-
         sizeBtnContainerTabOne.addEventListener("click", function () {
-            isClickedTabOne = !isClickedTabOne
+            isClickedTabOne = !isClickedTabOne;
 
             if (isClickedTabOne) {
-                lastSelectedSizeTabOne = sizeBtnContainerTabOne
+                lastSelectedSizeTabOne = sizeBtnContainerTabOne;
                 btnPlus.disabled = false;
                 btnMinus.disabled = false;
 
-                //============change popupBox sizebtn colored and icon by clicked it============
+
                 sizeBtnContainerTabOne.style.border = "2px solid var(--text-field-success)";
                 sizeBtnImg.src = "../icons/correct.png";
                 sizeBtnImg.style.width = "40px";
                 sizeBtnImg.style.height = "40px";
                 dishSizeInputTabOne.disabled = false;
-                btnBackspaceNumbers.disabled = false
+                btnBackspaceNumbers.disabled = false;
                 btnAddItem.disabled = false;
                 dishSizeInputTabOne.value = "1";
                 clickedSelectedDishQtyNumbersTabOne = "1";
@@ -712,7 +738,6 @@ function displayPopupTabOne(baseUrl, dishes, index) {
 
                 attachNumberPadListenersTabOne();
                 attachPlusMinusListenersTabOne();
-
             } else {
                 lastSelectedSizeTabOne = null;
                 sizeBtnContainerTabOne.style.border = "none";
@@ -723,8 +748,7 @@ function displayPopupTabOne(baseUrl, dishes, index) {
                 dishSizeInputTabOne.disabled = true;
                 btnPlus.disabled = true;
                 btnMinus.disabled = true;
-                btnBackspaceNumbers.disabled = true
-
+                btnBackspaceNumbers.disabled = true;
 
                 btnInputNumbers.forEach((btnInputNumber) => {
                     btnInputNumber.disabled = true;
@@ -740,18 +764,13 @@ function displayPopupTabOne(baseUrl, dishes, index) {
                 dishSizeInputTabOne.removeEventListener("input", handleInputTabOne);
                 btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabOne);
 
-                // sizeBtns.forEach((btn) => {
-                //     btn.disabled = false;
-                // });
-
                 sizeBtnContainersTabOne.forEach((dishSizeBtnContainer) => {
-                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
-                })
+                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer');
+                });
             }
-
         });
-
     });
+
 
 
     //added cart to selected items-TabOne
@@ -1138,7 +1157,7 @@ async function confirmPaymetTabOne(baseUrl, orderId) {
 
 //================Order Confirmation and Payment Handling==============
 orderConfrimTab1.addEventListener("click", async function () {
-    orderConfrimTab1.disabled = true; 
+    orderConfrimTab1.disabled = true;
     try {
         const baseUrl = await window.api.getBaseUrl();
         await ConfirmOrderTabOne(baseUrl);
@@ -1183,8 +1202,8 @@ orderConfrimTab1.addEventListener("click", async function () {
             confirmButtonColor: "#EA6D27",
             confirmButtonText: "OK"
         });
-    } finally{
-        orderConfrimTab1.disabled = false; 
+    } finally {
+        orderConfrimTab1.disabled = false;
     }
 });
 
@@ -1322,11 +1341,13 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
         sizeBtnContainersTabTwo.forEach((selectDishSizeBtnContainerTabTwo) => {
             if (selectDishSizeBtnContainerTabTwo !== dishSizeBtnContainerTabTwo) {
                 selectDishSizeBtnContainerTabTwo.classList.add('disabledDishSizeContainer');
+                console.log("hse");
+                
             }
         });
     }
 
-    //select dish size event
+    // Select dish size event for Tab Two
     let plusClickListenerTabTwo, minusClickListenerTabTwo;
     let clickedSelectedDishQtyNumbersTabTwo = "1";
     let clearedTabTwo = false;
@@ -1343,11 +1364,12 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
             });
             dishSizeInputTabTwo.addEventListener("input", handleInputTabTwo);
             btnBackspaceNumbers.addEventListener("click", handleBackspaceTabTwo);
+            // Add blur event listener
+            dishSizeInputTabTwo.addEventListener("blur", handleBlurTabTwo);
         }
 
         function handleNumberClickTabTwo() {
             const clickedNumber = this.innerHTML;
-            // console.log("Clicked number:", clickedNumber);
             if (clearedTabTwo) {
                 clickedSelectedDishQtyNumbersTabTwo = clickedNumber;
                 clearedTabTwo = false;
@@ -1373,7 +1395,13 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
             }
         }
 
-
+        // Blur function to set value to "1" if empty
+        function handleBlurTabTwo() {
+            if (this.value === "") {
+                this.value = "1";  // Assign default value
+                clickedSelectedDishQtyNumbersTabTwo = "1"; // Update variable
+            }
+        }
 
         function attachPlusMinusListenersTabTwo() {
             btnPlus.removeEventListener('click', plusClickListenerTabTwo);
@@ -1397,25 +1425,24 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
             btnMinus.addEventListener('click', minusClickListenerTabTwo);
         }
 
-
         sizeBtnContainerTabTwo.addEventListener("click", function () {
-            isClickedTabTwo = !isClickedTabTwo
+            isClickedTabTwo = !isClickedTabTwo;
 
             if (isClickedTabTwo) {
-                lastSelectedSizeTabTwo = sizeBtnContainerTabTwo
+                lastSelectedSizeTabTwo = sizeBtnContainerTabTwo;
                 btnPlus.disabled = false;
                 btnMinus.disabled = false;
 
-                //============change popupBox sizebtn colored and icon by clicked it============
+                // Change popupBox sizebtn color and icon by clicked it
                 sizeBtnContainerTabTwo.style.border = "2px solid var(--text-field-success)";
                 sizeBtnImg.src = "../icons/correct.png";
                 sizeBtnImg.style.width = "40px";
                 sizeBtnImg.style.height = "40px";
                 dishSizeInputTabTwo.disabled = false;
-                btnBackspaceNumbers.disabled = false
+                btnBackspaceNumbers.disabled = false;
                 btnAddItem.disabled = false;
-                dishSizeInputTabTwo.value = "1";
-                clickedSelectedDishQtyNumbersTabTwo = "1";
+                dishSizeInputTabTwo.value = "1"; // Initial value set to "1"
+                clickedSelectedDishQtyNumbersTabTwo = "1"; // Initial value
                 clearedTabTwo = false;
 
                 attachNumberPadListenersTabTwo();
@@ -1431,8 +1458,7 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
                 dishSizeInputTabTwo.disabled = true;
                 btnPlus.disabled = true;
                 btnMinus.disabled = true;
-                btnBackspaceNumbers.disabled = true
-
+                btnBackspaceNumbers.disabled = true;
 
                 btnInputNumbers.forEach((btnInputNumber) => {
                     btnInputNumber.disabled = true;
@@ -1449,13 +1475,12 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
                 btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabTwo);
 
                 sizeBtnContainersTabTwo.forEach((dishSizeBtnContainer) => {
-                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
-                })
+                    dishSizeBtnContainer.classList.remove('disabledDishSizeContainer');
+                });
             }
-
         });
-
     });
+
 
 
     //============added cart to selected items============
@@ -1847,7 +1872,7 @@ async function confirmPaymetTabTwo(baseUrl, orderId) {
 
 //================Order Confirmation and Payment Handling==============
 orderConfrimTab2.addEventListener("click", async function () {
-    orderConfrimTab2.disabled = true; 
+    orderConfrimTab2.disabled = true;
     try {
         const baseUrl = await window.api.getBaseUrl();
         await ConfirmOrderTabTwo(baseUrl);
@@ -1892,8 +1917,8 @@ orderConfrimTab2.addEventListener("click", async function () {
             confirmButtonColor: "#EA6D27",
             confirmButtonText: "OK"
         });
-    }finally{
-        orderConfrimTab2.disabled = false; 
+    } finally {
+        orderConfrimTab2.disabled = false;
     }
 });
 
@@ -2009,7 +2034,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
     const sizeBtns = document.querySelectorAll(".size-btn");
     const dishSizeInputTabThree = document.querySelector(".qty-input");
     const btnAddItem = document.querySelector(".btn-addItem");
-    const btnInputNumbers = document.querySelectorAll(".btn-number");
+    const btnInputNumbers = document.querySelectorAll(".btn-number:not(.btn-number-backspace)");
     const btnBackspaceNumbers = document.querySelector(".btn-number-backspace");
     const btnPlus = document.querySelector("#qty-input-btn-plus");
     const btnMinus = document.querySelector("#qty-input-btn-minus");
@@ -2029,12 +2054,14 @@ function displayPopupTabThree(baseUrl, dishes, index) {
         });
     });
 
-    function disableOtherDishSizeContaiersTabThree(clickedBtn) {
-        sizeBtnContainersTabThree.forEach((sizeBtn) => {
-            if (sizeBtn !== clickedBtn) {
-                sizeBtn.classList.add('disabledDishSizeContainer');
-                // sizeBtnsPrice.style.display="none";
-                // sizeBtnContainers.disabled=true;
+    function disableOtherDishSizeContaiersTabThree(dishSizeBtnContainerTabThree) {
+        sizeBtnContainersTabThree.forEach((selectDishSizeBtnContainerTabThree) => {
+            if (selectDishSizeBtnContainerTabThree !== dishSizeBtnContainerTabThree) {
+                selectDishSizeBtnContainerTabThree.classList.add('disabledDishSizeContainer');
+                selectDishSizeBtnContainerTabThree.style.pointerEvents = 'none';
+                selectDishSizeBtnContainerTabThree.style.opacity = '0.6';
+                console.log("workks");
+                
             }
         });
     }
@@ -2055,12 +2082,12 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 btnInputNumber.addEventListener("click", handleNumberClickTabThree);
             });
             dishSizeInputTabThree.addEventListener("input", handleInputTabThree);
+            dishSizeInputTabThree.addEventListener("blur", handleBlurTabThree); // Add blur event listener
             btnBackspaceNumbers.addEventListener("click", handleBackspaceTabThree);
         }
 
         function handleNumberClickTabThree() {
             const clickedNumber = this.innerHTML;
-            // console.log("Clicked number:", clickedNumber);
             if (clearedTabThree) {
                 clickedSelectedDishQtyNumbersTabThree = clickedNumber;
                 clearedTabThree = false;
@@ -2076,13 +2103,20 @@ function displayPopupTabThree(baseUrl, dishes, index) {
             }
         }
 
+        function handleBlurTabThree() {
+            if (dishSizeInputTabThree.value === "") {
+                dishSizeInputTabThree.value = "1"; 
+                clickedSelectedDishQtyNumbersTabThree = "1"; 
+            }
+        }
+
         function handleBackspaceTabThree() {
             clickedSelectedDishQtyNumbersTabThree = clickedSelectedDishQtyNumbersTabThree.slice(0, -1);
             dishSizeInputTabThree.value = clickedSelectedDishQtyNumbersTabThree;
 
             if (dishSizeInputTabThree.value === "") {
-                dishSizeInputTabThree.value = "1";
-                clickedSelectedDishQtyNumbersTabThree = "1";
+                dishSizeInputTabThree.value = "1"; 
+                clickedSelectedDishQtyNumbersTabThree = "1"; 
             }
         }
 
@@ -2108,24 +2142,23 @@ function displayPopupTabThree(baseUrl, dishes, index) {
             btnMinus.addEventListener('click', minusClickListenerTabThree);
         }
 
-
         sizeBtnContainerTabThree.addEventListener("click", function () {
-            isClickedTabThree = !isClickedTabThree
+            isClickedTabThree = !isClickedTabThree;
 
             if (isClickedTabThree) {
-                lastSelectedSizeTabThree = sizeBtnContainerTabThree
+                lastSelectedSizeTabThree = sizeBtnContainerTabThree;
                 btnPlus.disabled = false;
                 btnMinus.disabled = false;
 
-                //============change popupBox sizebtn colored and icon by clicked it============
+                // Change popupBox sizebtn color and icon when clicked
                 sizeBtnContainerTabThree.style.border = "2px solid var(--text-field-success)";
                 sizeBtnImg.src = "../icons/correct.png";
                 sizeBtnImg.style.width = "40px";
                 sizeBtnImg.style.height = "40px";
                 dishSizeInputTabThree.disabled = false;
-                btnBackspaceNumbers.disabled = false
+                btnBackspaceNumbers.disabled = false;
                 btnAddItem.disabled = false;
-                dishSizeInputTabThree.value = "1";
+                dishSizeInputTabThree.value = "1"; // Default to 1 on selection
                 clickedSelectedDishQtyNumbersTabThree = "1";
                 clearedTabThree = false;
 
@@ -2138,12 +2171,11 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 sizeBtnImg.src = "../icons/plusicon.png";
                 sizeBtnImg.style.width = "50px";
                 sizeBtnImg.style.height = "50px";
-                dishSizeInputTabThree.value = "";
+                dishSizeInputTabThree.value = ""; // Clear input on deselection
                 dishSizeInputTabThree.disabled = true;
                 btnPlus.disabled = true;
                 btnMinus.disabled = true;
-                btnBackspaceNumbers.disabled = true
-
+                btnBackspaceNumbers.disabled = true;
 
                 btnInputNumbers.forEach((btnInputNumber) => {
                     btnInputNumber.disabled = true;
@@ -2157,23 +2189,23 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 });
 
                 dishSizeInputTabThree.removeEventListener("input", handleInputTabThree);
+                dishSizeInputTabThree.removeEventListener("blur", handleBlurTabThree); // Remove blur event listener
                 btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabThree);
             }
 
             sizeBtnContainersTabThree.forEach((dishSizeBtnContainer) => {
-                dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
-            })
-
+                dishSizeBtnContainer.classList.remove('disabledDishSizeContainer');
+            });
         });
-
     });
+
 
 
     //============added cart to selected items============
 
     btnAddItem.addEventListener("click", function () {
         if (lastSelectedSizeTabThree) {
-            addItemToOrderItemsTabThree("Take-Away");
+            addItemToOrderItemsTabThree(baseUrl, "Take-Away"); addItemToOrderItemsTabThree("Take-Away");
         } else {
             Swal.fire({
                 title: "Invalid Select",
@@ -2187,7 +2219,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
 
     });
 
-    function addItemToOrderItemsTabThree(itemType) {
+    function addItemToOrderItemsTabThree(baseUrl,itemType) {
         if (!lastSelectedSizeTabThree) {
             return;
         }
@@ -2550,7 +2582,7 @@ async function confirmPaymetTabThree(baseUrl, orderId) {
 
 //================Order Confirmation and Payment Handling==============
 orderConfrimTab3.addEventListener("click", async function () {
-    orderConfrimTab3.disabled = true; 
+    orderConfrimTab3.disabled = true;
     try {
         const baseUrl = await window.api.getBaseUrl();
         await ConfirmOrderTabThree(baseUrl);
@@ -2594,8 +2626,8 @@ orderConfrimTab3.addEventListener("click", async function () {
             confirmButtonColor: "#EA6D27",
             confirmButtonText: "OK"
         });
-    }finally{
-        orderConfrimTab3.disabled = false; 
+    } finally {
+        orderConfrimTab3.disabled = false;
     }
 });
 
@@ -2973,7 +3005,7 @@ function handleButtonClick(event) {
 
 
 //============Search Customers By Mobile============
-let activeTakeAwayTab = 1; 
+let activeTakeAwayTab = 1;
 
 function syncCustomerSavePopupWithActiveTab() {
     if (activeTakeAwayTab === 1) {
@@ -3076,19 +3108,19 @@ async function searchCustomersTakeaway(baseUrl) {
                     selectCusCreditStatusTabOne = null;
                     selectedCustomerIdTabOne = null;
                     selectedCustomerMobileTabOne = "";
-                   
+
                 } else if (tabIndex === 2) {
                     selectedCustomerNameTabTwo = "";
                     selectCusCreditStatusTabTwo = null;
                     selectedCustomerIdTabTwo = null;
                     selectedCustomerMobileTabTwo = "";
-                   
+
                 } else if (tabIndex === 3) {
                     selectedCustomerNameTabThree = "";
                     selectCusCreditStatusTabThree = null;
                     selectedCustomerIdTabThree = null;
                     selectedCustomerMobileTabThree = "";
-               
+
                 }
             }
 
@@ -3304,7 +3336,7 @@ async function createOrderId(baseUrl, orderId, tabNo) {
 async function getTkOrderId(baseUrl, tabNo, orderIdElementId) {
     try {
         const response = await fetchOrders(baseUrl);
-         console.log(response);
+        console.log(response);
 
         const existingOrders = response.data || [];
 

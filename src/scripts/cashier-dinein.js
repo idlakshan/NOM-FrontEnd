@@ -953,16 +953,14 @@ function handleDisplayPopup(baseUrl, dishes, index) {
             }
         })
     }
-
     let plusClickListener, minusClickListener;
     let clickedSelectedDishQtyNumbers = "1";
     let cleared = false;
-
+    
     dishSizeBtnContainers.forEach((sizeBtnContainer) => {
         const sizeBtnImg = sizeBtnContainer.querySelector(".size-btn-img");
         let isClicked = false;
-
-
+    
         function attachNumberPadListeners() {
             btnInputNumbers.forEach((btnInputNumber) => {
                 btnInputNumber.disabled = false;
@@ -970,13 +968,12 @@ function handleDisplayPopup(baseUrl, dishes, index) {
                 btnInputNumber.addEventListener("click", handleNumberClick);
             });
             dishSizeInput.addEventListener("input", handleInput);
+            dishSizeInput.addEventListener("blur", handleBlur); // Add blur event listener
             btnBackspaceNumbers.addEventListener("click", handleBackspace);
         }
-
-
+    
         function handleNumberClick() {
             const clickedNumber = this.innerHTML;
-            // console.log("Clicked number:", clickedNumber);
             if (cleared) {
                 clickedSelectedDishQtyNumbers = clickedNumber;
                 cleared = false;
@@ -985,35 +982,42 @@ function handleDisplayPopup(baseUrl, dishes, index) {
             }
             dishSizeInput.value = clickedSelectedDishQtyNumbers;
         }
-
-
+    
         function handleInput() {
             if (this.value === "") {
                 cleared = true;
             }
         }
-
+    
+        function handleBlur() {
+            if (this.value === "") {
+                // Reset to default value if input is empty
+                dishSizeInput.value = "1";
+                clickedSelectedDishQtyNumbers = "1";
+                cleared = false;
+            }
+        }
+    
         function handleBackspace() {
             clickedSelectedDishQtyNumbers = clickedSelectedDishQtyNumbers.slice(0, -1);
             dishSizeInput.value = clickedSelectedDishQtyNumbers;
-
+    
             if (dishSizeInput.value === "") {
                 dishSizeInput.value = "1";
                 clickedSelectedDishQtyNumbers = "1";
             }
         }
-
-
+    
         function attachPlusMinusListeners() {
             btnPlus.removeEventListener('click', plusClickListener);
             btnMinus.removeEventListener('click', minusClickListener);
-
+    
             plusClickListener = function () {
                 const currentValue = parseInt(dishSizeInput.value);
                 clickedSelectedDishQtyNumbers = (currentValue + 1).toString();
                 dishSizeInput.value = clickedSelectedDishQtyNumbers;
             };
-
+    
             minusClickListener = function () {
                 const currentValue = parseInt(dishSizeInput.value);
                 if (currentValue > 1) {
@@ -1021,19 +1025,19 @@ function handleDisplayPopup(baseUrl, dishes, index) {
                     dishSizeInput.value = clickedSelectedDishQtyNumbers;
                 }
             };
-
+    
             btnPlus.addEventListener('click', plusClickListener);
             btnMinus.addEventListener('click', minusClickListener);
         }
-
+    
         sizeBtnContainer.addEventListener("click", function () {
             isClicked = !isClicked;
-
+    
             if (isClicked) {
                 lastSelectedDishSize = sizeBtnContainer;
                 btnPlus.disabled = false;
                 btnMinus.disabled = false;
-
+    
                 sizeBtnContainer.style.border = "2px solid var(--text-field-success)";
                 sizeBtnImg.src = "../icons/correct.png";
                 sizeBtnImg.style.width = "40px";
@@ -1042,15 +1046,14 @@ function handleDisplayPopup(baseUrl, dishes, index) {
                 btnTakeaway.disabled = false;
                 dishSizeInput.disabled = false;
                 btnBackspaceNumbers.disabled = false;
-
+    
                 dishSizeInput.value = "1";
                 clickedSelectedDishQtyNumbers = "1";
                 cleared = false;
-
+    
                 attachNumberPadListeners();
                 attachPlusMinusListeners();
             } else {
-
                 lastSelectedDishSize = null;
                 sizeBtnContainer.style.border = "none";
                 sizeBtnImg.src = "../icons/plusicon.png";
@@ -1061,28 +1064,29 @@ function handleDisplayPopup(baseUrl, dishes, index) {
                 btnPlus.disabled = true;
                 btnMinus.disabled = true;
                 btnBackspaceNumbers.disabled = true;
-
+    
                 btnInputNumbers.forEach((btnInputNumber) => {
                     btnInputNumber.disabled = true;
                 });
-
-
+    
                 btnPlus.removeEventListener('click', plusClickListener);
                 btnMinus.removeEventListener('click', minusClickListener);
-
+    
                 btnInputNumbers.forEach((btnInputNumber) => {
                     btnInputNumber.removeEventListener("click", handleNumberClick);
                 });
-
+    
                 dishSizeInput.removeEventListener("input", handleInput);
+                dishSizeInput.removeEventListener("blur", handleBlur); // Remove blur event listener
                 btnBackspaceNumbers.removeEventListener("click", handleBackspace);
-
+    
                 dishSizeBtnContainers.forEach((dishSizeBtnContainer) => {
                     dishSizeBtnContainer.classList.remove('disabledDishSizeContainer')
-                })
+                });
             }
         });
     });
+    
 
 
 

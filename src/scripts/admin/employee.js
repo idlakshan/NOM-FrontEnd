@@ -975,7 +975,7 @@ document.querySelector("#admin-keyboard-button-abc").addEventListener("click", f
 })
 
 function toggleAdminEmployeeSymbolPopup() {
-    const symbols = ['!', '@', '#', '$', '%', '-', '&', '*', '(', ')'];
+    const symbols = ['.', '@', '#', '/', ',', '-', '&', '*', '(', ')'];
     const buttons = document.querySelectorAll('.admin-keyboard-number-popup-emp');
 
     buttons.forEach(function (button, index) {
