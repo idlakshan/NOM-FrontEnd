@@ -114,10 +114,10 @@ async function initializePage(baseUrl) {
     if (isCashier === 'cashier') {
         tableInnerArea.style.pointerEvents = 'auto';
     } else if (isSessionStarted === "true") {
-        console.log("start");
+       // console.log("start");
         tableInnerArea.style.pointerEvents = 'auto';
     } else {
-        console.log("not start");
+      //  console.log("not start");
         tableInnerArea.style.pointerEvents = 'none';
     }
 
@@ -409,7 +409,7 @@ async function handleLoadAllTables(baseUrl) {
             },
         });
         const tables = await response.json();
-         console.log(tables);
+        // console.log(tables);
 
         const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
         const check = document.querySelector("#checkbox-dinein-tables");
@@ -1446,7 +1446,7 @@ function saveDefaultOrderItems(baseUrl, format, status, selectItemCard) {
 
 // Function to handle quantity changes (increase and decrease)
 function qtyChangeEventHandler(baseUrl, btnQtyMinus, btnQtyPlus, selectItemQty, pricePerItem, priceElement, selectOrderItemCards) {
-    console.log(selectOrderItemCards);
+   // console.log(selectOrderItemCards);
     previouslySelectedCard = selectOrderItemCards;
     currentlySelectedCard = selectOrderItemCards;
 
@@ -2250,7 +2250,7 @@ function getPreviousOrderDetails(baseUrl, tableNo) {
                 return response.json();
             })
             .then(data => {
-                console.log(data);
+               // console.log(data);
 
           
                 const tableData = data.data[0];
@@ -2359,7 +2359,7 @@ async function previousDishCardSelectEvent(baseUrl, selectOrderItemCards) {
             const selectedDishSize = selectOrderItemCards.querySelector(".selectItemSize").innerText;
             const selectedDishType = selectOrderItemCards.querySelector(".selectItemType").innerText;
 
-            console.log(`OrderId: ${orderId}, DishId: ${selectedDishId}, DishSize: ${selectedDishSize}`);
+           //console.log(`OrderId: ${orderId}, DishId: ${selectedDishId}, DishSize: ${selectedDishSize}`);
 
             try {
            
@@ -2452,7 +2452,7 @@ function handleEnabledSelectedOrderItemsCard() {
 //=selected dishcard popup event(filter by waiter name and delete dish details)============
 async function dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItemName, selectedDishIdElement, selectedDishSizeElement, selectItemQty, priceElement, selectOrderItemCards,dishTypeElement) {
     btnDishCardPopup.addEventListener("click", async function () {
-        console.log(selectedItemName, selectItemQty, priceElement);
+       // console.log(selectedItemName, selectItemQty, priceElement);
         const unitPrice = parseFloat(priceElement.innerText) / parseInt(selectItemQty.innerText);
 
         dishDetailsPopup.style.display = 'flex';
@@ -2472,7 +2472,7 @@ async function dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItem
                 },
             });
             const dishDetails = await response.json();
-            console.log(dishDetails);
+            //console.log(dishDetails);
             let selectDishDetailsPopup = "";
             const tblDishDetails = document.getElementById('tbl_dishDetails_body');
             tblDishDetails.innerHTML = '';
@@ -2555,7 +2555,7 @@ function filterTableByWaiter() {
 
 // Function to handle dish card popup delete event
 async function deleteSelectedDish(baseUrl, customerWiseOrderDetailsId, qty, dishPrice, priceElement, selectItemQty, dishId, row, selectOrderItemCards, rowCount) {
-    console.log("Row count before deletion:", rowCount);
+   // console.log("Row count before deletion:", rowCount);
 
 
     if (orderItemsContainer.children.length === 1 && rowCount === 1) {
@@ -2600,7 +2600,7 @@ async function deleteSelectedDish(baseUrl, customerWiseOrderDetailsId, qty, dish
             }
 
 
-            CalculateFullTotal();
+            handleCalculateorderCartTotal();
 
         } else {
             console.error("Failed to delete resource:", response.statusText);

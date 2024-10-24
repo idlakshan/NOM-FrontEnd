@@ -123,7 +123,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     btnUpdateStock.addEventListener("click", function () {
-        updateStock(baseUrl)
+        btnUpdateStock.disabled = true;   
+        updateStock(baseUrl).finally(() => {
+            btnUpdateStock.disabled = false;
+        });
     });
 
     btnUpdateStockHistory.addEventListener("click", function () {

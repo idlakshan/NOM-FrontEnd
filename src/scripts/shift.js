@@ -9,7 +9,7 @@ const keyBoardButtons = document.querySelectorAll('.shift-keyboard-button');
 let shiftSelectedInput;
 
 function toggleShiftKeyBoardSymbol(numberClass, specialClass) {
-    console.log("toggleShiftKeyBoardSymbol function called");
+  //  console.log("toggleShiftKeyBoardSymbol function called");
     const symbols = ['.', '@', '#', '$', '%', '-', '&', '*', '(', ')'];
     const buttons = document.querySelectorAll(`.${numberClass}`);
 

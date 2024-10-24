@@ -222,7 +222,7 @@ function saveCustomer(baseUrl) {
             return response.json();
         })
         .then(data => {
-            console.log('Customer saved successfully:', data);
+          //  console.log('Customer saved successfully:', data);
             checkCustomerInputs();
             loadAllCustomerTotable(baseUrl);
             resetInputStyles();

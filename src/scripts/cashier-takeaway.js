@@ -366,7 +366,7 @@ async function loadAllCategory(baseUrl, dishImagePath) {
             },
         });
         const categories = await response.json();
-        console.log(categories);
+        //console.log(categories);
 
         let categoryList = "";
 
@@ -1182,26 +1182,10 @@ orderConfrimTab1.addEventListener("click", async function () {
             confirmButtonText: "OK"
         }).then((result) => {
             if (result.isConfirmed) {
-                orderConfrimPanelTabOne.style.display = "none";
-                container.classList.remove("container-disabled");
-                inputMobileElementTab1.value = "";
-                customerNameTab1.value = "";
-                totalTab1.value = "";
-                selectedItemsContainer1.innerHTML = "";
-                getOrderIdTabOne(baseUrl)
-                btnPayButtonTabOneValidateEvent(selectedItemsContainer1);
-                categoryCardListArea.style.display = "flex";
-                dishCardListArea.style.display = "none";
-                alphabetArea.style.display = "none";
-                inputCashTabOne.value = "0.00";
-                inputCardTabOne.value = "0.00";
-                inputCreditTabOne.value = "0.00";
-                orderConfrimTab1.disabled = true
-                mobileInput.value = "";
-                nameInput.value = "";
-                checkCustomerInputsTakeaway();
-                downloadAndShowPdf(baseUrl)
+                handleResetAfterTabonePayment(baseUrl);
 
+            } else {
+                handleResetAfterTabonePayment(baseUrl);
             }
         });
 
@@ -1218,6 +1202,29 @@ orderConfrimTab1.addEventListener("click", async function () {
         orderConfrimTab1.disabled = false;
     }
 });
+
+//function to reste after place order
+function handleResetAfterTabonePayment(baseUrl) {
+    orderConfrimPanelTabOne.style.display = "none";
+    container.classList.remove("container-disabled");
+    inputMobileElementTab1.value = "";
+    customerNameTab1.value = "";
+    totalTab1.value = "";
+    selectedItemsContainer1.innerHTML = "";
+    getOrderIdTabOne(baseUrl)
+    btnPayButtonTabOneValidateEvent(selectedItemsContainer1);
+    categoryCardListArea.style.display = "flex";
+    dishCardListArea.style.display = "none";
+    alphabetArea.style.display = "none";
+    inputCashTabOne.value = "0.00";
+    inputCardTabOne.value = "0.00";
+    inputCreditTabOne.value = "0.00";
+    orderConfrimTab1.disabled = true
+    mobileInput.value = "";
+    nameInput.value = "";
+    checkCustomerInputsTakeaway();
+    downloadAndShowPdf(baseUrl)
+}
 
 
 
@@ -1353,7 +1360,7 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
         sizeBtnContainersTabTwo.forEach((selectDishSizeBtnContainerTabTwo) => {
             if (selectDishSizeBtnContainerTabTwo !== dishSizeBtnContainerTabTwo) {
                 selectDishSizeBtnContainerTabTwo.classList.add('disabledDishSizeContainer');
-                console.log("hse");
+              //  console.log("hse");
 
             }
         });
@@ -1908,25 +1915,9 @@ orderConfrimTab2.addEventListener("click", async function () {
             confirmButtonText: "OK"
         }).then((result) => {
             if (result.isConfirmed) {
-                orderConfrimPanelTabTwo.style.display = "none";
-                container.classList.remove("container-disabled");
-                inputMobileElementTab2.value = "";
-                customerNameTab2.value = "";
-                totalTab2.value = "";
-                selectedItemsContainer2.innerHTML = "";
-                getOrderIdTabTwo(baseUrl)
-                btnPayButtonTabTwoValidateEvent(selectedItemsContainer2);
-                categoryCardListArea.style.display = "flex";
-                dishCardListArea.style.display = "none";
-                alphabetArea.style.display = "none";
-                inputCashTabTwo.value = "0.00";
-                inputCardTabTwo.value = "0.00";
-                inputCreditTabTwo.value = "0.00";
-                orderConfrimTab2.disabled = true
-                mobileInput.value = "";
-                nameInput.value = "";
-                checkCustomerInputsTakeaway();
-                downloadAndShowPdf(baseUrl)
+                handleResetAfterTabTwoPayment(baseUrl)
+            } else {
+                handleResetAfterTabTwoPayment(baseUrl)
             }
         });
 
@@ -1945,8 +1936,28 @@ orderConfrimTab2.addEventListener("click", async function () {
     }
 });
 
-
-
+//reset after payment
+function handleResetAfterTabTwoPayment(baseUrl){
+    orderConfrimPanelTabTwo.style.display = "none";
+    container.classList.remove("container-disabled");
+    inputMobileElementTab2.value = "";
+    customerNameTab2.value = "";
+    totalTab2.value = "";
+    selectedItemsContainer2.innerHTML = "";
+    getOrderIdTabTwo(baseUrl)
+    btnPayButtonTabTwoValidateEvent(selectedItemsContainer2);
+    categoryCardListArea.style.display = "flex";
+    dishCardListArea.style.display = "none";
+    alphabetArea.style.display = "none";
+    inputCashTabTwo.value = "0.00";
+    inputCardTabTwo.value = "0.00";
+    inputCreditTabTwo.value = "0.00";
+    orderConfrimTab2.disabled = true
+    mobileInput.value = "";
+    nameInput.value = "";
+    checkCustomerInputsTakeaway();
+    downloadAndShowPdf(baseUrl)
+}
 
 
 
@@ -2632,25 +2643,9 @@ orderConfrimTab3.addEventListener("click", async function () {
             confirmButtonText: "OK"
         }).then((result) => {
             if (result.isConfirmed) {
-                orderConfrimPanelTabThree.style.display = "none";
-                container.classList.remove("container-disabled");
-                inputMobileElementTab3.value = "";
-                customerNameTab3.value = "";
-                totalTab3.value = "";
-                selectedItemsContainer3.innerHTML = "";
-                getOrderIdTabThree(baseUrl)
-                btnPayButtonTabThreeValidateEvent(selectedItemsContainer3);
-                categoryCardListArea.style.display = "flex";
-                dishCardListArea.style.display = "none";
-                alphabetArea.style.display = "none";
-                inputCashTabThree.value = "0.00";
-                inputCardTabThree.value = "0.00";
-                inputCreditTabThree.value = "0.00";
-                orderConfrimTab3.disabled = true
-                mobileInput.value = "";
-                nameInput.value = "";
-                checkCustomerInputsTakeaway();
-                downloadAndShowPdf(baseUrl)
+                handleResetAfterTabThreePayment(baseUrl)
+            } else {
+                handleResetAfterTabThreePayment(baseUrl)
             }
         });
 
@@ -2667,6 +2662,30 @@ orderConfrimTab3.addEventListener("click", async function () {
         orderConfrimTab3.disabled = false;
     }
 });
+
+
+//reset after payment
+function handleResetAfterTabThreePayment(baseUrl){
+    orderConfrimPanelTabThree.style.display = "none";
+    container.classList.remove("container-disabled");
+    inputMobileElementTab3.value = "";
+    customerNameTab3.value = "";
+    totalTab3.value = "";
+    selectedItemsContainer3.innerHTML = "";
+    getOrderIdTabThree(baseUrl)
+    btnPayButtonTabThreeValidateEvent(selectedItemsContainer3);
+    categoryCardListArea.style.display = "flex";
+    dishCardListArea.style.display = "none";
+    alphabetArea.style.display = "none";
+    inputCashTabThree.value = "0.00";
+    inputCardTabThree.value = "0.00";
+    inputCreditTabThree.value = "0.00";
+    orderConfrimTab3.disabled = true
+    mobileInput.value = "";
+    nameInput.value = "";
+    checkCustomerInputsTakeaway();
+    downloadAndShowPdf(baseUrl)
+}
 
 
 //download and print PDF
@@ -2752,7 +2771,7 @@ function clearInput(inputElement, orderBalance, updateBalanceFunction) {
 
     inputElement.addEventListener("input", function (event) {
         if (!isCleared) {
-            console.log(event.data);
+            //console.log(event.data);
 
             inputElement.style.color = "";
             inputElement.value = event.data;
@@ -2932,7 +2951,7 @@ function takeawaySaveCustomerEvent(baseUrl) {
     })
         .then(response => response.json())
         .then(response => {
-            console.log(response);
+           // console.log(response);
 
             if (response.code === 200) {
                 Swal.fire({
@@ -3329,7 +3348,7 @@ function searchDishByLettera(dishCards) {
     });
 
     dishContentArea.addEventListener("click", () => {
-        console.log("click");
+       // console.log("click");
         dishCards.forEach(dishCard => {
 
 
@@ -3373,7 +3392,7 @@ async function createOrderId(baseUrl, orderId, tabNo) {
 async function getTkOrderId(baseUrl, tabNo, orderIdElementId) {
     try {
         const response = await fetchOrders(baseUrl);
-        console.log(response);
+       // console.log(response);
 
         const existingOrders = response.data || [];
 
@@ -3501,7 +3520,7 @@ document.getElementById('toDineinToggle').addEventListener('click', function () 
 document.getElementById('logOut').addEventListener('click', async function () {
     const baseUrl = await window.api.getBaseUrl();
     const isActiveAdmin = await checkAdminSession(baseUrl, localStorage.getItem("userId"));
-    console.log(isActiveAdmin);
+    //console.log(isActiveAdmin);
 
     if (!isActiveAdmin) {
         const isClear = window.api.clearAuthData()

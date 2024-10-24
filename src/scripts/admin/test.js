@@ -149,10 +149,10 @@ async function init(baseUrl) {
     if (isCashier === 'cashier') {
         tableInnerArea.style.pointerEvents = 'auto';
     } else if (isSessionStarted === "true") {
-        console.log("start");
+       // console.log("start");
         tableInnerArea.style.pointerEvents = 'auto';
     } else {
-        console.log("not start");
+     //   console.log("not start");
         tableInnerArea.style.pointerEvents = 'none';
     }
 
@@ -970,7 +970,7 @@ async function creditStatusHandle(baseUrl) {
             },
         });
         const isCreditedCustomer = await response.json();
-         console.log(isCreditedCustomer);
+        // console.log(isCreditedCustomer);
          if (isCreditedCustomer.data === false || inputMobileElement.value === "unKnown") {
             document.querySelector("#inputpaycreditOne").disabled = true;
         } else if (isCreditedCustomer.data === true) {
@@ -1072,7 +1072,7 @@ function paymentType(tabNumber) {
             if (!isClearedOnce) {
                 inputElement.style.color = "";
                 inputElement.value = event.data;
-                console.log(event.data);
+             //   console.log(event.data);
 
                 isClearedOnce = true;
             }
@@ -1580,7 +1580,7 @@ async function loadAllTables(baseUrl) {
             },
         });
         const tables = await response.json();
-        console.log(tables);
+      //  console.log(tables);
 
         const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
         const check = document.querySelector("#checkbox-dinein-tables");
@@ -1680,7 +1680,7 @@ async function loadAllTables(baseUrl) {
                     const tableNumber = tableCard.querySelector("#tableId").textContent;
 
                     const orderId = tableCard.getAttribute("data-order-id");
-                    console.log(orderId);
+                //    console.log(orderId);
                     showChangeTablePopup(baseUrl, button, tableNumber, orderId);
                 });
             });
@@ -1846,7 +1846,7 @@ async function showChangeTablePopup(baseUrl, button, tableNumber, orderId) {
 
 
 async function updateOrderWhenChangeTable(baseUrl, newTableId, tableNumber, orderId) {
-    console.log("New table :" + newTableId + "  " + "old Table : " + tableNumber + " " + orderId);
+    //console.log("New table :" + newTableId + "  " + "old Table : " + tableNumber + " " + orderId);
 
     try {
         const response = await fetch(baseUrl + "/dineIn/Order?orderId=" + orderId + "&tableId=" + newTableId, {
@@ -1857,7 +1857,7 @@ async function updateOrderWhenChangeTable(baseUrl, newTableId, tableNumber, orde
             },
         });
         const tableDetails = await response.json();
-        console.log(tableDetails);
+        //console.log(tableDetails);
 
         loadAllTables(baseUrl);
         changeTableOrderIdWhenChangeTable(baseUrl, tableNumber);
@@ -2000,7 +2000,7 @@ function dineinSaveCustomerEvent(baseUrl) {
     })
         .then(response => response.json())
         .then(response => {
-            console.log(response);
+            //console.log(response);
 
             if (response.code === 200) {
                 Swal.fire({
@@ -2217,7 +2217,7 @@ async function loadAllWaiters(baseUrl) {
 //======selected dishcard popup event(filter by waiter name and delete dish details)============
 async function dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItemName, selectedDishIdElement, selectedDishSizeElement, selectItemQty, priceElement, selectOrderItemCards) {
     btnDishCardPopup.addEventListener("click", async function () {
-        console.log(selectedItemName, selectItemQty, priceElement);
+      //  console.log(selectedItemName, selectItemQty, priceElement);
         const unitPrice = parseFloat(priceElement.innerText) / parseInt(selectItemQty.innerText);
 
         dishDetailsPopup.style.display = 'flex';
@@ -2236,7 +2236,7 @@ async function dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItem
                 },
             });
             const dishDetails = await response.json();
-            console.log(dishDetails);
+          //  console.log(dishDetails);
             let selectDishDetailsPopup = "";
             const tblDishDetails = document.getElementById('tbl_dishDetails_body');
             tblDishDetails.innerHTML = '';
@@ -2316,7 +2316,7 @@ function filterTableByWaiter() {
 
 //dish card popup delete order
 async function deleteSelectedDish(baseUrl, customerWiseOrderDetailsId, qty, dishPrice, priceElement, selectItemQty, dishId, row, selectOrderItemCards, rowCount) {
-    console.log("Row count before deletion:", rowCount);
+   // console.log("Row count before deletion:", rowCount);
 
     // Check if this is the last item in the order
     if (orderItemsContainer.children.length === 1 && rowCount === 1) {
@@ -2579,8 +2579,8 @@ function saveOrderDetailsBySelectDishPopup(baseUrl, format, qtyDifference, price
                 return response.json();
             })
             .then(data => {
-                console.log("Order details sent successfully:", data);
-                console.log(orderDetails);
+               // console.log("Order details sent successfully:", data);
+              //  console.log(orderDetails);
             })
             .catch(error => {
                 console.error("Error:", error);
@@ -2804,7 +2804,7 @@ function getWaitersForSelectDishCard(baseUrl, selectOrderItemCards) {
             const selectedDishId = card.querySelector(".selectItemId").innerText;
             const selectedDishSize = card.querySelector(".selectItemSize").innerText;
 
-            console.log(orderId + " " + selectedDishId + " " + selectedDishSize);
+          //  console.log(orderId + " " + selectedDishId + " " + selectedDishSize);
 
             try {
                 const response = await fetch(`${baseUrl}/CustomerWiseOrderDetails?orderId=${orderId}&dishId=${selectedDishId}&dishSize=${selectedDishSize}`, {
@@ -2815,13 +2815,13 @@ function getWaitersForSelectDishCard(baseUrl, selectOrderItemCards) {
                     },
                 });
                 const dishDetails = await response.json();
-                console.log("Dish Details:", dishDetails);
+              //  console.log("Dish Details:", dishDetails);
 
                 if (Array.isArray(dishDetails.data)) {
                     previousDishWaitersList = dishDetails.data.map(detail => detail.waiterName);
                     // console.log(previousDishWaitersList);
                     const waitersList = dishDetails.data.map(detail => detail.waiterName);
-                    console.log("Waiters List:", waitersList);
+                   // console.log("Waiters List:", waitersList);
 
                     const waitersDatalist = document.getElementById("waiters_list");
                     waitersDatalist.innerHTML = "";
@@ -2874,7 +2874,7 @@ function getWaitersForSelectDishCard(baseUrl, selectOrderItemCards) {
 document.getElementById('btnDAdmin').addEventListener('click', async function () {
     const baseUrl = await window.api.getBaseUrl();
     const isActiveAdmin = await checkAdminSession(baseUrl, localStorage.getItem("userId"));
-    console.log(isActiveAdmin);
+   // console.log(isActiveAdmin);
 
 
 
@@ -2919,7 +2919,7 @@ document.getElementById('logOut').addEventListener('click', async function () {
     const baseUrl = await window.api.getBaseUrl();
     localStorage.setItem("action", "logout");
     const isActiveAdmin = await checkAdminSession(baseUrl, localStorage.getItem("userId"));
-    console.log(isActiveAdmin);
+   // console.log(isActiveAdmin);
 
     if (!isActiveAdmin) {
         dishCardListArea.style.pointerEvents = "none"
@@ -2996,7 +2996,7 @@ async function getShiftEndStartFloat(baseUrl) {
         }
 
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         document.getElementById("shiftend-start-float").value = data.data
         document.getElementById("shiftend-end-float").value = data.data
         // return data; 
@@ -3086,7 +3086,7 @@ async function sendEndShift(baseUrl) {
 
 async function cashierSessionSummary(responseData) {
     document.getElementById("cashSettlementPopup").style.display = "flex";
-    console.log(responseData);
+   // console.log(responseData);
     const startDateTime = responseData.data.startDateTime;
     const endDateTime = responseData.data.endDateTime;
 

@@ -1922,7 +1922,7 @@ async function creditOrderDetailsPopup(baseUrl, orderId) {
         }
 
         const creditOrderPaymentList = await response.json();
-        console.log(creditOrderPaymentList);
+       // console.log(creditOrderPaymentList);
 
 
         const paymentDetails = creditOrderPaymentList.data[0];

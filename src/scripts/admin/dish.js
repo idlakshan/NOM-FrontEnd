@@ -489,7 +489,7 @@ async function loadAllDishIngredients(baseUrl) {
         }
 
         const responseData = await response.json();
-        console.log(responseData);
+       // console.log(responseData);
 
         // Extract valid ingredient names from the response
         validIngredients = responseData.data.map(ingredientArray => ingredientArray[7]);  // ingredient name is the 8th item in the array
@@ -533,13 +533,13 @@ async function loadAllDishIngredients(baseUrl) {
                         }
 
                         const responseData = await response.json();
-                        console.log(responseData);
+                        //console.log(responseData);
 
                         // Find the selected ingredient's array by name
                         const ingredientData = responseData.data.find(arr => arr[7] === selectedIngredient);
 
                         if (ingredientData) {
-                            console.log(ingredientData);
+                           // console.log(ingredientData);
 
                             const ingredientId = ingredientData[3];  // ingredient ID is the 4th item
                             const ingredientsUnit = ingredientData[5];  // unit is the 6th item
@@ -927,7 +927,7 @@ btnAddingredients.addEventListener("click", function () {
         });
         return;
     } else {
-        console.log(ingredientsArray);
+        //console.log(ingredientsArray);
 
         ingredientsPopup.style.display = 'none'; 
         dishBackgroundOverlay.classList.remove("overlay");
@@ -1043,7 +1043,7 @@ async function saveDish(baseUrl, ingredientsArray) {
     }
 
     const result = await response.text();
-     console.log(result);
+    // console.log(result);
     // console.log(fileInput.files[0]);    
 
     return result;
@@ -1148,7 +1148,7 @@ async function updateDish(baseUrl, ingredientsArray) {
     }
 
     const result = await response.text();
-     console.log(result);
+  //   console.log(result);
     return result;
 }
 
