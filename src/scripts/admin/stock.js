@@ -404,7 +404,8 @@ async function updateIngredient(baseUrl) {
             checkIngredientInputs();
             getAvailableIngredients(baseUrl);
             loadAllStock(baseUrl);
-            getAllActiveIngredients(baseUrl)
+            getAllActiveIngredients(baseUrl);
+            loadAllStockHistory(baseUrl)
 
         })
         .catch(error => {
@@ -455,6 +456,7 @@ async function deleteIngredient(baseUrl) {
                     getAvailableIngredients(baseUrl);
                     loadAllStock(baseUrl);
                     getAllActiveIngredients(baseUrl);
+                    loadAllStockHistory(baseUrl)
                 })
                 .catch(error => {
                     console.error('Error Deleting Ingredient:', error);
@@ -1000,8 +1002,8 @@ async function saveStock(baseUrl) {
 //change stock qty from + -
 ingredientQtyInput.value = '0.000';
 
+// Function to update stock quantity
 function updateStockQuantity(increment) {
-
     const unit = ingredientUnitInput.value;
     let qty = parseFloat(ingredientQtyInput.value) || 0;
 
@@ -1012,8 +1014,8 @@ function updateStockQuantity(increment) {
     }
 
     ingredientQtyInput.value = qty.toFixed(unit.toLowerCase() === 'pieces' ? 0 : 3);
-    validateStockUpdateInputs()
-};
+    validateStockUpdateInputs();
+}
 
 
 ingredientQtyInput.addEventListener('focus', () => {
@@ -1028,7 +1030,6 @@ ingredientQtyInput.addEventListener('blur', () => {
     }
 });
 
-//btn update stock validation
 function validateStockUpdateInputs() {
     if (ingredientNameInput.value.trim() === '' ||
         ingredientUnitInput.value.trim() === '' ||
@@ -1037,16 +1038,54 @@ function validateStockUpdateInputs() {
     } else {
         btnUpdateStock.disabled = false;
     }
-};
+}
+
+
+ingredientQtyInput.addEventListener('input', () => {
+    let value = ingredientQtyInput.value;
+    const validInputRegex = /^-?\d*\.?\d*$/;
+
+    if (!validInputRegex.test(value)) {
+        ingredientQtyInput.value = value.slice(0, -1);
+    }
+
+    validateStockUpdateInputs();
+});
+
 
 
 //------update stock------------
 async function updateStock(baseUrl) {
-
     let stockQty = document.getElementById('stock-update-ingredientQty').value;
     let stockId = document.getElementById('stock-update-ingredientId').value;
     let stockUnit = document.getElementById('stock-update-ingredientUnit').value;
+    let stockName = document.getElementById('stock-update-ingredientName').value; 
 
+    const isReduction = stockQty.startsWith('-');
+
+    const confirmationMessage = isReduction
+        ? `Are you sure you want to Reduce ${stockName} by ${stockQty}?`
+        : `Are you sure you want to Expand ${stockName} by ${stockQty}?`;
+
+
+    const confirmed = await Swal.fire({
+        title: 'Confirm Stock Update',
+        text: confirmationMessage,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        customClass: {
+            confirmButton: 'alert-orange-button',
+            cancelButton: 'alert-black-button' 
+        }
+    });
+
+    if (!confirmed.isConfirmed) {
+        return; 
+    }
+
+    // Proceed with the stock update if confirmed
     fetch(baseUrl + "/stockDetails/plus?stockId=" + stockId + "&qty=" + stockQty + "&unit=" + stockUnit, {
         method: 'PUT',
         headers: {
@@ -1054,9 +1093,7 @@ async function updateStock(baseUrl) {
             'Accept': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem("jwt")}`
         },
-
     })
-
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -1067,7 +1104,7 @@ async function updateStock(baseUrl) {
             Swal.fire({
                 position: "top-end",
                 icon: "success",
-                title: "stock updated successfully!",
+                title: "Stock updated successfully!",
                 showConfirmButton: false,
                 timer: 1500
             });
@@ -1076,22 +1113,21 @@ async function updateStock(baseUrl) {
             loadAllStockHistory(baseUrl);
             stockHistory(baseUrl);
             stockOverviewReport(baseUrl);
-            getAllActiveIngredients(baseUrl)
-           
+            getAllActiveIngredients(baseUrl);
 
+            // Clear the input fields
             document.getElementById('stock-update-ingredientName').value = '';
             document.getElementById('stock-update-ingredientUnit').value = '';
             document.getElementById('stock-update-ingredientQty').value = '0.000';
             document.getElementById('stock-update-ingredientId').value = '';
 
             validateStockUpdateInputs();
-
         })
         .catch(error => {
             console.error('Error saving Ingredient:', error);
         });
-
 }
+
 
 
 //searching events

@@ -167,6 +167,13 @@
     outline: none !important;
   }
 
+  .alert-black-button {
+    background-color:var(--secondary-color) !important;
+    border-color:var(--secondary-color) !important;
+    border: none !important;
+    outline: none !important;
+  }
+
 
 
 

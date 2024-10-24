@@ -171,7 +171,7 @@ function setDishpriceDefaultValues() {
 
    
         input.addEventListener('blur', function () {
-            if (this.value.trim() === "") {
+            if (this.value.trim() === "" || this.value.trim() === "0" || this.value.trim() === "0." || this.value.trim() === "0.0") {
                 this.value = "0.00";
                  checkDishInputs()
             }

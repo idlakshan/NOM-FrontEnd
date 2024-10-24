@@ -1646,22 +1646,26 @@ function filterCreditOrdrsTable(selectedOption) {
     const fromDateInput = document.getElementById('fromDateCreditOrders');
     const toDateInput = document.getElementById('toDateCreditOrders');
 
-    function showAllRows() {
-        tableRows.forEach(function (row) {
-            row.style.display = "table-row";
-        });
+    // Helper function to get only the date part
+    function getDateOnly(date) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
     }
 
-    tableRows.forEach(function (row) {
-        const rowDate = new Date(row.cells[2].textContent);
+    // Function to show all rows
+    function showAllRows() {
+        tableRows.forEach(row => row.style.display = "table-row");
+    }
+
+    // Main filtering logic
+    tableRows.forEach(row => {
+        const rowDate = new Date(row.cells[2].textContent); // Adjust index to your date cell
+        const rowDateOnly = getDateOnly(rowDate);
 
         switch (selectedOption) {
             case "Today":
             case "Yesterday":
             case "Last Month":
             case "Last Year":
-                fromDateInput.value = '';
-                toDateInput.value = '';
                 fromDateInput.disabled = true;
                 toDateInput.disabled = true;
 
@@ -1684,58 +1688,52 @@ function filterCreditOrdrsTable(selectedOption) {
                         break;
                 }
 
-                if (rowDate.toDateString() === compareDate.toDateString()) {
-                    row.style.display = "table-row";
-                    calculateOrdersWiseCreditTotals()
-                } else {
-                    row.style.display = "none";
-                }
+                // Show rows that match the comparison date
+                row.style.display = (rowDateOnly.getTime() === getDateOnly(compareDate).getTime()) ? "table-row" : "none";
                 break;
 
             case "Custom":
                 fromDateInput.disabled = false;
                 toDateInput.disabled = false;
-                fromDateInput.value = '';
-                toDateInput.value = new Date().toISOString().split('T')[0];
+                fromDateInput.value = ''; // Reset from date
+                toDateInput.value = getFormattedDate(today); // Set today's date in the correct format
 
                 showAllRows();
-
-                fromDateInput.addEventListener("change", function () {
-                    filterCustomDate();
-                });
-
-                toDateInput.addEventListener("change", function () {
-                    filterCustomDate();
-                });
+                fromDateInput.addEventListener("change", filterCustomDate);
+                toDateInput.addEventListener("change", filterCustomDate);
 
                 function filterCustomDate() {
-                    const fromDate = new Date(fromDateInput.value);
-                    const toDate = new Date(toDateInput.value);
+                    const fromDateOnly = getDateOnly(new Date(fromDateInput.value));
+                    const toDateOnly = getDateOnly(new Date(toDateInput.value));
 
-                    tableRows.forEach(function (row) {
-                        const rowDate = new Date(row.cells[2].textContent);
-                        if (rowDate >= fromDate && rowDate <= toDate) {
-                            row.style.display = "table-row";
-                            calculateOrdersWiseCreditTotals()
-                        } else {
-                            row.style.display = "none";
-                        }
+                    tableRows.forEach(row => {
+                        const rowDateOnly = getDateOnly(new Date(row.cells[2].textContent)); // Adjust index to your date cell
+                        row.style.display = (rowDateOnly >= fromDateOnly && rowDateOnly <= toDateOnly) ? "table-row" : "none";
                     });
+                    calculateOrdersWiseCreditTotals();
                 }
                 break;
 
             case "All":
             default:
-                fromDateInput.value = '';
-                toDateInput.value = '';
                 fromDateInput.disabled = true;
                 toDateInput.disabled = true;
                 showAllRows();
                 break;
         }
     });
-    calculateOrdersWiseCreditTotals()
+
+    calculateOrdersWiseCreditTotals();
 }
+
+
+function getFormattedDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 
 
 function calculateOrdersWiseCreditTotals() {
@@ -1922,7 +1920,7 @@ async function creditOrderDetailsPopup(baseUrl, orderId) {
         }
 
         const creditOrderPaymentList = await response.json();
-       // console.log(creditOrderPaymentList);
+        console.log(creditOrderPaymentList);
 
 
         const paymentDetails = creditOrderPaymentList.data[0];

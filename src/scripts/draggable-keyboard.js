@@ -106,6 +106,7 @@ function toggleAdminLetters(keyboard) {
 function handleKeyboardButtonClick(event) {
     const keyboardButtonValue = event.target.textContent;
 
+    // Prevent processing special buttons
     if (['abc?', '!#*', 'ABC?', '123'].includes(keyboardButtonValue)) {
         return;
     }
@@ -114,6 +115,7 @@ function handleKeyboardButtonClick(event) {
         const cursorPositionStart = selectedInput.selectionStart;
         const cursorPositionEnd = selectedInput.selectionEnd;
 
+ 
         if (keyboardButtonValue === 'Backspace') {
             if (cursorPositionStart !== cursorPositionEnd) {
                 selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + selectedInput.value.slice(cursorPositionEnd);
@@ -127,27 +129,33 @@ function handleKeyboardButtonClick(event) {
                 selectedInput.value = "0.000";
             }
         }
-
+  
         else if (keyboardButtonValue === 'Space') {
             selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + ' ' + selectedInput.value.slice(cursorPositionEnd);
             selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
         }
-
+      
         else {
             if (selectedInput.classList.contains('input-num') || selectedInput.type === 'number') {
                 if (['0', '0.0', '0.00', '0.', '0.000', ''].includes(selectedInput.value)) {
                     selectedInput.value = '';
                 }
 
-            
-                if ((keyboardButtonValue === '-' || keyboardButtonValue === '+') && cursorPositionStart === 0 && selectedInput.value === '') {
-                    selectedInput.value = keyboardButtonValue + selectedInput.value.slice(cursorPositionEnd);
+         
+                if (keyboardButtonValue === '-' && selectedInput.classList.contains('input-num')) {
+                    if (cursorPositionStart === 0 && selectedInput.value === '') {
+          
+                        selectedInput.value = '-' + selectedInput.value.slice(cursorPositionEnd);
+                    } else if (cursorPositionStart > 0) {
+                   
+                        selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + '-' + selectedInput.value.slice(cursorPositionEnd);
+                    }
                 }
-           
+                
                 else if (keyboardButtonValue === '.' && !selectedInput.value.includes('.')) {
                     selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + '.' + selectedInput.value.slice(cursorPositionEnd);
                 }
-             
+              
                 else if (!isNaN(keyboardButtonValue)) {
                     selectedInput.value = selectedInput.value.slice(0, cursorPositionStart) + keyboardButtonValue + selectedInput.value.slice(cursorPositionEnd);
                 }
@@ -158,7 +166,6 @@ function handleKeyboardButtonClick(event) {
             selectedInput.setSelectionRange(cursorPositionStart + 1, cursorPositionStart + 1);
         }
 
-      
         if (selectedInput.value === '' && ['dishSmallPrice', 'dishMediumPrice', 'dishLargePrice'].includes(selectedInput.id)) {
             selectedInput.value = '0.00';
         }
@@ -167,9 +174,11 @@ function handleKeyboardButtonClick(event) {
             selectedInput.value = '0.000';
         }
 
+        // Dispatch input event
         selectedInput.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
     }
 }
+
 
 
 
