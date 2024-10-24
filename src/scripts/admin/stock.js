@@ -93,20 +93,33 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
     btnAddIngredient.addEventListener("click", function () {
-        saveIngredient(baseUrl);
+        btnAddIngredient.disabled = true;   
+        saveIngredient(baseUrl).finally(() => {
+            btnAddIngredient.disabled = false;
+        });
+
     });
 
     btnUpdateIngredient.addEventListener("click", function () {
-        updateIngredient(baseUrl);
+        btnUpdateIngredient.disabled = true;   
+        updateIngredient(baseUrl).finally(() => {
+            btnUpdateIngredient.disabled = false;
+        });
     });
 
-    btnDeleteIngredient.addEventListener("click", function () {
-        deleteIngredient(baseUrl);
+    btnDeleteIngredient.addEventListener("click", function () {    
+        btnDeleteIngredient.disabled = true;   
+        deleteIngredient(baseUrl).finally(() => {
+            btnDeleteIngredient.disabled = false;
+        });
     });
 
 
     btnAddStock.addEventListener("click", function () {
-        saveStock(baseUrl);
+        btnAddStock.disabled = true;   
+        saveStock(baseUrl).finally(() => {
+            btnAddStock.disabled = false;
+        });
     });
 
     btnUpdateStock.addEventListener("click", function () {

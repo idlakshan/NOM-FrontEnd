@@ -17,9 +17,30 @@ document.addEventListener("DOMContentLoaded",async function () {
     const baseUrl = await window.api.getBaseUrl();
     document.getElementById("search_table_status").addEventListener("change", () => filterTables(baseUrl,allTables));
     document.getElementById("search_table_type").addEventListener("change", () => filterTables(baseUrl,allTables));
-    document.getElementById("btn_save_table").addEventListener("click", () => saveTable(baseUrl));
-    document.getElementById("btn_delete_table").addEventListener("click", () => deleteTable(baseUrl));
-    document.getElementById("btn_update_table").addEventListener("click", () => updateTable(baseUrl));
+    document.getElementById("btn_save_table").addEventListener("click", function () {
+        const btnSave = this;
+        btnSave.disabled = true;
+        saveTable(baseUrl).finally(() => {
+            btnSave.disabled = false;
+        });
+    });
+    
+    document.getElementById("btn_delete_table").addEventListener("click", function () {
+        const btnDelete = this;
+        btnDelete.disabled = true;
+        deleteTable(baseUrl).finally(() => {
+            btnDelete.disabled = false;
+        });
+    });
+    
+    document.getElementById("btn_update_table").addEventListener("click", function () {
+        const btnUpdate = this;
+        btnUpdate.disabled = true;
+        updateTable(baseUrl).finally(() => {
+            btnUpdate.disabled = false;
+        });
+    });
+    
 
     tableSize.addEventListener('input', resetForm);
     tableNumber.addEventListener('input', resetForm);

@@ -23,15 +23,24 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.querySelector('#search_customer_contact').addEventListener('input', customerFilterTable);
 
     customerSaveBtn.addEventListener('click', function () {
-        saveCustomer(baseUrl);
+        customerSaveBtn.disabled=true
+        saveCustomer(baseUrl).finally(() => {
+            customerSaveBtn.disabled = false;
+        });;
     });
 
     customerUpdateBtn.addEventListener('click', function () {
-        upadateCustomer(baseUrl);
+        customerSaveBtn.disabled=true
+        upadateCustomer(baseUrl).finally(() => {
+            customerSaveBtn.disabled = false;
+        });;
     })
 
     customerDeleteBtn.addEventListener('click', function () {
-        deleteCustomer(baseUrl);
+        customerSaveBtn.disabled=true
+        deleteCustomer(baseUrl).finally(() => {
+            customerSaveBtn.disabled = false;
+        });;
     });
 
 })
@@ -58,7 +67,7 @@ function validateCustomerName(customerName) {
 }
 
 function validateCustomerContact(customerContact) {
-    return /^(070|071|074|075|076|077|078)[-]?[0-9]{7}$/.test(customerContact);
+    return /^(070|071|074|075|076|077|078|072)[-]?[0-9]{7}$/.test(customerContact);
 }
 
 customerInputs.forEach(input => {

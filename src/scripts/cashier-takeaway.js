@@ -784,7 +784,7 @@ function displayPopupTabOne(baseUrl, dishes, index) {
                     confirmButton: 'alert-orange-button',
                 }
             });
-            return; 
+            return;
         }
 
         if (lastSelectedSizeTabOne) {
@@ -1354,7 +1354,7 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
             if (selectDishSizeBtnContainerTabTwo !== dishSizeBtnContainerTabTwo) {
                 selectDishSizeBtnContainerTabTwo.classList.add('disabledDishSizeContainer');
                 console.log("hse");
-                
+
             }
         });
     }
@@ -1507,7 +1507,7 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
                     confirmButton: 'alert-orange-button',
                 }
             });
-            return; 
+            return;
         }
         if (lastSelectedSizeTabTwo) {
             addItemToOrderItemsTabTwo(baseUrl, "Take-Away");
@@ -2081,8 +2081,8 @@ function displayPopupTabThree(baseUrl, dishes, index) {
         sizeBtnContainersTabThree.forEach((selectDishSizeBtnContainerTabThree) => {
             if (selectDishSizeBtnContainerTabThree !== dishSizeBtnContainerTabThree) {
                 selectDishSizeBtnContainerTabThree.classList.add('disabledDishSizeContainer');
-             
-                
+
+
             }
         });
     }
@@ -2103,7 +2103,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 btnInputNumber.addEventListener("click", handleNumberClickTabThree);
             });
             dishSizeInputTabThree.addEventListener("input", handleInputTabThree);
-            dishSizeInputTabThree.addEventListener("blur", handleBlurTabThree); 
+            dishSizeInputTabThree.addEventListener("blur", handleBlurTabThree);
             btnBackspaceNumbers.addEventListener("click", handleBackspaceTabThree);
         }
 
@@ -2126,8 +2126,8 @@ function displayPopupTabThree(baseUrl, dishes, index) {
 
         function handleBlurTabThree() {
             if (dishSizeInputTabThree.value === "") {
-                dishSizeInputTabThree.value = "1"; 
-                clickedSelectedDishQtyNumbersTabThree = "1"; 
+                dishSizeInputTabThree.value = "1";
+                clickedSelectedDishQtyNumbersTabThree = "1";
             }
         }
 
@@ -2136,8 +2136,8 @@ function displayPopupTabThree(baseUrl, dishes, index) {
             dishSizeInputTabThree.value = clickedSelectedDishQtyNumbersTabThree;
 
             if (dishSizeInputTabThree.value === "") {
-                dishSizeInputTabThree.value = "1"; 
-                clickedSelectedDishQtyNumbersTabThree = "1"; 
+                dishSizeInputTabThree.value = "1";
+                clickedSelectedDishQtyNumbersTabThree = "1";
             }
         }
 
@@ -2171,7 +2171,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 btnPlus.disabled = false;
                 btnMinus.disabled = false;
 
-             
+
                 sizeBtnContainerTabThree.style.border = "2px solid var(--text-field-success)";
                 sizeBtnImg.src = "../icons/correct.png";
                 sizeBtnImg.style.width = "40px";
@@ -2179,7 +2179,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 dishSizeInputTabThree.disabled = false;
                 btnBackspaceNumbers.disabled = false;
                 btnAddItem.disabled = false;
-                dishSizeInputTabThree.value = "1"; 
+                dishSizeInputTabThree.value = "1";
                 clickedSelectedDishQtyNumbersTabThree = "1";
                 clearedTabThree = false;
 
@@ -2192,7 +2192,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 sizeBtnImg.src = "../icons/plusicon.png";
                 sizeBtnImg.style.width = "50px";
                 sizeBtnImg.style.height = "50px";
-                dishSizeInputTabThree.value = ""; 
+                dishSizeInputTabThree.value = "";
                 dishSizeInputTabThree.disabled = true;
                 btnPlus.disabled = true;
                 btnMinus.disabled = true;
@@ -2210,7 +2210,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 });
 
                 dishSizeInputTabThree.removeEventListener("input", handleInputTabThree);
-                dishSizeInputTabThree.removeEventListener("blur", handleBlurTabThree); 
+                dishSizeInputTabThree.removeEventListener("blur", handleBlurTabThree);
                 btnBackspaceNumbers.removeEventListener("click", handleBackspaceTabThree);
 
                 sizeBtnContainersTabThree.forEach((dishSizeBtnContainer) => {
@@ -2218,7 +2218,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                 });
             }
 
-         
+
         });
     });
 
@@ -2227,7 +2227,7 @@ function displayPopupTabThree(baseUrl, dishes, index) {
     //============added cart to selected items============
 
     btnAddItem.addEventListener("click", function () {
-      
+
         if (/^0+(\.0+)?$/.test(dishSizeInputTabThree.value)) {
             Swal.fire({
                 title: "Invalid Quantity",
@@ -2237,10 +2237,10 @@ function displayPopupTabThree(baseUrl, dishes, index) {
                     confirmButton: 'alert-orange-button',
                 }
             });
-            return; 
+            return;
         }
-    
-  
+
+
         if (lastSelectedSizeTabThree) {
             addItemToOrderItemsTabThree(baseUrl, "Take-Away");
         } else {
@@ -2254,9 +2254,9 @@ function displayPopupTabThree(baseUrl, dishes, index) {
             });
         }
     });
-    
 
-    function addItemToOrderItemsTabThree(baseUrl,itemType) {
+
+    function addItemToOrderItemsTabThree(baseUrl, itemType) {
         if (!lastSelectedSizeTabThree) {
             return;
         }

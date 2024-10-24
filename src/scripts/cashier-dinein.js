@@ -278,6 +278,7 @@ function handleMobileNumberChange(mobileNumbers, customerNames, customerIds, cus
         customerName.value = customerNames[index];
         nameInput.value = customerNames[index];
         selectedCusId = customerIds[index];
+        localStorage.setItem('selectedCusId', selectedCusId);
         selectedCusName = customerNames[index];
         selectCusCreditStatus = customerCreditStatus[index];
     } else {
@@ -408,7 +409,7 @@ async function handleLoadAllTables(baseUrl) {
             },
         });
         const tables = await response.json();
-        // console.log(tables);
+         console.log(tables);
 
         const tableInnerArea = document.querySelector(".cashier-dinein-table-inner-area-body");
         const check = document.querySelector("#checkbox-dinein-tables");
@@ -1790,6 +1791,8 @@ btnPay.addEventListener('click',async function () {
     const orderId = document.querySelector("#dinein_orderId").value;
     const tableId = document.querySelector(".dinein-table-id").value;
     btnPayClickHandler(subTotalValue, orderId, tableId);
+
+
 });
 
 
@@ -2029,13 +2032,15 @@ btnConfrim.addEventListener("click", async function () {
 async function ConfirmOrder() {
     try {
         const baseUrl = await window.api.getBaseUrl();
+      
+        
         const customerObj = {
             cusId: selectedCusId,
             cusMobileNo: selectCusContact,
             cusName: selectedCusName,
             cusStatus: 1
         };
-
+        //console.log(customerObj);
         const orderId = orderIdElement.value;
         const netTotal = parseFloat(orderNetTotal.innerText);
 
@@ -2082,6 +2087,14 @@ async function ConfirmOrder() {
 
 
 async function confirmPayment(baseUrl, orderId) {
+    const selectedCusId = localStorage.getItem('selectedCusId');
+    //console.log(selectedCusId);
+    
+    if (!selectedCusId) {
+        console.error("selectedCusId is undefined or null. Please select a customer.");
+        return false;
+    }
+    
     function getCurrentDate() {
         const now = new Date();
         const year = now.getFullYear();
@@ -2140,13 +2153,15 @@ async function confirmPayment(baseUrl, orderId) {
 
         const data = await response.json();
         console.log("Payment Success", data);
-        return true; 
+
+        return true;
 
     } catch (error) {
         console.error("Error in confirmPayment: ", error);
-        return false; 
+        return false;
     }
 }
+
 
 
 
@@ -2192,11 +2207,6 @@ function downloadAndShowPdf(baseUrl) {
             console.error('Error fetching and displaying PDF:', error);
         });
 }
-
-
-
-
-
 
 
 
