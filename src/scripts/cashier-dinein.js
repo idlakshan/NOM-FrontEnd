@@ -1263,6 +1263,7 @@ function handleDisplayPopup(baseUrl, dishes, index) {
             const selectedItemName = selectOrderItemCards.querySelector(".selectItemName");
             const selectedDishId = selectOrderItemCards.querySelector(".selectItemId");
             const selectedDishSize = selectOrderItemCards.querySelector(".selectItemSize");
+            const selectedDishType = selectOrderItemCards.querySelector(".selectItemType");
 
             if (isFirstOrderedCartItem && orderItemsContainer.children.length === 1) {
                 //console.log("First add");
@@ -1280,7 +1281,7 @@ function handleDisplayPopup(baseUrl, dishes, index) {
             }
 
             qtyChangeEventHandler(baseUrl, btnQtyMinus, btnQtyPlus, selectItemQty, selectedSizePrice, priceElement, selectOrderItemCards);
-            dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItemName, selectedDishId, selectedDishSize, selectItemQty, priceElement, selectOrderItemCards);
+            dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItemName, selectedDishId, selectedDishSize, selectItemQty, priceElement, selectOrderItemCards,selectedDishType);
             getWaitersForSelectDishCard(baseUrl, selectOrderItemCards);
         }
 
@@ -1651,11 +1652,15 @@ function getWaitersForSelectDishCard(baseUrl, selectOrderItemCards) {
             const orderId = document.getElementById("dinein_orderId").value;
             const selectedDishId = card.querySelector(".selectItemId").innerText;
             const selectedDishSize = card.querySelector(".selectItemSize").innerText;
+            const selectedDishType = card.querySelector(".selectItemType").innerText;
 
-            console.log(orderId + " " + selectedDishId + " " + selectedDishSize);
+            console.log(selectedDishType);
+            
+
+           // console.log(orderId + " " + selectedDishId + " " + selectedDishSize);
 
             try {
-                const response = await fetch(`${baseUrl}/CustomerWiseOrderDetails?orderId=${orderId}&dishId=${selectedDishId}&dishSize=${selectedDishSize}`, {
+                const response = await fetch(`${baseUrl}/CustomerWiseOrderDetails?orderId=${orderId}&dishId=${selectedDishId}&dishSize=${selectedDishSize}&orderType=${selectedDishType}`, {
                     method: "GET",
                     headers: {
                         Accept: "application/json",
@@ -1668,8 +1673,7 @@ function getWaitersForSelectDishCard(baseUrl, selectOrderItemCards) {
                 if (Array.isArray(dishDetails.data)) {
                     const uniqueWaitersSet = new Set(dishDetails.data.map(detail => detail.waiterName));
                     const uniqueWaitersList = [...uniqueWaitersSet];
-
-                    console.log("Unique Waiters List:", uniqueWaitersList);
+                    console.log("Unique Waiters List:", uniqueWaitersList); 
 
                     const waitersDatalist = document.getElementById("waiters_list");
                     waitersDatalist.innerHTML = "";
@@ -1689,7 +1693,7 @@ function getWaitersForSelectDishCard(baseUrl, selectOrderItemCards) {
 
 
     document.querySelector("#dinein-container").addEventListener("click", (event) => {
-        // Check if the click is NOT inside the currently selected card or waiter input
+
         if (!event.target.closest(".selectItemCard") && !event.target.closest(".waiterName")) {
             if (currentlySelectedCard) {
                 currentlySelectedCard.style.border = "";
@@ -2302,9 +2306,10 @@ function getPreviousOrderDetails(baseUrl, tableNo) {
                             const selectedItemName = selectOrderItemCards.querySelector(".selectItemName");
                             const selectedDishId = selectOrderItemCards.querySelector(".selectItemId");
                             const selectedDishSize = selectOrderItemCards.querySelector(".selectItemSize");
+                            const selectedDishType = selectOrderItemCards.querySelector(".selectItemType");
 
                             qtyChangeEventHandler(baseUrl, btnQtyMinus, btnQtyPlus, selectItemQty, item[9], priceElement, selectOrderItemCards);
-                            dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItemName, selectedDishId, selectedDishSize, selectItemQty, priceElement, selectOrderItemCards);
+                            dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItemName, selectedDishId, selectedDishSize, selectItemQty, priceElement, selectOrderItemCards,selectedDishType);
                          
                             previousDishCardSelectEvent(baseUrl, selectOrderItemCards);
                         }
@@ -2352,12 +2357,13 @@ async function previousDishCardSelectEvent(baseUrl, selectOrderItemCards) {
             const orderId = document.getElementById("dinein_orderId").value;
             const selectedDishId = selectOrderItemCards.querySelector(".selectItemId").innerText;
             const selectedDishSize = selectOrderItemCards.querySelector(".selectItemSize").innerText;
+            const selectedDishType = selectOrderItemCards.querySelector(".selectItemType").innerText;
 
             console.log(`OrderId: ${orderId}, DishId: ${selectedDishId}, DishSize: ${selectedDishSize}`);
 
             try {
            
-                const response = await fetch(`${baseUrl}/CustomerWiseOrderDetails?orderId=${orderId}&dishId=${selectedDishId}&dishSize=${selectedDishSize}`, {
+                const response = await fetch(`${baseUrl}/CustomerWiseOrderDetails?orderId=${orderId}&dishId=${selectedDishId}&dishSize=${selectedDishSize}&orderType=${selectedDishType}`, {
                     method: "GET",
                     headers: {
                         Accept: "application/json",
@@ -2366,6 +2372,8 @@ async function previousDishCardSelectEvent(baseUrl, selectOrderItemCards) {
                 });
 
                 const dishDetails = await response.json();
+             //   console.log(dishDetails);
+                
 
                 if (Array.isArray(dishDetails.data)) {
                     
@@ -2442,7 +2450,7 @@ function handleEnabledSelectedOrderItemsCard() {
 
 
 //=selected dishcard popup event(filter by waiter name and delete dish details)============
-async function dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItemName, selectedDishIdElement, selectedDishSizeElement, selectItemQty, priceElement, selectOrderItemCards) {
+async function dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItemName, selectedDishIdElement, selectedDishSizeElement, selectItemQty, priceElement, selectOrderItemCards,dishTypeElement) {
     btnDishCardPopup.addEventListener("click", async function () {
         console.log(selectedItemName, selectItemQty, priceElement);
         const unitPrice = parseFloat(priceElement.innerText) / parseInt(selectItemQty.innerText);
@@ -2453,9 +2461,10 @@ async function dishCardDetailsPopupEvent(baseUrl, btnDishCardPopup, selectedItem
         const orderId = document.getElementById("dinein_orderId").value;
         const selectedDishId = selectedDishIdElement.innerText;
         const selectedDishSize = selectedDishSizeElement.innerText;
+        const selectedDishType = dishTypeElement.innerText;
 
         try {
-            const response = await fetch(baseUrl + '/CustomerWiseOrderDetails?orderId=' + orderId + '&dishId=' + selectedDishId + '&dishSize=' + selectedDishSize, {
+            const response = await fetch(baseUrl + '/CustomerWiseOrderDetails?orderId=' + orderId + '&dishId=' + selectedDishId + '&dishSize=' + selectedDishSize + '&orderType='+selectedDishType, {
                 method: "GET",
                 headers: {
                     Accept: "application/json",
