@@ -1783,6 +1783,9 @@ function handlePayButtonValidation() {
 }
 
 // function to btnPay click event handler
+
+let currentlyFocusedInput = null;
+let eventListenersAdded = false;
 btnPay.addEventListener('click',async function () {
     const baseUrl = await window.api.getBaseUrl();
     creditStatusHandle(baseUrl);
@@ -1820,7 +1823,7 @@ function btnPayClickHandler(subTotalValue, orderId, tableId) {
     paymentType("One");
 }
 
-let currentlyFocusedInput = null;
+
 function paymentType(tabNumber) {
     const inputPayCash = document.querySelector(`#inputpaycash${tabNumber}`);
     const inputPayCard = document.querySelector(`#inputpaycard${tabNumber}`);
@@ -1918,8 +1921,11 @@ function paymentType(tabNumber) {
     clearInput(inputPayCard);
     clearInput(inputPayCredit);
 
-    handleKeyPress();
-    payOrderKeyboardEvent();
+    if (!eventListenersAdded) {
+        handleKeyPress();
+        payOrderKeyboardEvent();
+        eventListenersAdded = true; 
+    }
 }
 
 //=====payOrder keyboard input event==============
@@ -2012,6 +2018,15 @@ btnConfrim.addEventListener("click", async function () {
                 location.reload();
                 
                 btnConfrim.disabled = false;
+            }else{
+                btnConfrim.disabled = true; 
+                
+                await downloadAndShowPdf(baseUrl); 
+                
+                document.getElementById("confirm-order-panel-dinein").reset();
+                location.reload();
+                
+                btnConfrim.disabled = false;
             }
         });
 
@@ -2088,7 +2103,7 @@ async function ConfirmOrder() {
 
 async function confirmPayment(baseUrl, orderId) {
     const selectedCusId = localStorage.getItem('selectedCusId');
-    //console.log(selectedCusId);
+    console.log(selectedCusId);
     
     if (!selectedCusId) {
         console.error("selectedCusId is undefined or null. Please select a customer.");
