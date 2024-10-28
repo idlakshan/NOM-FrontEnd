@@ -23,24 +23,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.querySelector('#search_customer_contact').addEventListener('input', customerFilterTable);
 
     customerSaveBtn.addEventListener('click', function () {
-        customerSaveBtn.disabled=true
-        saveCustomer(baseUrl).finally(() => {
-            customerSaveBtn.disabled = false;
-        });;
+        saveCustomer(baseUrl)
     });
 
     customerUpdateBtn.addEventListener('click', function () {
-        customerSaveBtn.disabled=true
-        upadateCustomer(baseUrl).finally(() => {
-            customerSaveBtn.disabled = false;
-        });;
+        upadateCustomer(baseUrl)
     })
 
     customerDeleteBtn.addEventListener('click', function () {
-        customerSaveBtn.disabled=true
-        deleteCustomer(baseUrl).finally(() => {
-            customerSaveBtn.disabled = false;
-        });;
+        deleteCustomer(baseUrl)
     });
 
 })

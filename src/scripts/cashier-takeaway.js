@@ -946,7 +946,10 @@ function btnPayClickHandlerTabOne(subTotalValue) {
 }
 
 
-btnPayTabOne.addEventListener('click', function () {
+btnPayTabOne.addEventListener('click',async function () {
+
+    const baseUrl = await window.api.getBaseUrl();
+    creditStatusHandle(baseUrl,"One",inputMobileElementTab1);
 
     const inputPayCash = document.querySelector('#inputpaycashOne');
     const inputPayCar = document.querySelector('#inputpaycardOne');
@@ -969,11 +972,11 @@ btnPayTabOne.addEventListener('click', function () {
         return
     }
 
-    if (selectCusCreditStatusTabOne === "Disabled" || inputMobileElementTab1.value === "unKnown") {
-        inputCreditTabOne.disabled = true
-    } else if (selectCusCreditStatusTabOne === "Enabled") {
-        inputCreditTabOne.disabled = false
-    }
+    // if (selectCusCreditStatusTabOne === "Disabled" || inputMobileElementTab1.value === "unKnown") {
+    //     inputCreditTabOne.disabled = true
+    // } else if (selectCusCreditStatusTabOne === "Enabled") {
+    //     inputCreditTabOne.disabled = false
+    // }
     const subTotalValue = document.querySelector("#subTotalTab1").innerText;
     btnPayClickHandlerTabOne(subTotalValue);
 });
@@ -1671,7 +1674,10 @@ function btnPayClickHandlerTabTwo(subTotalValue) {
 }
 
 
-btnPayTabTwo.addEventListener('click', function () {
+btnPayTabTwo.addEventListener('click',async function () {
+
+    const baseUrl = await window.api.getBaseUrl();
+    creditStatusHandle(baseUrl,"Two",inputMobileElementTab2);
 
     const inputPayCash = document.querySelector('#inputpaycashTwo');
     const inputPayCar = document.querySelector('#inputpaycardTwo');
@@ -2408,7 +2414,11 @@ function btnPayClickHandlerTabThree(subTotalValue) {
     setupPaymentType("Three");
 }
 
-btnPayTabThree.addEventListener('click', function () {
+btnPayTabThree.addEventListener('click',async function () {
+
+    const baseUrl = await window.api.getBaseUrl();
+    creditStatusHandle(baseUrl,"Three",inputMobileElementTab3);
+
     const inputPayCash = document.querySelector('#inputpaycashThree');
     const inputPayCar = document.querySelector('#inputpaycardThree');
     const inputPayCredit = document.querySelector('#inputpaycreditThree');
@@ -2848,6 +2858,34 @@ function setupPaymentType(tabNumber, updateBalanceFunction,) {
 }
 
 
+
+//function to check customer credit status
+async function creditStatusHandle(baseUrl,tabNumber,mobileInput) {
+    //console.log(mobileInput);
+    
+    const mobileNumber=mobileInput.value;
+
+    try {
+        const response = await fetch(baseUrl + "/customer?contactNo="+mobileNumber, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        });
+        const isCreditedCustomer = await response.json();
+        // console.log(isCreditedCustomer);
+         if (isCreditedCustomer.data === false || isCreditedCustomer.value === "unKnown") {
+            document.querySelector(`#inputpaycredit${tabNumber}`).disabled = true;
+        } else if (isCreditedCustomer.data === true) {
+            document.querySelector(`#inputpaycredit${tabNumber}`).disabled = false;
+        }
+
+
+    } catch (error) {
+        console.error("Error fetching customer data:", error);
+    }
+}
 
 
 //save customer event

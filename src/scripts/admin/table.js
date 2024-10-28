@@ -289,7 +289,15 @@ async function deleteTable(baseUrl) {
                 })
                 .catch(error => {
                     console.error('Error Deleting Employer:', error);
-                    alert('This Employee is already deleted.');
+                    Swal.fire({
+                        title: "Oops...",
+                        text: "Cannot delete, an order has already been assigned to this table!",
+                        icon: "warning",
+                        customClass: {
+                            confirmButton: 'alert-orange-button',
+                        }
+                    });
+                
                 });
         }
     });

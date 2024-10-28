@@ -85,12 +85,11 @@ async function loadAllOrders(baseUrl) {
 
         const responseData = await response.json();
         const orders = responseData.data;
+        console.log(orders);
+        
 
         const tblOrderBody = document.getElementById('tblOrderBody');
-        if (!tblOrderBody) {
-            console.error('Table body element not found');
-            return;
-        }
+   
         tblOrderBody.innerHTML = '';
 
         orders.forEach(order => {

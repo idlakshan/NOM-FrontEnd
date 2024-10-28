@@ -489,10 +489,9 @@ async function loadAllDishIngredients(baseUrl) {
         }
 
         const responseData = await response.json();
-       // console.log(responseData);
+     console.log(responseData);
 
-        // Extract valid ingredient names from the response
-        validIngredients = responseData.data.map(ingredientArray => ingredientArray[7]);  // ingredient name is the 8th item in the array
+        validIngredients = responseData.data.map(ingredientArray => ingredientArray[7]);  
 
         const inputs = document.querySelectorAll('.ingredients-input');
 
@@ -533,18 +532,18 @@ async function loadAllDishIngredients(baseUrl) {
                         }
 
                         const responseData = await response.json();
-                        //console.log(responseData);
+                        console.log(responseData);
 
-                        // Find the selected ingredient's array by name
+                      
                         const ingredientData = responseData.data.find(arr => arr[7] === selectedIngredient);
 
                         if (ingredientData) {
                            // console.log(ingredientData);
 
-                            const ingredientId = ingredientData[3];  // ingredient ID is the 4th item
-                            const ingredientsUnit = ingredientData[5];  // unit is the 6th item
+                            const ingredientId = ingredientData[3];  
+                            const ingredientsUnit = ingredientData[5];  
 
-                            // Update the input fields with ingredient ID and unit
+                         
                             document.getElementById(idElementId).value = ingredientId;
                             document.getElementById(unitInputElementId).value = ingredientsUnit;
                         }
