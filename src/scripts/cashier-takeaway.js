@@ -3880,6 +3880,7 @@ document.getElementById("btnDAdmin").addEventListener("click", function () {
 });
 
 document.getElementById("btnsummary-close").addEventListener("click", function () {
+    showLoadingScreen()
     const role = localStorage.getItem("role");
     const action = localStorage.getItem("action");
 
@@ -3892,6 +3893,7 @@ document.getElementById("btnsummary-close").addEventListener("click", function (
     if (isClear) {
         window.location = './login.html';
     }
+    hideLoadingScreen()
 });
 
 
@@ -3968,3 +3970,13 @@ function payTkOrdersKeyboardEvent() {
         }
     }
 }
+
+
+function showLoadingScreen() {
+    document.getElementById("loadingScreen").style.display = "flex";
+  }
+  
+  function hideLoadingScreen() {
+    document.getElementById("loadingScreen").style.display = "none";
+  }
+  

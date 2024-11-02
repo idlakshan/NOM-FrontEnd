@@ -512,8 +512,12 @@ async function getAvailableIngredients(baseUrl) {
 
       
         inputField.on('input', function () {
-            const inputValue = this.value.toLowerCase();      
+            const inputValue = this.value.toLowerCase();   
+            console.log(ingredientNames);
+               
             const isIngredientExist = ingredientNames.some(option => option.toLowerCase() === inputValue);
+            console.log(isIngredientExist);
+            
 
             if (isIngredientExist) {
                 Swal.fire({

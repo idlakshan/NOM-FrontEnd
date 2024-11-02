@@ -542,6 +542,8 @@ function setTableToOccupied(baseUrl, tableNumber) {
     selectedTableId = tableNumber
     mobileInput.value='';
     nameInput.value ='';
+    fullTakeawayTotalElement.value='',
+    fullDineinTotalElement.value=''
     checkCustomerInputs()
 
     // CalculateFullTotal()
@@ -2250,7 +2252,7 @@ function getPreviousOrderDetails(baseUrl, tableNo) {
                 return response.json();
             })
             .then(data => {
-               // console.log(data);
+               console.log(data);
 
           
                 const tableData = data.data[0];
@@ -3067,6 +3069,7 @@ async function checkUserDetails(baseUrl, userId) {
 
 
 document.getElementById('btnDAdmin').addEventListener('click', async function () {
+    showLoadingScreen()
     const baseUrl = await window.api.getBaseUrl();
     const isActiveAdmin = await checkUserDetails(baseUrl, localStorage.getItem("userId"));
     console.log(isActiveAdmin);
@@ -3112,6 +3115,8 @@ document.getElementById('btnDAdmin').addEventListener('click', async function ()
             }
         });
     }
+
+    hideLoadingScreen()
 });
 
 
@@ -3316,6 +3321,7 @@ function setVarianceColor(elementId, varianceValue) {
 
 
 document.getElementById("btnsummary-close").addEventListener("click", function () {
+    showLoadingScreen();
     const role = localStorage.getItem("role");
     const action = localStorage.getItem("action");
 
@@ -3329,6 +3335,7 @@ document.getElementById("btnsummary-close").addEventListener("click", function (
     if (isClear) {
         window.location = './login.html';
     }
+    hideLoadingScreen();
 });
 
 document.querySelector("#shift-box-close-shiftend").addEventListener("click", function () {
@@ -3375,3 +3382,13 @@ document.getElementById('logOut').addEventListener('click', async function () {
     }
 
 });
+
+
+function showLoadingScreen() {
+    document.getElementById("loadingScreen").style.display = "flex";
+  }
+  
+  function hideLoadingScreen() {
+    document.getElementById("loadingScreen").style.display = "none";
+  }
+  

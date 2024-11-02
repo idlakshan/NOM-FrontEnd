@@ -18,9 +18,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+function showLoadingScreen() {
+  document.getElementById("loadingScreen").style.display = "flex";
+}
+
+function hideLoadingScreen() {
+  document.getElementById("loadingScreen").style.display = "none";
+}
+
 
 
 async function handleLogin() {
+  
+  showLoadingScreen();
   const userId = document.getElementById('login_userName').value;
   const password = document.getElementById('login_password').value;
 
@@ -65,6 +75,7 @@ async function handleLogin() {
       text: 'An unexpected error occurred. Please try again later.',
     });
   }
+  hideLoadingScreen();
 }
 
 
