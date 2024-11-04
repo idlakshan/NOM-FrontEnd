@@ -344,7 +344,19 @@ function handleSelectCustomerKeyboardEvent() {
     });
 
     keyEnter.addEventListener("click", function () {
-        numbericKeypad.style.display = "none";
+        if (inputMobileElement.value.trim() === "") {
+            inputMobileElement.value = "unKnown";
+
+
+            customerName.value = "unKnown";
+            nameInput.value = "unKnown";
+            selectedCusId = 1;
+            selectedCusName = "unKnown";
+            selectCusCreditStatus = "Disabled";
+    
+        } else {
+            numbericKeypad.style.display = 'none';
+        }
     });
 
 
@@ -1269,15 +1281,15 @@ function handleDisplayPopup(baseUrl, dishes, index) {
 
             if (isFirstOrderedCartItem && orderItemsContainer.children.length === 1) {
                 //console.log("First add");
-                // First time an item is added to the cart, so save the order
+             
                 saveDefaultOrder(baseUrl, selectOrderItemCards);
                 isFirstOrderedCartItem = false;
 
             } else {
-                // items are added to the cart, so just add the order details
+               
                 saveDefaultOrderItems(baseUrl, "plus", false, selectOrderItemCards);
             }
-            // Update the previousDishWaitersList with the current waiter
+           
             if (!previousDishWaitersList.includes(waiterListInput.value)) {
                 previousDishWaitersList.push(waiterListInput.value);
             }

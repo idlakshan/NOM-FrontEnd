@@ -3144,6 +3144,8 @@ async function searchCustomersTakeaway(baseUrl) {
         });
 
         const customers = await response.json();
+        console.log(customers);
+        
 
         const mobileNumbers = customers.data.map(customer => customer.cusMobileNo);
         const customerNames = customers.data.map(customer => customer.cusName);
@@ -3176,7 +3178,7 @@ async function searchCustomersTakeaway(baseUrl) {
 
             if (index !== -1) {
                 customerNameElement.value = customerNames[index];
-                nameInput.value = customerNames[index];  // Sync with popup
+                nameInput.value = customerNames[index];
 
                 if (tabIndex === 1) {
                     selectedCustomerNameTabOne = customerNames[index];
@@ -3255,7 +3257,7 @@ async function searchCustomersTakeaway(baseUrl) {
 
 
 // =============select Customer keyboard Event =============
-function setupNumericKeypad(tabIndex, inputElement, numericKeypad, numberKeys, keyBackspace, keyEnter) {
+function setupNumericKeypad(tabIndex, inputElement, numericKeypad, numberKeys, keyBackspace, keyEnter,customer) {
     inputElement.addEventListener("click", function () {
         hideAllNumericKeypads(tabIndex);
         numericKeypad.style.display = 'block';
@@ -3272,7 +3274,29 @@ function setupNumericKeypad(tabIndex, inputElement, numericKeypad, numberKeys, k
     });
 
     keyEnter.addEventListener("click", function () {
-        numericKeypad.style.display = 'none';
+        if (inputElement.value.trim() === "") {
+            inputElement.value = "unKnown";
+            customer.value = "unKnown";
+    
+            if (tabIndex === 1) {
+                selectedCustomerNameTabOne = "unKnown";
+                selectCusCreditStatusTabOne = "Disabled";
+                selectedCustomerIdTabOne = 1;
+                selectedCustomerMobileTabOne = "unKnown";
+            } else if (tabIndex === 2) {
+                selectedCustomerNameTabTwo = "unKnown";
+                selectCusCreditStatusTabTwo = "Disabled";
+                selectedCustomerIdTabTwo = 1;
+                selectedCustomerMobileTabTwo = "unKnown";
+            } else if (tabIndex === 3) {
+                selectedCustomerNameTabThree = "unKnown";
+                selectCusCreditStatusTabThree = "Disabled";
+                selectedCustomerIdTabThree = 1;
+                selectedCustomerMobileTabThree = "unKnown";
+            }
+        } else {
+            numericKeypad.style.display = 'none';
+        }
     });
 
     const inputEvent = new Event('input', {
@@ -3356,9 +3380,9 @@ function handleBackspace(inputElement) {
 
 
 function selectCustomerMobileEvent() {
-    setupNumericKeypad(1, inputMobileElementTab1, numbericKeypadOne, numberkeysOne, keyBackspaceOne, keyEnterOne);
-    setupNumericKeypad(2, inputMobileElementTab2, numbericKeypadTwo, numberkeysTwo, keyBackspaceTwo, keyEnterTwo);
-    setupNumericKeypad(3, inputMobileElementTab3, numbericKeypadThree, numberkeysThree, keyBackspaceThree, keyEnterThree);
+    setupNumericKeypad(1, inputMobileElementTab1, numbericKeypadOne, numberkeysOne, keyBackspaceOne, keyEnterOne,customerNameTab1);
+    setupNumericKeypad(2, inputMobileElementTab2, numbericKeypadTwo, numberkeysTwo, keyBackspaceTwo, keyEnterTwo,customerNameTab2);
+    setupNumericKeypad(3, inputMobileElementTab3, numbericKeypadThree, numberkeysThree, keyBackspaceThree, keyEnterThree,customerNameTab3);
 }
 
 
