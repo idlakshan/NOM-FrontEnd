@@ -98,7 +98,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     loadAllWaiters(baseUrl);
     handleCloseDishDetailsPopup();
 
-
     addCustomerEvent();
 
     handleCustomerSaveEvent(baseUrl);
@@ -404,7 +403,6 @@ function handleBackspace(inputElement) {
 
 
 //-------------------------------tables events-----------------------------------
-
 //function to load all tables============
 async function handleLoadAllTables(baseUrl) {
     checkInputTableValue();
@@ -1800,8 +1798,8 @@ function handlePayButtonValidation() {
     btnPay.disabled = !hasItems || isMobileEmpty || isNameEmpty
 }
 
-// function to btnPay click event handler
 
+// function to btnPay click event handler
 let currentlyFocusedInput = null;
 let eventListenersAdded = false;
 btnPay.addEventListener('click',async function () {
@@ -2005,8 +2003,6 @@ orderConfrimPanelClose.addEventListener("click", function () {
 
 
 //========confrim order event================
-
-
 btnConfrim.addEventListener("click", async function () {
     btnConfrim.disabled = true; 
 
@@ -2908,6 +2904,12 @@ let selectedInput;
 function addCustomerEvent() {
     btnAddCustomer.addEventListener("click", function () {
         addCustomerBox.style.display = "block";
+
+        if(mobileInput.value==="unKnown"){
+           mobileInput.disabled=true
+           nameInput.disabled=true
+           resetCustomerValidation()               
+        }
     });
 
     addCustomerBoxClose.addEventListener("click", function () {
@@ -2998,7 +3000,7 @@ async function creditStatusHandle(baseUrl) {
             },
         });
         const isCreditedCustomer = await response.json();
-         console.log(isCreditedCustomer);
+        // console.log(isCreditedCustomer);
          if (isCreditedCustomer.data === false || inputMobileElement.value === "unKnown") {
             document.querySelector("#inputpaycreditOne").disabled = true;
         } else if (isCreditedCustomer.data === true) {
