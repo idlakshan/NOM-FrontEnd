@@ -3030,10 +3030,35 @@ function takeawaySaveCustomerEvent(baseUrl) {
         });
 }
 
+//reset the validation state
+function resetCustomerValidation() {
+    customerInputsTakeaway.forEach(input => {
+        const container = input.parentElement;
+        const invalidText = container.querySelector('.invalid-text');
+        const validIcon = container.querySelector('.valid-text');
+
+        // Reset styles and validation state
+        container.style.borderColor = '';
+        invalidText.style.display = 'none';
+        if (validIcon) {
+            validIcon.style.display = 'none';
+        }
+    });
+
+    customerSaveBtn.disabled = true;
+}
+
 
 function addCustomerEvent() {
     btnAddCustomer.addEventListener("click", function () {
         addCustomerBox.style.display = "block";
+        const mobileInput=document.getElementById('addCustomerMobile');
+        const nameInput=document.getElementById('addCustomerName')
+        if(mobileInput.value==="unKnown" || nameInput.value==="unKnown"){
+            mobileInput.disabled=true
+            nameInput.disabled=true
+            resetCustomerValidation()               
+         }
     });
 
     addCustomerBoxClose.addEventListener("click", function () {
