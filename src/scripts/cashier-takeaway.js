@@ -1231,8 +1231,6 @@ function handleResetAfterTabonePayment(baseUrl) {
 
 
 
-
-
 //=======================================tab Two Process================================================================
 function selectedDishPopupTabTwo(baseUrl, dishes, dishCards) {
     dishCards.forEach((dishCard) => {
@@ -1420,8 +1418,8 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
         // Blur function to set value to "1" if empty
         function handleBlurTabTwo() {
             if (this.value === "") {
-                this.value = "1";  // Assign default value
-                clickedSelectedDishQtyNumbersTabTwo = "1"; // Update variable
+                this.value = "1"; 
+                clickedSelectedDishQtyNumbersTabTwo = "1";
             }
         }
 
@@ -1463,8 +1461,8 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
                 dishSizeInputTabTwo.disabled = false;
                 btnBackspaceNumbers.disabled = false;
                 btnAddItem.disabled = false;
-                dishSizeInputTabTwo.value = "1"; // Initial value set to "1"
-                clickedSelectedDishQtyNumbersTabTwo = "1"; // Initial value
+                dishSizeInputTabTwo.value = "1"; 
+                clickedSelectedDishQtyNumbersTabTwo = "1"; 
                 clearedTabTwo = false;
 
                 attachNumberPadListenersTabTwo();
@@ -1506,7 +1504,6 @@ function displayPopupTabTwo(baseUrl, dishes, index) {
 
 
     //============added cart to selected items============
-
     btnAddItem.addEventListener("click", function () {
         if (/^0+(\.0+)?$/.test(dishSizeInputTabTwo.value)) {
             Swal.fire({
@@ -3550,8 +3547,6 @@ function getOrderIdTabThree(baseUrl) {
 
 
 
-
-
 document.getElementById('btnDAdmin').addEventListener('click', async function () {
     const baseUrl = await window.api.getBaseUrl();
     const isActiveAdmin = await checkAdminSession(baseUrl, localStorage.getItem("userId"));
@@ -3801,7 +3796,6 @@ async function cashierSessionSummary(responseData) {
 
 
 
-
 //=====check cashier to strat shift==============
 async function checkCashierSession(baseUrl, userId) {
 
@@ -3944,7 +3938,6 @@ document.getElementById("btnsummary-close").addEventListener("click", function (
     }
     hideLoadingScreen()
 });
-
 
 
 

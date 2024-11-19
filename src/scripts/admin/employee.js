@@ -47,7 +47,7 @@ let selectedEmpInput;
 document.addEventListener('DOMContentLoaded', async function () {
     const baseUrl = await window.api.getBaseUrl();
 
-    loadAllEmployees(baseUrl);
+    loadAllEmployees(baseUrl, page = 0, size = 14)
 
     excDownloadBtn.addEventListener('click', function () {
         downloadTableAsExcel('tbl_employee');
@@ -344,7 +344,7 @@ async function saveEmployee(baseUrl) {
             timer: 1500
         });
 
-        loadAllEmployees(baseUrl);
+        loadAllEmployees(baseUrl, page = 0, size = 14)
         resetEmployeeInput();
         checkEmployeeInputs();
         countAllEmployee(baseUrl);
@@ -428,7 +428,7 @@ async function updateEmployee(baseUrl) {
         }
 
   
-        const { adminCount } = await loadAllEmployees(baseUrl); 
+        const { adminCount } = await loadAllEmployees(baseUrl, page = 0, size = 14); 
         const isRemovingAdmin = employeeData.userId === currentUserId &&
             employeeData.tblAuthUserRolesDTOS.every(role => role.userRoleId !== roleIds["Admin"]);
 
@@ -493,7 +493,7 @@ async function updateEmployee(baseUrl) {
             });
         } else {
      
-            loadAllEmployees(baseUrl);
+            loadAllEmployees(baseUrl, page = 0, size = 14)
             resetEmployeeInput();
             checkEmployeeInputs();
         }
@@ -515,7 +515,7 @@ async function updateEmployee(baseUrl) {
 //----------Employee delete event-----------
 async function deleteEmployee(baseUrl) {
     try {
-        const { groupedEmployees, adminCount } = await loadAllEmployees(baseUrl);
+        const { groupedEmployees, adminCount } = loadAllEmployees(baseUrl, page = 0, size = 14);
 
         const employeeId = employeeIdElement.value;
         const currentUserId = localStorage.getItem("userId");
@@ -597,7 +597,7 @@ async function deleteEmployee(baseUrl) {
                             });
 
                         } else {
-                            loadAllEmployees(baseUrl);
+                           loadAllEmployees(baseUrl, page = 0, size = 14)
                             resetEmployeeInput();
                             checkEmployeeInputs();
                             countAllEmployee(baseUrl);
@@ -628,70 +628,142 @@ async function deleteEmployee(baseUrl) {
 }
 
 
+//load all employee event
+async function loadAllEmployees(baseUrl, page, size) {
+    console.log(page, size);
 
-//----------Load All Employees-----------
-async function loadAllEmployees(baseUrl) {
-    const response = await fetch(baseUrl + '/user/usersAndRoles', {
-        method: "GET",
-        headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-    });
-    const employeesList = await response.json();
-   // console.log(employeesList);  
-    let groupedEmployees = {};
-    let adminCount = 0;
+    try {
+        const response = await fetch(`${baseUrl}/user/usersAndRoles?page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        });
 
-    employeesList.data.forEach(employee => {
-        const employeeId = employee[0];
-        const role = employee[6]?.trim()
-
-       // console.log(`Processing Employee ID: ${employeeId}, Role: ${role}`);
-
-        if (!groupedEmployees[employeeId]) {
-            groupedEmployees[employeeId] = {
-                id: employeeId,
-                name: employee[1],
-                contact: employee[2],
-                roles: [],
-                address: employee[3]
-            };
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data: ${response.statusText}`);
         }
 
-        groupedEmployees[employeeId].roles.push(role);
+        const employeesList = await response.json();
+        console.log(employeesList);
 
+        let groupedEmployees = {};
+        let adminCount = 0;
 
-        if (role === "Admin") {
-            adminCount++;
+        employeesList.data.data.forEach(employee => {
+            const employeeId = employee[0];
+            const role = employee[6]?.trim();
+
+            if (!groupedEmployees[employeeId]) {
+                groupedEmployees[employeeId] = {
+                    id: employeeId,
+                    name: employee[1],
+                    contact: employee[2],
+                    roles: [],
+                    address: employee[3],
+                };
+            }
+
+            groupedEmployees[employeeId].roles.push(role);
+
+            if (role === "Admin") {
+                adminCount++;
+            }
+        });
+
+        let employeeList = "";
+        let rowNumber = page * size + 1;
+
+        for (const employeeId in groupedEmployees) {
+            const employee = groupedEmployees[employeeId];
+            const roles = employee.roles.join(',');
+            employeeList += `
+                <tr>
+                    <td>${rowNumber++}</td>
+                    <td>${employee.id}</td>
+                    <td>${employee.name}</td>
+                    <td>${employee.contact}</td>
+                    <td>${roles}</td>
+                    <td>${employee.address}</td>
+                </tr>
+            `;
         }
-    });
-    // console.log('Grouped Employees:', groupedEmployees);
-    // console.log('Admin Count:', adminCount);
 
-    let employeeList = "";
-    let rowNumber = 1;
+        const employeeTableBody = document.getElementById("tbl_employee_body");
+        employeeTableBody.innerHTML = employeeList;
 
-    for (const employeeId in groupedEmployees) {
-        const employee = groupedEmployees[employeeId];
-        const roles = employee.roles.join(',');
-        employeeList += `
-            <tr>
-                <td>${rowNumber++}</td>
-                <td>${employee.id}</td>
-                <td>${employee.name}</td>
-                <td>${employee.contact}</td>
-                <td>${roles}</td>
-                <td>${employee.address}</td>
-            </tr>
-        `;
+        employeeTableClickEvenetHandle();
+        const totalPages = employeesList.data.totalCount
+        ? Math.ceil(employeesList.data.totalCount / size)
+        : 10;
+        updatePaginationControls(baseUrl, page, size,totalPages);
+
+        return { groupedEmployees, adminCount };
+    } catch (error) {
+        console.error("Error loading employees:", error);
+    }
+}
+
+
+//hanlde employee paginations
+function updatePaginationControls(baseUrl, currentPage, pageSize, totalPages) {
+    let paginationHtml = "";
+
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+     
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+       
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+     
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
     }
 
-    $('#tbl_employee_body').html(employeeList);
-    employeeTableClickEvenetHandle();
+    // Next Button
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
 
-    return { groupedEmployees, adminCount };
+    const paginationControls = document.getElementById("pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    // Attach Click Event to Pagination Buttons
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                loadAllEmployees(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
 }
+
+
+
+
 
 
 

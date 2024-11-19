@@ -710,9 +710,6 @@ async function loadAllWaiters(baseUrl) {
 
 
 
-
-
-
 //function to load all categories============
 async function handleLoadAllCategories(baseUrl, dishImagePath) {
     try {
@@ -2742,7 +2739,6 @@ async function changeTableOrderIdWhenChangeTable(baseUrl, tableNumber) {
 
 
 //-----------------------------------------customer events-------------------------------------------------
-
 //function to save customer event
 function validateCustomerName(customerName) {
     return /^[a-zA-Z\s]+$/.test(customerName);
