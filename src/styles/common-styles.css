@@ -386,7 +386,6 @@ img{
 
 
 
-
 .pagination {
     display: flex;
     justify-content: center;
@@ -394,7 +393,6 @@ img{
     gap: 10px;
     margin-top: 20px;
     font-family: 'Arial', sans-serif;
-    height: 6%;
 }
 
 

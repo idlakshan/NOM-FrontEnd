@@ -630,7 +630,7 @@ async function deleteEmployee(baseUrl) {
 
 //load all employee event
 async function loadAllEmployees(baseUrl, page, size) {
-    console.log(page, size);
+    //console.log(page, size);
 
     try {
         const response = await fetch(`${baseUrl}/user/usersAndRoles?page=${page}&size=${size}`, {
