@@ -18,7 +18,7 @@ const dataTable = document.getElementById('tblOrder').getElementsByTagName('tbod
 document.addEventListener("DOMContentLoaded", async function () {
     const baseUrl = await window.api.getBaseUrl();
 
-    loadAllOrders(baseUrl);
+    loadAllOrders(baseUrl,page = 0, size = 2);
 
     countCashPayment(baseUrl);
     countCreditPayment(baseUrl);
@@ -60,7 +60,7 @@ datepicker.addEventListener('change', filterTableByDate);
 //---------Load All Orders-------------
 async function loadAllOrders(baseUrl) {
     try {
-        const response = await fetch(`${baseUrl}/orders`, {
+        const response = await fetch(`${baseUrl}/orders/paged?page=0&size=5`, {
             method: "GET",
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
@@ -84,7 +84,7 @@ async function loadAllOrders(baseUrl) {
         }
 
         const responseData = await response.json();
-        const orders = responseData.data;
+        const orders = responseData.data.data;
         console.log(orders);
         
 

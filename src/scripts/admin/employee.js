@@ -47,7 +47,7 @@ let selectedEmpInput;
 document.addEventListener('DOMContentLoaded', async function () {
     const baseUrl = await window.api.getBaseUrl();
 
-    loadAllEmployees(baseUrl, page = 0, size = 14)
+    loadAllEmployees(baseUrl, page = 0, size = 10)
 
     excDownloadBtn.addEventListener('click', function () {
         downloadTableAsExcel('tbl_employee');
@@ -344,7 +344,7 @@ async function saveEmployee(baseUrl) {
             timer: 1500
         });
 
-        loadAllEmployees(baseUrl, page = 0, size = 14)
+        loadAllEmployees(baseUrl, page = 0, size = 10)
         resetEmployeeInput();
         checkEmployeeInputs();
         countAllEmployee(baseUrl);
@@ -428,7 +428,7 @@ async function updateEmployee(baseUrl) {
         }
 
   
-        const { adminCount } = await loadAllEmployees(baseUrl, page = 0, size = 14); 
+        const { adminCount } = await loadAllEmployees(baseUrl, page = 0, size = 10); 
         const isRemovingAdmin = employeeData.userId === currentUserId &&
             employeeData.tblAuthUserRolesDTOS.every(role => role.userRoleId !== roleIds["Admin"]);
 
@@ -493,7 +493,7 @@ async function updateEmployee(baseUrl) {
             });
         } else {
      
-            loadAllEmployees(baseUrl, page = 0, size = 14)
+            loadAllEmployees(baseUrl, page = 0, size = 10)
             resetEmployeeInput();
             checkEmployeeInputs();
         }
@@ -515,7 +515,7 @@ async function updateEmployee(baseUrl) {
 //----------Employee delete event-----------
 async function deleteEmployee(baseUrl) {
     try {
-        const { groupedEmployees, adminCount } = loadAllEmployees(baseUrl, page = 0, size = 14);
+        const { groupedEmployees, adminCount } = loadAllEmployees(baseUrl, page = 0, size = 10);
 
         const employeeId = employeeIdElement.value;
         const currentUserId = localStorage.getItem("userId");
@@ -597,7 +597,7 @@ async function deleteEmployee(baseUrl) {
                             });
 
                         } else {
-                           loadAllEmployees(baseUrl, page = 0, size = 14)
+                           loadAllEmployees(baseUrl, page = 0, size = 10)
                             resetEmployeeInput();
                             checkEmployeeInputs();
                             countAllEmployee(baseUrl);
