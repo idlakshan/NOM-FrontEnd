@@ -646,7 +646,7 @@ async function loadAllEmployees(baseUrl, page, size) {
         }
 
         const employeesList = await response.json();
-        console.log(employeesList);
+        //console.log(employeesList);
 
         let groupedEmployees = {};
         let adminCount = 0;

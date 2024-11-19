@@ -215,7 +215,7 @@ function saveCustomer(baseUrl) {
         .then(data => {
           //  console.log('Customer saved successfully:', data);
             checkCustomerInputs();
-            loadAllCustomerTotable(baseUrl);
+            loadAllCustomerToTable(baseUrl,page = 0, size = 8);
             resetInputStyles();
             Swal.fire({
                 position: "top-end",
@@ -301,7 +301,7 @@ function upadateCustomer(baseUrl) {
                 timer: 1500
             });
             //  console.log('Customer saved successfully:', data);
-            loadAllCustomerTotable(baseUrl)
+            loadAllCustomerToTable(baseUrl,page = 0, size = 8);
             resetInputStyles();
         })
         .catch(error => {
@@ -351,7 +351,7 @@ async function deleteCustomer(baseUrl) {
                         confirmButtonColor: "#EA6D27",
                         confirmButtonText: "OK"
                     });
-                    loadAllCustomerTotable(baseUrl);
+                    loadAllCustomerToTable(baseUrl,page = 0, size = 8);
                     resetInputStyles();
                 })
                 .catch(error => {
