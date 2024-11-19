@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const baseUrl = await window.api.getBaseUrl();
 
     customerNameElement.focus();
-    loadAllCustomerTotable(baseUrl);
+    loadAllCustomerToTable(baseUrl,page = 0, size = 8);
 
     document.querySelector('#search_customer_contact').addEventListener('input', customerFilterTable);
 
@@ -368,9 +368,9 @@ async function deleteCustomer(baseUrl) {
 
 
 //------------load all data to table------------ 
-async function loadAllCustomerTotable(baseUrl) {
+async function loadAllCustomerToTable(baseUrl, page, size) {
     try {
-        const response = await fetch(baseUrl + '/customer/one', {
+        const response = await fetch(`${baseUrl}/customer/paged?page=${page}&size=${size}`, {
             method: "GET",
             headers: {
                 Accept: "application/json",
@@ -383,22 +383,24 @@ async function loadAllCustomerTotable(baseUrl) {
         }
 
         const customersList = await response.json();
-        //console.log(customersList);
+        const customerData = customersList.data.data;
+        const totalCount = customersList.data.totalCount;
 
         let customerList = "";
 
-        for (let i = 0; i < customersList.data.length; i++) {
-            const customer = customersList.data[i];
+        let rowNumber = page * size + 1;
+
+        for (let i = 0; i < customerData.length; i++) {
+            const customer = customerData[i];
             const creditStatus = customer.creditStatus;
 
             const statusColor = creditStatus === "Disabled" ? "#101A24" : "#EA6D27";
-
 
             const isDisabled = customer.cusId === 1 && customer.cusName === "unKnown";
 
             customerList += `
                 <tr ${isDisabled ? 'class="disabled-row"' : ''}>
-                    <td>${i + 1}</td>
+                    <td>${rowNumber++}</td>
                     <td>${customer.cusId}</td>
                     <td>${customer.cusName}</td>
                     <td>${customer.cusMobileNo}</td>
@@ -409,11 +411,63 @@ async function loadAllCustomerTotable(baseUrl) {
 
         document.querySelector('#tblcustomer tbody').innerHTML = customerList;
         customerTableClickEvenetHandle();
+
+        const totalPages = Math.ceil(totalCount / size);
+        updateCustomerPaginationControls(baseUrl, page, size, totalPages);
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error loading customers:', error);
     }
 }
 
+function updateCustomerPaginationControls(baseUrl, currentPage, pageSize, totalPages) {
+    let paginationHtml = "";
+
+    // Previous Button
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    // Page Buttons
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    // Next Button
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("customer-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    // Attach Click Event to Pagination Buttons
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                loadAllCustomerToTable(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
 
 
 //------------reset inputs function-----------
