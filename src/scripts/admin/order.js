@@ -26,122 +26,35 @@ document.addEventListener("DOMContentLoaded", async function () {
     countAllOrders(baseUrl);
 
     document.querySelector("#selectOrderId_order").addEventListener("input", () => {
-        // filterOrderByTableId(baseUrl,tableId,page=0,size=5)
+        filterOrderByOrderId(baseUrl, page = 0, size = 5)
+        document.querySelector("#selectTable_order").value = ""
+        document.querySelector("#selectCustomer_order").value = ""
+        document.querySelector("#date-picker-order").value = ""
     });
 
     document.querySelector("#selectTable_order").addEventListener("input", () => {
-        filterOrderByTableId(baseUrl,page=0,size=5)
-        document.querySelector("#selectCustomer_order").value=""
+        filterOrderByTableId(baseUrl, page = 0, size = 5)
+        document.querySelector("#selectCustomer_order").value = ""
+        document.querySelector("#selectOrderId_order").value = ""
+        document.querySelector("#date-picker-order").value = ""
     });
 
     document.querySelector("#selectCustomer_order").addEventListener("input", () => {
-        filterOrderByCustomer(baseUrl,page=0,size=5);
-        
+        filterOrderByCustomer(baseUrl, page = 0, size = 5);
+        document.querySelector("#selectOrderId_order").value = ""
+        document.querySelector("#selectTable_order").value = ""
+        document.querySelector("#date-picker-order").value = ""
+
     });
     document.querySelector("#date-picker-order").addEventListener("input", () => {
-        orderFilterTable(baseUrl);
+        filterOrderByDate(baseUrl, page = 0, size = 5);
+        document.querySelector("#selectTable_order").value = ""
+        document.querySelector("#selectOrderId_order").value = ""
+        document.querySelector("#selectCustomer_order").value = ""
+       
     })
 
 });
-
-// async function orderFilterTable(baseUrl, size = 5) {
-//     try {
-
-//         const orderId = document.querySelector("#selectOrderId_order").value.trim();
-//         const tableId = document.querySelector("#selectTable_order").value.trim();
-//         const customer = document.querySelector("#selectCustomer_order").value.trim();
-//         const orderDate = document.querySelector("#date-picker-order").value.trim();
-
-
-//         const orderTableBody = document.querySelector("#tblOrderBody");
-//         orderTableBody.innerHTML = "";
-
-//         let page = 0;
-//         let found = false;
-
-
-//         while (!found) {
-//             const response = await fetch(`${baseUrl}/orders/paged?page=${page}&size=${size}`, {
-//                 method: "GET",
-//                 headers: {
-//                     Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-//                     "Content-Type": "application/json",
-//                 },
-//             });
-
-//             if (!response.ok) {
-//                 throw new Error("Failed to fetch order data");
-//             }
-
-//             const result = await response.json();
-//             const orders = result.data.data;
-
-
-//             const filteredOrders = orders.filter((order) => {
-//                 const matchesOrderId = orderId
-//                     ? order.orderId.includes(orderId) || order.orderId.replace('O-', '').includes(orderId)
-//                     : true;
-
-//                     const matchesTableId = tableId
-//                     ? order.tableId === tableId || 
-//                       (tableId.toLowerCase().includes('t') && order.tableId === 'TAB-1') ||
-//                       (tableId.toLowerCase().includes('t') && order.tableId.toLowerCase().includes('take a way'))
-//                     : true;
-
-//                     const matchesCustomer = customer
-//                     ? `${order.tblcustomer.cusId} - ${order.tblcustomer.cusName}`
-//                           .toLowerCase()
-//                           .includes(customer.toLowerCase())
-//                     : true;
-
-//                 const matchesOrderDate = orderDate
-//                     ? new Date(order.orderDateAndTime).toISOString().slice(0, 10) === orderDate
-//                     : true;
-
-//                 return matchesOrderId && matchesTableId && matchesCustomer && matchesOrderDate;
-//             });
-
-
-//             if (filteredOrders.length > 0) {
-//                 found = true;
-
-//                 filteredOrders.forEach((order) => {
-//                     let tableDisplay = order.tableId;
-//                     let tableColor = "";
-
-//                     if (order.tableId === "TAB-1") {
-//                         tableDisplay = "Take a Way";
-//                         tableColor = "color:var(--primary-color);";
-//                     }
-
-//                     const orderRow = `
-//                         <tr>
-//                             <td>${order.orderId}</td>
-//                             <td style="${tableColor}">${tableDisplay}</td>
-//                             <td>${order.tblcustomer.cusId} - ${order.tblcustomer.cusName}</td>
-//                             <td>${formatDate(order.orderDateAndTime)}</td>
-//                         </tr>`;
-//                     orderTableBody.insertAdjacentHTML("beforeend", orderRow);
-//                 });
-//             }
-
-//             if (orders.length < size) break;
-
-//             page++;
-//         }
-
-
-//         if (!found) {
-//             const noResultsRow = document.createElement("tr");
-//             noResultsRow.innerHTML = `
-//                 <td colspan="4">No orders found</td>
-//             `;
-//             orderTableBody.appendChild(noResultsRow);
-//         }
-//     } catch (error) {
-//         console.error("Error filtering orders:", error);
-//     }
-// }
 
 
 
@@ -161,7 +74,7 @@ function formatDate(dateString) {
 async function filterOrderByTableId(baseUrl, page, size) {
     const tableId = document.querySelector("#selectTable_order").value.trim();
     //console.log(`Filtering by Table ID: ${tableId}, Page: ${page}, Size: ${size}`);
-    
+
     try {
         const response = await fetch(`${baseUrl}/orders?tableId=${tableId}&page=${page}&size=${size}`, {
             method: "GET",
@@ -180,7 +93,7 @@ async function filterOrderByTableId(baseUrl, page, size) {
         const orders = responseData.data.data;
         //console.log("Filtered Orders:", orders);
         console.log(responseData.data);
-        
+
 
         const tblOrderBody = document.getElementById('tblOrderBody');
         tblOrderBody.innerHTML = '';
@@ -287,7 +200,7 @@ async function filterOrderByCustomer(baseUrl, page, size) {
 
         const orders = responseData.data.data;
         console.log(responseData.data);
-        
+
 
         const tblOrderBody = document.getElementById('tblOrderBody');
         tblOrderBody.innerHTML = '';
@@ -317,7 +230,7 @@ async function filterOrderByCustomer(baseUrl, page, size) {
             ? Math.ceil(responseData.data.totalCount / size)
             : 1;
 
-            updateOrderCustomerPaginationControls(baseUrl, page, size, totalPages, customerName);
+        updateOrderCustomerPaginationControls(baseUrl, page, size, totalPages, customerName);
 
     } catch (error) {
         console.error("Error filtering orders by customer:", error);
@@ -326,7 +239,7 @@ async function filterOrderByCustomer(baseUrl, page, size) {
 
 function updateOrderCustomerPaginationControls(baseUrl, currentPage, pageSize, totalPages, customerName = '') {
     console.log(currentPage, pageSize, totalPages);
-    
+
     let paginationHtml = "";
 
     paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
@@ -374,6 +287,223 @@ function updateOrderCustomerPaginationControls(baseUrl, currentPage, pageSize, t
 
 
 
+// Function to filter orders by order ID
+async function filterOrderByOrderId(baseUrl, page, size) {
+    const orderId = document.querySelector("#selectOrderId_order").value.trim();
+
+
+    try {
+        const response = await fetch(`${baseUrl}/orders?ordersId=${orderId}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+        }
+
+        const orders = responseData.data.data;
+        console.log(responseData.data);
+
+        const tblOrderBody = document.getElementById('tblOrderBody');
+        tblOrderBody.innerHTML = '';
+
+        orders.forEach(order => {
+            if (order.orderStatus === "Pending" || order.orderStatus === "deleted") return;
+
+            let tableDisplay = order.tableId;
+            let tableColor = '';
+
+            if (order.tableId === 'TAB-1') {
+                tableDisplay = 'Take Away';
+                tableColor = 'color:var(--primary-color);';
+            }
+
+            const orderRow = `
+                <tr>
+                    <td>${order.orderId}</td>
+                    <td style="${tableColor}">${tableDisplay}</td>
+                    <td>${order.tblcustomer.cusId} - ${order.tblcustomer.cusName}</td>
+                    <td>${formatDate(order.orderDateAndTime)}</td>
+                </tr>`;
+            tblOrderBody.insertAdjacentHTML('beforeend', orderRow);
+        });
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateOrderIdPaginationControls(baseUrl, page, size, totalPages, orderId);
+
+    } catch (error) {
+        console.error("Error filtering orders by order ID:", error);
+    }
+}
+
+function updateOrderIdPaginationControls(baseUrl, currentPage, pageSize, totalPages, orderId = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("order-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterOrderByOrderId(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
+
+
+// Function to filter orders by date
+async function filterOrderByDate(baseUrl, page, size) {
+    const dateInput = document.querySelector("#date-picker-order");
+    const date = dateInput.value.trim();
+
+    if (!date) {
+        loadAllOrders(baseUrl, page, size);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/orders?page=${page}&size=${size}&datetime=${date}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+        }
+
+        const orders = responseData?.data?.data;
+
+        if (!Array.isArray(orders)) {
+            throw new Error("Invalid data format: orders is not an array.");
+        }
+
+        const tblOrderBody = document.getElementById('tblOrderBody');
+        tblOrderBody.innerHTML = '';
+
+        orders.forEach(order => {
+            if (order.orderStatus === "Pending" || order.orderStatus === "deleted") return;
+
+            let tableDisplay = order.tableId;
+            let tableColor = '';
+
+            if (order.tableId === 'TAB-1') {
+                tableDisplay = 'Take Away';
+                tableColor = 'color:var(--primary-color);';
+            }
+
+            const orderRow = `
+                <tr>
+                    <td>${order.orderId}</td>
+                    <td style="${tableColor}">${tableDisplay}</td>
+                    <td>${order.tblcustomer.cusId} - ${order.tblcustomer.cusName}</td>
+                    <td>${formatDate(order.orderDateAndTime)}</td>
+                </tr>`;
+            tblOrderBody.insertAdjacentHTML('beforeend', orderRow);
+        });
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateOrderDatePaginationControls(baseUrl, page, size, totalPages, date);
+
+    } catch (error) {
+        console.error("Error filtering orders by date:", error);
+    }
+}
+
+function updateOrderDatePaginationControls(baseUrl, currentPage, pageSize, totalPages, date = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("order-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterOrderByDate(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
 
 
 
@@ -493,6 +623,7 @@ function updateOrderPaginationControls(baseUrl, currentPage, pageSize, totalPage
         });
     });
 }
+
 
 
 
