@@ -25,36 +25,163 @@ document.addEventListener("DOMContentLoaded", async function () {
     countCardPayment(baseUrl);
     countAllOrders(baseUrl);
 
+    document.querySelector("#selectOrderId_order").addEventListener("input", () => {
+        orderFilterTable(baseUrl);
+    });
+
+    document.querySelector("#selectTable_order").addEventListener("input", () => {
+        orderFilterTable(baseUrl);
+    });
+
+    document.querySelector("#selectCustomer_order").addEventListener("input", () => {
+        orderFilterTable(baseUrl);
+    });
+    document.querySelector("#date-picker-order").addEventListener("input", () => {
+        orderFilterTable(baseUrl);
+    })
+
 });
+
+async function orderFilterTable(baseUrl, size = 5) {
+    try {
+
+        const orderId = document.querySelector("#selectOrderId_order").value.trim();
+        const tableId = document.querySelector("#selectTable_order").value.trim();
+        const customer = document.querySelector("#selectCustomer_order").value.trim();
+        const orderDate = document.querySelector("#date-picker-order").value.trim();
+
+    
+        const orderTableBody = document.querySelector("#tblOrderBody");
+        orderTableBody.innerHTML = "";
+
+        let page = 0;
+        let found = false;
+
+   
+        while (!found) {
+            const response = await fetch(`${baseUrl}/orders/paged?page=${page}&size=${size}`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch order data");
+            }
+
+            const result = await response.json();
+            const orders = result.data.data;
+
+   
+            const filteredOrders = orders.filter((order) => {
+                const matchesOrderId = orderId
+                    ? order.orderId.includes(orderId) || order.orderId.replace('O-', '').includes(orderId)
+                    : true;
+
+                    const matchesTableId = tableId
+                    ? order.tableId === tableId || 
+                      (tableId.toLowerCase().includes('t') && order.tableId === 'TAB-1') ||
+                      (tableId.toLowerCase().includes('t') && order.tableId.toLowerCase().includes('take a way'))
+                    : true;
+
+                    const matchesCustomer = customer
+                    ? `${order.tblcustomer.cusId} - ${order.tblcustomer.cusName}`
+                          .toLowerCase()
+                          .includes(customer.toLowerCase())
+                    : true;
+
+                const matchesOrderDate = orderDate
+                    ? new Date(order.orderDateAndTime).toISOString().slice(0, 10) === orderDate
+                    : true;
+
+                return matchesOrderId && matchesTableId && matchesCustomer && matchesOrderDate;
+            });
+
+       
+            if (filteredOrders.length > 0) {
+                found = true;
+
+                filteredOrders.forEach((order) => {
+                    let tableDisplay = order.tableId;
+                    let tableColor = "";
+
+                    if (order.tableId === "TAB-1") {
+                        tableDisplay = "Take a Way";
+                        tableColor = "color:var(--primary-color);";
+                    }
+
+                    const orderRow = `
+                        <tr>
+                            <td>${order.orderId}</td>
+                            <td style="${tableColor}">${tableDisplay}</td>
+                            <td>${order.tblcustomer.cusId} - ${order.tblcustomer.cusName}</td>
+                            <td>${formatDate(order.orderDateAndTime)}</td>
+                        </tr>`;
+                    orderTableBody.insertAdjacentHTML("beforeend", orderRow);
+                });
+            }
+
+            if (orders.length < size) break;
+
+            page++;
+        }
+
+   
+        if (!found) {
+            const noResultsRow = document.createElement("tr");
+            noResultsRow.innerHTML = `
+                <td colspan="4">No orders found</td>
+            `;
+            orderTableBody.appendChild(noResultsRow);
+        }
+    } catch (error) {
+        console.error("Error filtering orders:", error);
+    }
+}
+
+
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 
 
 //----------Order search by Date------------------------
-function filterTableByDate() {
-    const selectedDate = datepicker.value;
-    const orderTableBody = document.getElementById('tblOrderBody');
-    const rows = orderTableBody.getElementsByTagName('tr');
-    for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        const dateCell = row.getElementsByTagName('td')[3];
-        if (!dateCell) continue;
+// function filterTableByDate() {
+//     const selectedDate = datepicker.value;
+//     const orderTableBody = document.getElementById('tblOrderBody');
+//     const rows = orderTableBody.getElementsByTagName('tr');
+//     for (let i = 0; i < rows.length; i++) {
+//         const row = rows[i];
+//         const dateCell = row.getElementsByTagName('td')[3];
+//         if (!dateCell) continue;
 
-        const dateInRow = dateCell.textContent.trim();
-        const dateInRowDateOnly = dateInRow.split(' ')[0];
+//         const dateInRow = dateCell.textContent.trim();
+//         const dateInRowDateOnly = dateInRow.split(' ')[0];
        
-        if (selectedDate === '') {
-            row.style.display = '';
-        } else {
-            if (selectedDate === dateInRowDateOnly) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        }
-    }
-}
+//         if (selectedDate === '') {
+//             row.style.display = '';
+//         } else {
+//             if (selectedDate === dateInRowDateOnly) {
+//                 row.style.display = '';
+//             } else {
+//                 row.style.display = 'none';
+//             }
+//         }
+//     }
+// }
 
-datepicker.addEventListener('change', filterTableByDate);
+// datepicker.addEventListener('change', filterTableByDate);
 
 
 //---------Load All Orders-------------  
@@ -112,53 +239,53 @@ async function loadAllOrders(baseUrl, page, size) {
             tblOrderBody.insertAdjacentHTML('beforeend', orderRow);  
         });  
 
-        const ordersList = [];  
-        const tableList = [];  
-        const customerList = [];  
+        // const ordersList = [];  
+        // const tableList = [];  
+        // const customerList = [];  
 
-        document.querySelectorAll('#tblOrderBody tr').forEach(row => {  
-            const orderId = row.cells[0].textContent.trim();  
-            if (!ordersList.includes(orderId)) ordersList.push(orderId);  
+        // document.querySelectorAll('#tblOrderBody tr').forEach(row => {  
+        //     const orderId = row.cells[0].textContent.trim();  
+        //     if (!ordersList.includes(orderId)) ordersList.push(orderId);  
 
-            const table = row.cells[1].textContent.trim();  
-            if (!tableList.includes(table)) tableList.push(table);  
+        //     const table = row.cells[1].textContent.trim();  
+        //     if (!tableList.includes(table)) tableList.push(table);  
 
-            const customer = row.cells[2].textContent.trim();  
-            if (!customerList.includes(customer)) customerList.push(customer);  
-        });  
+        //     const customer = row.cells[2].textContent.trim();  
+        //     if (!customerList.includes(customer)) customerList.push(customer);  
+        // });  
 
-        const applyAutocomplete = (inputId, dataList, filterBy) => {  
-            const inputField = $(`#${inputId}`);  
-            inputField.autocomplete({  
-                source: dataList,  
-                minLength: 1,  
-                select: function (event, ui) {  
-                    const selectedItem = ui.item.value.toLowerCase();  
-                    inputField.val(selectedItem);  
-                    filterTableRows(filterBy, selectedItem);  
-                }  
-            });  
+        // const applyAutocomplete = (inputId, dataList, filterBy) => {  
+        //     const inputField = $(`#${inputId}`);  
+        //     inputField.autocomplete({  
+        //         source: dataList,  
+        //         minLength: 1,  
+        //         select: function (event, ui) {  
+        //             const selectedItem = ui.item.value.toLowerCase();  
+        //             inputField.val(selectedItem);  
+        //             filterTableRows(filterBy, selectedItem);  
+        //         }  
+        //     });  
 
-            inputField.on('input', function () {  
-                const inputValue = this.value.toLowerCase();  
-                filterTableRows(filterBy, inputValue);  
-            });  
-        };  
+        //     inputField.on('input', function () {  
+        //         const inputValue = this.value.toLowerCase();  
+        //         filterTableRows(filterBy, inputValue);  
+        //     });  
+        // };  
 
-        const filterTableRows = (filterBy, value) => {  
-            document.querySelectorAll('#tblOrderBody tr').forEach(row => {  
-                const rowValue = row.cells[filterBy].textContent.trim().toLowerCase();  
-                if (rowValue.includes(value) || value === '') {  
-                    row.style.display = '';  
-                } else {  
-                    row.style.display = 'none';  
-                }  
-            });  
-        };  
+        // const filterTableRows = (filterBy, value) => {  
+        //     document.querySelectorAll('#tblOrderBody tr').forEach(row => {  
+        //         const rowValue = row.cells[filterBy].textContent.trim().toLowerCase();  
+        //         if (rowValue.includes(value) || value === '') {  
+        //             row.style.display = '';  
+        //         } else {  
+        //             row.style.display = 'none';  
+        //         }  
+        //     });  
+        // };  
 
-        applyAutocomplete('selectOrderId_order', ordersList, 0);  
-        applyAutocomplete('selectTable_order', tableList, 1);  
-        applyAutocomplete('selectCustomer_order', customerList, 2);  
+        // applyAutocomplete('selectOrderId_order', ordersList, 0);  
+        // applyAutocomplete('selectTable_order', tableList, 1);  
+        // applyAutocomplete('selectCustomer_order', customerList, 2);  
 
         const totalPages = responseData.data.totalCount  
             ? Math.ceil(responseData.data.totalCount / size)  

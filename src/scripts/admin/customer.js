@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
 //customer search event
-async function customerFilterTable(baseUrl, size = 6) {
+async function customerFilterTable(baseUrl, size = 8) {
     try {
         const searchedCustomer = document.querySelector("#search_customer_contact").value.trim();
 
