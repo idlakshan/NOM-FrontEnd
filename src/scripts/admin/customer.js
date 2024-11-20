@@ -20,7 +20,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     customerNameElement.focus();
     loadAllCustomerToTable(baseUrl,page = 0, size = 8);
 
-    document.querySelector('#search_customer_contact').addEventListener('input', customerFilterTable);
+    document.querySelector("#search_customer_contact").addEventListener("input", () => {
+        customerFilterTable(baseUrl);
+    });
 
     customerSaveBtn.addEventListener('click', function () {
         saveCustomer(baseUrl)
@@ -38,18 +40,84 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
 //customer search event
-function customerFilterTable() {
-    var searchedCustomer = document.querySelector('#search_customer_contact').value;
-    var customerTableRows = document.querySelectorAll('#tbl_customer_body tr');
-    customerTableRows.forEach(function (row) {
-        var customerId = row.cells[3].innerText;
-        if (customerId.includes(searchedCustomer)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
+async function customerFilterTable(baseUrl, size = 6) {
+    try {
+        const searchedCustomer = document.querySelector("#search_customer_contact").value.trim();
+
+        const customerTableBody = document.querySelector("#tbl_customer_body");
+        customerTableBody.innerHTML = "";
+
+        let page = 0;
+        let found = false;
+
+        while (!found) {
+            const response = await fetch(`${baseUrl}/customer/paged?page=${page}&size=${size}`, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch customer data");
+            }
+
+            const result = await response.json();
+            const customers = result.data.data;
+
+            const filteredCustomers = customers.filter((customer) =>
+                customer.cusMobileNo.includes(searchedCustomer)
+            );
+
+            if (filteredCustomers.length > 0) {
+                found = true;
+
+                let rowNumber = 1;
+                filteredCustomers.forEach((customer) => {
+                    const creditStatus = customer.creditStatus;
+                    const statusColor = creditStatus === "Disabled" ? "#101A24" : "#EA6D27";
+                    const isDisabled = customer.cusId === 1 && customer.cusName === "unKnown";
+
+                    const row = document.createElement("tr");
+                    if (isDisabled) {
+                        row.classList.add("disabled-row");
+                    }
+
+                    row.innerHTML = `
+                        <td>${rowNumber++}</td>
+                        <td>${customer.cusId}</td>
+                        <td>${customer.cusName}</td>
+                        <td>${customer.cusMobileNo}</td>
+                        <td style="color: ${statusColor}">${creditStatus}</td>
+                    `;
+
+                    customerTableBody.appendChild(row);
+                });
+            }
+
+            if (customers.length < size) break;
+
+            page++;
         }
-    });
+
+        if (!found) {
+            const noResultsRow = document.createElement("tr");
+            noResultsRow.innerHTML = `
+                <td colspan="5">No customers found</td>
+            `;
+            customerTableBody.appendChild(noResultsRow);
+        }
+    } catch (error) {
+        console.error("Error filtering customers:", error);
+    }
 }
+
+
+
+
+
+
 
 
 //----------Customer Validation---------------
