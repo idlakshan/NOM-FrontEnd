@@ -723,7 +723,6 @@ async function filterIngredientsByStatus(baseUrl, page, size) {
     }
 }
 
-
 function updateFilterIngredientsByStatusPaginationControls(baseUrl, currentPage, pageSize, totalPages, status = '') {
     let paginationHtml = "";
 
@@ -867,6 +866,108 @@ function updateFilterIngredientsByUnitPaginationControls(baseUrl, currentPage, p
             const selectedPage = parseInt(this.getAttribute("data-page"));
             if (selectedPage >= 0 && selectedPage < totalPages) {
                 filterIngredientsByUnit(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
+
+
+// Function to filter ingredients by name
+async function filterIngredientsByName(baseUrl, page, size) {
+    const name = document.querySelector("#search_ingredient").value.trim();
+
+    // If no name is entered, load all ingredients
+    if (!name) {
+        loadAllIngredients(baseUrl, page = 0, size = 10);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/ingredients?name=${name}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+        const ingredients = responseData.data.data; 
+        let tableHTML = "";
+
+        for (let i = 0; i < ingredients.length; i++) {
+            const ingredient = ingredients[i];
+            const status = ingredient.ingredientStatus === 1 ? "Active" : "In-Active";
+            const statusColor = ingredient.ingredientStatus === 1 ? "#00cc00" : "#ff3300";
+
+            tableHTML += `
+               <tr data-index="${i}" data-id="${ingredient.ingredientId}">
+                <td>${i + 1 + page * size}</td>
+                <td>${ingredient.ingredientName}</td>
+                <td>${ingredient.reOrderLevel}</td>
+                <td>${ingredient.ingredientsUnit}</td>   
+                <td style="color: ${statusColor};">${status}</td>
+            </tr>
+            `;
+        }
+
+        const tableBody = document.querySelector('#tbl_Ingredient tbody');
+        tableBody.innerHTML = tableHTML;
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateFilterIngredientsByNamePaginationControls(baseUrl, page, size, totalPages, name);
+
+    } catch (error) {
+        console.error("Error filtering ingredients by name:", error);
+    }
+}
+
+
+function updateFilterIngredientsByNamePaginationControls(baseUrl, currentPage, pageSize, totalPages, name = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("ingredient-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterIngredientsByName(baseUrl, selectedPage, pageSize);
             }
         });
     });
