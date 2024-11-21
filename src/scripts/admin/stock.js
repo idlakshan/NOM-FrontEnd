@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
     tabMoveEventHandle();
-    loadAllIngredients(baseUrl);
+    loadAllIngredients(baseUrl,page=0,size=10);
     filteringIngredientTable();
     getAvailableIngredients(baseUrl);
     loadAllStock(baseUrl,page=0,size=10)
@@ -247,10 +247,10 @@ async function populateSelectElement(elementId, defaultText, units,isDisabled) {
 
 
 
-//------Load All Ingredient----------------
-async function loadAllIngredients(baseUrl) {
+//------Load All Ingredients with Pagination----------------
+async function loadAllIngredients(baseUrl, page, size) {
     try {
-        const response = await fetch(baseUrl + "/ingredients/allIngredients", {
+        const response = await fetch(`${baseUrl}/ingredients/paged/allIngredients?page=${page}&size=${size}`, {
             method: 'GET',
             headers: {
                 Accept: "application/json",
@@ -261,34 +261,37 @@ async function loadAllIngredients(baseUrl) {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
+
         const responseData = await response.json();
-        //  console.log(responseData);
+        console.log(responseData);
+        
 
         let tableHTML = "";
+        for (let i = 0; i < responseData.data.data.length; i++) {
+            const ingredient = responseData.data.data[i];
+            const status = ingredient.ingredientStatus === 1 ? "Active" : "In-Active";
+            const statusColor = ingredient.ingredientStatus === 1 ? "#00cc00" : "#ff3300";
 
-        for (let i = 0; i < responseData.data.length; i++) {
-            const status = responseData.data[i].ingredientStatus === 1 ? "Active" : "In-Active";
-            const statusColor = responseData.data[i].ingredientStatus === 1 ? "#00cc00" : "#ff3300";
             tableHTML += `
-               <tr data-index="${i}" data-id="${responseData.data[i].ingredientId}">
+               <tr data-index="${i}" data-id="${ingredient.ingredientId}">
                 <td>${i + 1}</td>
-                <td>${responseData.data[i].ingredientName}</td>
-                   <td>${responseData.data[i].reOrderLevel}</td>
-                <td>${responseData.data[i].ingredientsUnit}</td>   
+                <td>${ingredient.ingredientName}</td>
+                <td>${ingredient.reOrderLevel}</td>
+                <td>${ingredient.ingredientsUnit}</td>   
                 <td style="color: ${statusColor};">${status}</td>
             </tr>
             `;
         }
+
         const tableBody = document.querySelector('#tbl_Ingredient tbody');
         tableBody.innerHTML = tableHTML;
 
         tableBody.querySelectorAll('tr').forEach(row => {
             row.addEventListener('click', (event) => {
                 const index = event.currentTarget.getAttribute('data-index');
-                const ingredientId = event.currentTarget.getAttribute('data-id');
-                const ingredient = responseData.data[index];
+                const ingredient = responseData.data.data[index];
 
-                ingredientIdElement.value = ingredientId
+                ingredientIdElement.value = ingredient.ingredientId;
                 ingredientNameElement.value = ingredient.ingredientName;
                 ingredientUnitElement.value = ingredient.ingredientsUnit;
                 ingredientRestockElement.value = ingredient.reOrderLevel;
@@ -300,10 +303,65 @@ async function loadAllIngredients(baseUrl) {
             });
         });
 
+      
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+
+        updateIngredientPaginationControls(baseUrl, page, size, totalPages);
+
     } catch (error) {
         console.error('Error:', error);
     }
 }
+
+
+function updateIngredientPaginationControls(baseUrl, currentPage, pageSize, totalPages) {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("ingredient-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                loadAllIngredients(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
 
 //clear inputs
 function clearIngredientsInputs() {
@@ -350,7 +408,7 @@ async function saveIngredient(baseUrl) {
                 timer: 1500
             });
             clearIngredientsInputs();
-            loadAllIngredients(baseUrl);
+          loadAllIngredients(baseUrl,page=0,size=10);
             checkIngredientInputs();
             getAvailableIngredients(baseUrl);
             getAllActiveIngredients(baseUrl)
@@ -399,7 +457,7 @@ async function updateIngredient(baseUrl) {
                 showConfirmButton: false,
                 timer: 1500
             });
-            loadAllIngredients(baseUrl);
+            loadAllIngredients(baseUrl,page=0,size=10);
             clearIngredientsInputs();
             checkIngredientInputs();
             getAvailableIngredients(baseUrl);
@@ -450,7 +508,7 @@ async function deleteIngredient(baseUrl) {
                         confirmButtonColor: "#EA6D27",
                         confirmButtonText: "OK"
                     });
-                    loadAllIngredients(baseUrl)
+                    loadAllIngredients(baseUrl,page=0,size=10);
                     clearIngredientsInputs();
                     checkIngredientInputs();
                     getAvailableIngredients(baseUrl);
