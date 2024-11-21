@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     getAllStockIngredients(baseUrl)
     filterstockTable()
 
-    loadAllStockHistory(baseUrl)
+    loadAllStockHistory(baseUrl,page=0,size=10)
     loadAllingredientsName(baseUrl)
     calculateStockHistoryForm() 
 
@@ -463,7 +463,7 @@ async function updateIngredient(baseUrl) {
             getAvailableIngredients(baseUrl);
             loadAllStock(baseUrl,page=0,size=10)
             getAllActiveIngredients(baseUrl);
-            loadAllStockHistory(baseUrl)
+            loadAllStockHistory(baseUrl,page=0,size=10)
 
         })
         .catch(error => {
@@ -514,7 +514,7 @@ async function deleteIngredient(baseUrl) {
                     getAvailableIngredients(baseUrl);
                     loadAllStock(baseUrl,page=0,size=10)
                     getAllActiveIngredients(baseUrl);
-                    loadAllStockHistory(baseUrl)
+                    loadAllStockHistory(baseUrl,page=0,size=10)
                 })
                 .catch(error => {
                     console.error('Error Deleting Ingredient:', error);
@@ -1088,7 +1088,7 @@ async function saveStock(baseUrl) {
                 timer: 1500
             });
             loadAllStock(baseUrl,page=0,size=10)
-            loadAllStockHistory(baseUrl)
+            loadAllStockHistory(baseUrl,page=0,size=10)
             stockIngredientAddIdElement.value = '';
             stockIngredientAddNameElement.value = '';
             stockIngredientAddUnitElement.value = '';
@@ -1223,7 +1223,7 @@ async function updateStock(baseUrl) {
             });
 
             loadAllStock(baseUrl,page=0,size=10)
-            loadAllStockHistory(baseUrl);
+            loadAllStockHistory(baseUrl,page=0,size=10)
             stockHistory(baseUrl);
             stockOverviewReport(baseUrl);
             getAllActiveIngredients(baseUrl);
@@ -1280,10 +1280,10 @@ function filterstockTable() {
 
 //======================================Stock History========================================
 
-//---load all stock history-----------
-async function loadAllStockHistory(baseUrl) {
+//---load all stock history with pagination-----------
+async function loadAllStockHistory(baseUrl, page, size) {
     try {
-        const response = await fetch(`${baseUrl}/stockDetails`, {
+        const response = await fetch(`${baseUrl}/stockDetails/paged?page=${page}&size=${size}`, {
             method: 'GET',
             headers: {
                 Accept: "application/json",
@@ -1294,15 +1294,17 @@ async function loadAllStockHistory(baseUrl) {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        const responseData = await response.json();
-        // console.log(responseData);
 
+        const responseData = await response.json();
+        const historyData = responseData.data.data;
+        console.log(historyData);
+        
         let tableHTML = "";
 
-        responseData.data.forEach((item, index) => {
+        historyData.forEach((item, index) => {
             tableHTML += `
                 <tr data-index="${index}" data-ingId="${item[3]}" data-stockId="${item[8]}" data-stockDetailsId="${item[0]}" data-status="${item[1]}">
-                    <td>${index + 1}</td>
+                    <td>${index + 1 + page * size}</td>
                     <td>${item[11]}</td>
                     <td>${item[2]}</td>
                     <td>${item[6]}</td>
@@ -1317,6 +1319,12 @@ async function loadAllStockHistory(baseUrl) {
         const tableBody = document.querySelector('#tbl_stockHistory tbody');
         tableBody.innerHTML = tableHTML;
 
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateStockHistoryPaginationControls(baseUrl, page, size, totalPages);
+
         tableBody.querySelectorAll('tr').forEach(row => {
             row.addEventListener('click', event => {
                 const index = event.currentTarget.getAttribute('data-index');
@@ -1324,7 +1332,7 @@ async function loadAllStockHistory(baseUrl) {
                 const stockId = event.currentTarget.getAttribute('data-stockId');
                 const stockDetailsId = event.currentTarget.getAttribute('data-stockDetailsId');
                 const status = event.currentTarget.getAttribute('data-status');
-                const ingredient = responseData.data[index];
+                const ingredient = historyData[index];
 
                 stockHistoryIngredientId.value = ingredientId;
                 stockHistoryStockId.value = stockId;
@@ -1341,7 +1349,7 @@ async function loadAllStockHistory(baseUrl) {
                 } else {
                     btnUpdateStockHistory.disabled = false;
                 }
-                btnDeleteStockHistory.disabled = false
+                btnDeleteStockHistory.disabled = false;
                 document.getElementById('stock-history-form').style.display = 'flex';
                 document.querySelector('.stock-update-body-wrapper-bottom').style.height = '62%';
             });
@@ -1351,6 +1359,54 @@ async function loadAllStockHistory(baseUrl) {
         console.error('Error:', error);
     }
 }
+
+// Handle stock history pagination
+function updateStockHistoryPaginationControls(baseUrl, currentPage, pageSize, totalPages) {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("stock-history-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                loadAllStockHistory(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
 
 
 btnClearStockHistory.addEventListener("click", function () {
@@ -1406,7 +1462,7 @@ async function updateStockHistory(baseUrl) {
                 showConfirmButton: false,
                 timer: 1500
             });
-            loadAllStockHistory(baseUrl);
+            loadAllStockHistory(baseUrl,page=0,size=10)
             loadAllStock(baseUrl,page=0,size=10)
             resetStockHistoryForm()
             stockHistory(baseUrl);
@@ -1456,7 +1512,7 @@ function deleteStockHistory(baseUrl) {
                         confirmButtonColor: "#EA6D27",
                         confirmButtonText: "OK"
                     });
-                    loadAllStockHistory(baseUrl)
+                    loadAllStockHistory(baseUrl,page=0,size=10)
                     loadAllStock(baseUrl,page=0,size=10)
                     resetStockHistoryForm()
                     stockHistory(baseUrl);
