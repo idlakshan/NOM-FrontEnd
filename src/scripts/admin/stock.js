@@ -60,26 +60,26 @@ document.addEventListener('DOMContentLoaded', async function () {
         throw new TypeError('Expected units to be an array');
     }
 
-    populateSelectElement('search_ingredient_type', 'Unit', units,false);
-    populateSelectElement('ing-ingredient-unit', 'Units', units,true);
-    populateSelectElement('search_stock_type', 'Unit', units,false);
-    populateSelectElement('search_stockHistory_type', 'Unit', units,false);
-        populateSelectElement('stock-history-ingredientUnit', 'Unit', units,true);
+    populateSelectElement('search_ingredient_type', 'Unit', units, false);
+    populateSelectElement('ing-ingredient-unit', 'Units', units, true);
+    populateSelectElement('search_stock_type', 'Unit', units, false);
+    populateSelectElement('search_stockHistory_type', 'Unit', units, false);
+    populateSelectElement('stock-history-ingredientUnit', 'Unit', units, true);
 
 
     tabMoveEventHandle();
-    loadAllIngredients(baseUrl,page=0,size=10);
+    loadAllIngredients(baseUrl, page = 0, size = 10);
     //filteringIngredientTable();
     getAvailableIngredients(baseUrl);
-    loadAllStock(baseUrl,page=0,size=10)
+    loadAllStock(baseUrl, page = 0, size = 10)
 
     getAllActiveIngredients(baseUrl)
     getAllStockIngredients(baseUrl)
     //filterstockTable()
 
-    loadAllStockHistory(baseUrl,page=0,size=10)
+    loadAllStockHistory(baseUrl, page = 0, size = 10)
     loadAllingredientsName(baseUrl)
-    calculateStockHistoryForm() 
+    calculateStockHistoryForm()
 
     stockIngredientAddDateElement.value = new Date().toISOString().split('T')[0];
 
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
     btnAddIngredient.addEventListener("click", function () {
-        btnAddIngredient.disabled = true;   
+        btnAddIngredient.disabled = true;
         saveIngredient(baseUrl).finally(() => {
             btnAddIngredient.disabled = false;
         });
@@ -101,14 +101,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     btnUpdateIngredient.addEventListener("click", function () {
-        btnUpdateIngredient.disabled = true;   
+        btnUpdateIngredient.disabled = true;
         updateIngredient(baseUrl).finally(() => {
             btnUpdateIngredient.disabled = false;
         });
     });
 
-    btnDeleteIngredient.addEventListener("click", function () {    
-        btnDeleteIngredient.disabled = true;   
+    btnDeleteIngredient.addEventListener("click", function () {
+        btnDeleteIngredient.disabled = true;
         deleteIngredient(baseUrl).finally(() => {
             btnDeleteIngredient.disabled = false;
         });
@@ -116,14 +116,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
     btnAddStock.addEventListener("click", function () {
-        btnAddStock.disabled = true;   
+        btnAddStock.disabled = true;
         saveStock(baseUrl).finally(() => {
             btnAddStock.disabled = false;
         });
     });
 
     btnUpdateStock.addEventListener("click", function () {
-        btnUpdateStock.disabled = true;   
+        btnUpdateStock.disabled = true;
         updateStock(baseUrl).finally(() => {
             btnUpdateStock.disabled = false;
         });
@@ -163,38 +163,50 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
 
-    
+
 
     //stock table filtering events
     document.querySelector("#search_stock_status").addEventListener("change", () => {
         filterStockByStatus(baseUrl, page = 0, size = 10);
+        document.querySelector("#search_stock_ingredient").value = "";
+             document.querySelector("#search_stock_type").value = "";
     });
 
     document.querySelector("#search_stock_type").addEventListener("change", () => {
         filterStockByUnit(baseUrl, page = 0, size = 10);
+        document.querySelector("#search_stock_status").value = "";
+        document.querySelector("#search_stock_ingredient").value = "";
     });
 
     document.querySelector("#search_stock_ingredient").addEventListener("input", () => {
         filterStockByIngredient(baseUrl, page = 0, size = 10);
+        document.querySelector("#search_stock_status").value = "";
+        document.querySelector("#search_stock_type").value = "";
     });
 
 
-   //ingredient table filtering events
+    //ingredient table filtering events
     document.querySelector("#search_ingredient_status").addEventListener("change", () => {
         filterIngredientsByStatus(baseUrl, page = 0, size = 10);
+        document.querySelector("#search_ingredient_type").value = "";
+        document.querySelector("#search_ingredient").value = "";
     });
 
     document.querySelector("#search_ingredient_type").addEventListener("change", () => {
         filterIngredientsByUnit(baseUrl, page = 0, size = 10);
+        document.querySelector("#search_ingredient_status").value = "";
+        document.querySelector("#search_ingredient").value = "";
     });
 
-    document.querySelector("#search_ingredient").addEventListener("change", () => {
-        filterIngredientsByUnit(baseUrl, page = 0, size = 10);
+    document.querySelector("#search_ingredient").addEventListener("input", () => {
+        filterIngredientsByName(baseUrl, page = 0, size = 10);
+        document.querySelector("#search_ingredient_status").value = "";
+        document.querySelector("#search_ingredient_type").value = "";
     });
 
-    
 
-    
+
+
 
 });
 
@@ -261,7 +273,7 @@ function tabMoveEventHandle() {
 
 
 //add stock/ingredients units from .env
-async function populateSelectElement(elementId, defaultText, units,isDisabled) {
+async function populateSelectElement(elementId, defaultText, units, isDisabled) {
     const element = document.getElementById(elementId);
     element.innerHTML = '';
 
@@ -298,8 +310,8 @@ async function loadAllIngredients(baseUrl, page, size) {
         }
 
         const responseData = await response.json();
-      //  console.log(responseData);
-        
+        //  console.log(responseData);
+
 
         let tableHTML = "";
         for (let i = 0; i < responseData.data.data.length; i++) {
@@ -338,7 +350,7 @@ async function loadAllIngredients(baseUrl, page, size) {
             });
         });
 
-      
+
         const totalPages = responseData.data.totalCount
             ? Math.ceil(responseData.data.totalCount / size)
             : 1;
@@ -443,7 +455,7 @@ async function saveIngredient(baseUrl) {
                 timer: 1500
             });
             clearIngredientsInputs();
-          loadAllIngredients(baseUrl,page=0,size=10);
+            loadAllIngredients(baseUrl, page = 0, size = 10);
             checkIngredientInputs();
             getAvailableIngredients(baseUrl);
             getAllActiveIngredients(baseUrl)
@@ -492,13 +504,13 @@ async function updateIngredient(baseUrl) {
                 showConfirmButton: false,
                 timer: 1500
             });
-            loadAllIngredients(baseUrl,page=0,size=10);
+            loadAllIngredients(baseUrl, page = 0, size = 10);
             clearIngredientsInputs();
             checkIngredientInputs();
             getAvailableIngredients(baseUrl);
-            loadAllStock(baseUrl,page=0,size=10)
+            loadAllStock(baseUrl, page = 0, size = 10)
             getAllActiveIngredients(baseUrl);
-            loadAllStockHistory(baseUrl,page=0,size=10)
+            loadAllStockHistory(baseUrl, page = 0, size = 10)
 
         })
         .catch(error => {
@@ -543,13 +555,13 @@ async function deleteIngredient(baseUrl) {
                         confirmButtonColor: "#EA6D27",
                         confirmButtonText: "OK"
                     });
-                    loadAllIngredients(baseUrl,page=0,size=10);
+                    loadAllIngredients(baseUrl, page = 0, size = 10);
                     clearIngredientsInputs();
                     checkIngredientInputs();
                     getAvailableIngredients(baseUrl);
-                    loadAllStock(baseUrl,page=0,size=10)
+                    loadAllStock(baseUrl, page = 0, size = 10)
                     getAllActiveIngredients(baseUrl);
-                    loadAllStockHistory(baseUrl,page=0,size=10)
+                    loadAllStockHistory(baseUrl, page = 0, size = 10)
                 })
                 .catch(error => {
                     console.error('Error Deleting Ingredient:', error);
@@ -586,7 +598,7 @@ async function getAvailableIngredients(baseUrl) {
             select: function (event, ui) {
                 const selectedIngredient = ui.item.value.toLowerCase();
 
-               
+
                 if (ingredientNames.some(option => option.toLowerCase() === selectedIngredient)) {
                     Swal.fire({
                         title: "Oops...",
@@ -596,21 +608,21 @@ async function getAvailableIngredients(baseUrl) {
                             confirmButton: 'alert-orange-button',
                         }
                     });
-                    inputField.val(''); 
-                    checkIngredientInputs(); 
-                    event.preventDefault(); 
+                    inputField.val('');
+                    checkIngredientInputs();
+                    event.preventDefault();
                 }
             }
         });
 
-      
+
         inputField.on('input', function () {
-            const inputValue = this.value.toLowerCase();   
+            const inputValue = this.value.toLowerCase();
             //console.log(ingredientNames);
-               
+
             const isIngredientExist = ingredientNames.some(option => option.toLowerCase() === inputValue);
             //console.log(isIngredientExist);
-            
+
 
             if (isIngredientExist) {
                 Swal.fire({
@@ -621,7 +633,7 @@ async function getAvailableIngredients(baseUrl) {
                         confirmButton: 'alert-orange-button',
                     }
                 });
-                this.value = ''; 
+                this.value = '';
                 checkIngredientInputs();
                 return;
             }
@@ -673,9 +685,9 @@ async function getAvailableIngredients(baseUrl) {
 // Function to filter ingredients by status
 async function filterIngredientsByStatus(baseUrl, page, size) {
     const status = document.querySelector("#search_ingredient_status").value.trim();
-   // console.log(status);
+    // console.log(status);
 
-    
+
     if (!status) {
         loadAllIngredients(baseUrl, page = 0, size = 10);
         return;
@@ -691,7 +703,7 @@ async function filterIngredientsByStatus(baseUrl, page, size) {
         });
 
         const responseData = await response.json();
-        const ingredients = responseData.data.data; 
+        const ingredients = responseData.data.data;
         let tableHTML = "";
         for (let i = 0; i < responseData.data.data.length; i++) {
             const ingredient = responseData.data.data[i];
@@ -774,7 +786,7 @@ function updateFilterIngredientsByStatusPaginationControls(baseUrl, currentPage,
 // Function to filter ingredients by unit
 async function filterIngredientsByUnit(baseUrl, page, size) {
     const unit = document.querySelector("#search_ingredient_type").value.trim();
-    
+
     // If no unit is entered, load all ingredients
     if (!unit) {
         loadAllIngredients(baseUrl, page = 0, size = 10);
@@ -791,7 +803,7 @@ async function filterIngredientsByUnit(baseUrl, page, size) {
         });
 
         const responseData = await response.json();
-        const ingredients = responseData.data.data; 
+        const ingredients = responseData.data.data;
         let tableHTML = "";
 
         for (let i = 0; i < ingredients.length; i++) {
@@ -893,7 +905,7 @@ async function filterIngredientsByName(baseUrl, page, size) {
         });
 
         const responseData = await response.json();
-        const ingredients = responseData.data.data; 
+        const ingredients = responseData.data.data;
         let tableHTML = "";
 
         for (let i = 0; i < ingredients.length; i++) {
@@ -1213,7 +1225,7 @@ async function loadAllStock(baseUrl, page, size) {
         }
 
         const responseData = await response.json();
-        const stocks = responseData.data.data; 
+        const stocks = responseData.data.data;
         let tableHTML = "";
 
         for (let i = 0; i < stocks.length; i++) {
@@ -1221,7 +1233,7 @@ async function loadAllStock(baseUrl, page, size) {
             let displayStatus = stockStatus === "inStock" ? "In Stock" : "Out of Stock";
             let color = stockStatus === "outOfStock" ? "red" : "black";
 
-            tableHTML += 
+            tableHTML +=
                 `<tr data-index="${i}">
                     <td>${i + 1 + page * size}</td>
                     <td>${stocks[i][7]}</td>
@@ -1362,17 +1374,17 @@ async function getAllStockIngredients(baseUrl) {
         const stockIngredientUnitInput = $('#stock-update-ingredientUnit');
 
         const ingredientNames = responseData.data.map(ingredient => ({
-            label: ingredient[7],  
-            value: ingredient[7],  
-            id: ingredient[0],    
-            unit: ingredient[5]    
+            label: ingredient[7],
+            value: ingredient[7],
+            id: ingredient[0],
+            unit: ingredient[5]
         }));
 
-     
+
         stockIngredientNameInput.autocomplete({
             source: ingredientNames,
             minLength: 1,
-            select: function (event, ui) {    
+            select: function (event, ui) {
                 stockUpdateIdInput.val(ui.item.id);
                 stockIngredientUnitInput.val(ui.item.unit);
             }
@@ -1432,8 +1444,8 @@ async function saveStock(baseUrl) {
                 showConfirmButton: false,
                 timer: 1500
             });
-            loadAllStock(baseUrl,page=0,size=10)
-            loadAllStockHistory(baseUrl,page=0,size=10)
+            loadAllStock(baseUrl, page = 0, size = 10)
+            loadAllStockHistory(baseUrl, page = 0, size = 10)
             stockIngredientAddIdElement.value = '';
             stockIngredientAddNameElement.value = '';
             stockIngredientAddUnitElement.value = '';
@@ -1517,7 +1529,7 @@ async function updateStock(baseUrl) {
     let stockQty = document.getElementById('stock-update-ingredientQty').value;
     let stockId = document.getElementById('stock-update-ingredientId').value;
     let stockUnit = document.getElementById('stock-update-ingredientUnit').value;
-    let stockName = document.getElementById('stock-update-ingredientName').value; 
+    let stockName = document.getElementById('stock-update-ingredientName').value;
 
     const isReduction = stockQty.startsWith('-');
 
@@ -1535,12 +1547,12 @@ async function updateStock(baseUrl) {
         cancelButtonText: 'No',
         customClass: {
             confirmButton: 'alert-orange-button',
-            cancelButton: 'alert-black-button' 
+            cancelButton: 'alert-black-button'
         }
     });
 
     if (!confirmed.isConfirmed) {
-        return; 
+        return;
     }
 
     // Proceed with the stock update if confirmed
@@ -1567,8 +1579,8 @@ async function updateStock(baseUrl) {
                 timer: 1500
             });
 
-            loadAllStock(baseUrl,page=0,size=10)
-            loadAllStockHistory(baseUrl,page=0,size=10)
+            loadAllStock(baseUrl, page = 0, size = 10)
+            loadAllStockHistory(baseUrl, page = 0, size = 10)
             stockHistory(baseUrl);
             stockOverviewReport(baseUrl);
             getAllActiveIngredients(baseUrl);
@@ -1627,13 +1639,13 @@ async function updateStock(baseUrl) {
 // Function to filter stock by status
 async function filterStockByStatus(baseUrl, page, size) {
     const stockStatus = document.querySelector("#search_stock_status").value.trim();
-   // console.log(stockStatus);
+    // console.log(stockStatus);
 
-    if(!stockStatus){
-        loadAllStock(baseUrl,page=0,size=10);
+    if (!stockStatus) {
+        loadAllStock(baseUrl, page = 0, size = 10);
         return
     }
-    
+
 
     try {
         const response = await fetch(`${baseUrl}/stock?status=${stockStatus}&page=${page}&size=${size}`, {
@@ -1653,7 +1665,7 @@ async function filterStockByStatus(baseUrl, page, size) {
             let displayStatus = stockStatus === "inStock" ? "In Stock" : "Out of Stock";
             let color = stockStatus === "outOfStock" ? "red" : "black";
 
-            tableHTML += 
+            tableHTML +=
                 `<tr data-index="${i}">
                     <td>${i + 1 + page * size}</td>
                     <td>${stocks[i][7]}</td>
@@ -1728,7 +1740,7 @@ function updateFilterStockByStatusPaginationControls(baseUrl, currentPage, pageS
 // Function to filter stock by unit
 async function filterStockByUnit(baseUrl, page, size) {
     const unit = document.querySelector("#search_stock_type").value.trim();
-   
+
     if (!unit) {
         loadAllStock(baseUrl, page = 0, size = 10);
         return;
@@ -1744,7 +1756,7 @@ async function filterStockByUnit(baseUrl, page, size) {
         });
 
         const responseData = await response.json();
-        const stocks = responseData.data.data; 
+        const stocks = responseData.data.data;
         let tableHTML = "";
 
         for (let i = 0; i < stocks.length; i++) {
@@ -1752,7 +1764,7 @@ async function filterStockByUnit(baseUrl, page, size) {
             let displayStatus = stockStatus === "inStock" ? "In Stock" : "Out of Stock";
             let color = stockStatus === "outOfStock" ? "red" : "black";
 
-            tableHTML += 
+            tableHTML +=
                 `<tr data-index="${i}">
                     <td>${i + 1 + page * size}</td>
                     <td>${stocks[i][7]}</td>
@@ -1842,7 +1854,7 @@ async function filterStockByIngredient(baseUrl, page, size) {
         });
 
         const responseData = await response.json();
-        const stocks = responseData.data.data; 
+        const stocks = responseData.data.data;
         let tableHTML = "";
 
         for (let i = 0; i < stocks.length; i++) {
@@ -1850,7 +1862,7 @@ async function filterStockByIngredient(baseUrl, page, size) {
             let displayStatus = stockStatus === "inStock" ? "In Stock" : "Out of Stock";
             let color = stockStatus === "outOfStock" ? "red" : "black";
 
-            tableHTML += 
+            tableHTML +=
                 `<tr data-index="${i}">
                     <td>${i + 1 + page * size}</td>
                     <td>${stocks[i][7]}</td>
@@ -1948,7 +1960,7 @@ async function loadAllStockHistory(baseUrl, page, size) {
         const responseData = await response.json();
         const historyData = responseData.data.data;
         console.log(historyData);
-        
+
         let tableHTML = "";
 
         historyData.forEach((item, index) => {
@@ -2112,12 +2124,12 @@ async function updateStockHistory(baseUrl) {
                 showConfirmButton: false,
                 timer: 1500
             });
-            loadAllStockHistory(baseUrl,page=0,size=10)
-            loadAllStock(baseUrl,page=0,size=10)
+            loadAllStockHistory(baseUrl, page = 0, size = 10)
+            loadAllStock(baseUrl, page = 0, size = 10)
             resetStockHistoryForm()
             stockHistory(baseUrl);
             stockOverviewReport(baseUrl);
-        
+
 
         })
         .catch(error => {
@@ -2162,8 +2174,8 @@ function deleteStockHistory(baseUrl) {
                         confirmButtonColor: "#EA6D27",
                         confirmButtonText: "OK"
                     });
-                    loadAllStockHistory(baseUrl,page=0,size=10)
-                    loadAllStock(baseUrl,page=0,size=10)
+                    loadAllStockHistory(baseUrl, page = 0, size = 10)
+                    loadAllStock(baseUrl, page = 0, size = 10)
                     resetStockHistoryForm()
                     stockHistory(baseUrl);
                     stockOverviewReport(baseUrl);
@@ -2206,7 +2218,7 @@ function calculateStockHistoryForm() {
             const unitPrice = totalPrice / qty;
             unitPriceInput.value = unitPrice.toFixed(2);
         }
-        calculateTotalPrice(); 
+        calculateTotalPrice();
     }
 
     unitPriceInput.addEventListener('input', calculateTotalPrice);
