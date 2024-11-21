@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     tabMoveEventHandle();
     loadAllIngredients(baseUrl,page=0,size=10);
-    filteringIngredientTable();
+    //filteringIngredientTable();
     getAvailableIngredients(baseUrl);
     loadAllStock(baseUrl,page=0,size=10)
 
@@ -178,6 +178,22 @@ document.addEventListener('DOMContentLoaded', async function () {
         filterStockByIngredient(baseUrl, page = 0, size = 10);
     });
 
+
+   //ingredient table filtering events
+    document.querySelector("#search_ingredient_status").addEventListener("change", () => {
+        filterIngredientsByStatus(baseUrl, page = 0, size = 10);
+    });
+
+    document.querySelector("#search_ingredient_type").addEventListener("change", () => {
+        filterIngredientsByUnit(baseUrl, page = 0, size = 10);
+    });
+
+    document.querySelector("#search_ingredient").addEventListener("change", () => {
+        filterIngredientsByUnit(baseUrl, page = 0, size = 10);
+    });
+
+    
+
     
 
 });
@@ -282,7 +298,7 @@ async function loadAllIngredients(baseUrl, page, size) {
         }
 
         const responseData = await response.json();
-        console.log(responseData);
+      //  console.log(responseData);
         
 
         let tableHTML = "";
@@ -590,10 +606,10 @@ async function getAvailableIngredients(baseUrl) {
       
         inputField.on('input', function () {
             const inputValue = this.value.toLowerCase();   
-            console.log(ingredientNames);
+            //console.log(ingredientNames);
                
             const isIngredientExist = ingredientNames.some(option => option.toLowerCase() === inputValue);
-            console.log(isIngredientExist);
+            //console.log(isIngredientExist);
             
 
             if (isIngredientExist) {
@@ -620,39 +636,248 @@ async function getAvailableIngredients(baseUrl) {
 
 
 //searching events
-function filteringIngredientTable() {
-    const searchStockStatus = document.getElementById('search_ingredient_status');
-    const searchStockType = document.getElementById('search_ingredient_type');
-    const searchIngredient = document.getElementById('search_ingredient');
-    const tableBody = document.getElementById('tbl_Ingredient_body');
+// function filteringIngredientTable() {
+//     const searchStockStatus = document.getElementById('search_ingredient_status');
+//     const searchStockType = document.getElementById('search_ingredient_type');
+//     const searchIngredient = document.getElementById('search_ingredient');
+//     const tableBody = document.getElementById('tbl_Ingredient_body');
 
 
-    function filterTable() {
-        const statusFilter = searchStockStatus.value.toLowerCase();
-        const unitFilter = searchStockType.value.toLowerCase();
-        const ingredientFilter = searchIngredient.value.toLowerCase();
+//     function filterTable() {
+//         const statusFilter = searchStockStatus.value.toLowerCase();
+//         const unitFilter = searchStockType.value.toLowerCase();
+//         const ingredientFilter = searchIngredient.value.toLowerCase();
 
-        for (const row of tableBody.rows) {
-            const status = row.cells[4].textContent.toLowerCase();
-            const unitType = row.cells[3].textContent.toLowerCase();
-            const ingredient = row.cells[1].textContent.toLowerCase();
+//         for (const row of tableBody.rows) {
+//             const status = row.cells[4].textContent.toLowerCase();
+//             const unitType = row.cells[3].textContent.toLowerCase();
+//             const ingredient = row.cells[1].textContent.toLowerCase();
 
-            const statusMatch = status.includes(statusFilter);
-            const unitMatch = unitType.includes(unitFilter);
-            const ingredientMatch = ingredient.includes(ingredientFilter);
+//             const statusMatch = status.includes(statusFilter);
+//             const unitMatch = unitType.includes(unitFilter);
+//             const ingredientMatch = ingredient.includes(ingredientFilter);
 
-            if (statusMatch && unitMatch && ingredientMatch) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        }
+//             if (statusMatch && unitMatch && ingredientMatch) {
+//                 row.style.display = '';
+//             } else {
+//                 row.style.display = 'none';
+//             }
+//         }
+//     }
+
+//     searchStockStatus.addEventListener('change', filterTable);
+//     searchStockType.addEventListener('change', filterTable);
+//     searchIngredient.addEventListener('input', filterTable);
+// }
+
+// Function to filter ingredients by status
+async function filterIngredientsByStatus(baseUrl, page, size) {
+    const status = document.querySelector("#search_ingredient_status").value.trim();
+   // console.log(status);
+
+    
+    if (!status) {
+        loadAllIngredients(baseUrl, page = 0, size = 10);
+        return;
     }
 
-    searchStockStatus.addEventListener('change', filterTable);
-    searchStockType.addEventListener('change', filterTable);
-    searchIngredient.addEventListener('input', filterTable);
+    try {
+        const response = await fetch(`${baseUrl}/ingredients?ingstatus=${status}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+        const ingredients = responseData.data.data; 
+        let tableHTML = "";
+        for (let i = 0; i < responseData.data.data.length; i++) {
+            const ingredient = responseData.data.data[i];
+            const status = ingredient.ingredientStatus === 1 ? "Active" : "In-Active";
+            const statusColor = ingredient.ingredientStatus === 1 ? "#00cc00" : "#ff3300";
+
+            tableHTML += `
+               <tr data-index="${i}" data-id="${ingredient.ingredientId}">
+                <td>${i + 1}</td>
+                <td>${ingredient.ingredientName}</td>
+                <td>${ingredient.reOrderLevel}</td>
+                <td>${ingredient.ingredientsUnit}</td>   
+                <td style="color: ${statusColor};">${status}</td>
+            </tr>
+            `;
+        }
+
+        const tableBody = document.querySelector('#tbl_Ingredient tbody');
+        tableBody.innerHTML = tableHTML;
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateFilterIngredientsByStatusPaginationControls(baseUrl, page, size, totalPages, status);
+
+    } catch (error) {
+        console.error("Error filtering ingredients by status:", error);
+    }
 }
+
+
+function updateFilterIngredientsByStatusPaginationControls(baseUrl, currentPage, pageSize, totalPages, status = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("ingredient-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterIngredientsByStatus(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
+
+
+// Function to filter ingredients by unit
+async function filterIngredientsByUnit(baseUrl, page, size) {
+    const unit = document.querySelector("#search_ingredient_type").value.trim();
+    
+    // If no unit is entered, load all ingredients
+    if (!unit) {
+        loadAllIngredients(baseUrl, page = 0, size = 10);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/ingredients?ingUnit=${unit}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+        const ingredients = responseData.data.data; 
+        let tableHTML = "";
+
+        for (let i = 0; i < ingredients.length; i++) {
+            const ingredient = ingredients[i];
+            const status = ingredient.ingredientStatus === 1 ? "Active" : "In-Active";
+            const statusColor = ingredient.ingredientStatus === 1 ? "#00cc00" : "#ff3300";
+
+            tableHTML += `
+               <tr data-index="${i}" data-id="${ingredient.ingredientId}">
+                <td>${i + 1 + page * size}</td>
+                <td>${ingredient.ingredientName}</td>
+                <td>${ingredient.reOrderLevel}</td>
+                <td>${ingredient.ingredientsUnit}</td>   
+                <td style="color: ${statusColor};">${status}</td>
+            </tr>
+            `;
+        }
+
+        const tableBody = document.querySelector('#tbl_Ingredient tbody');
+        tableBody.innerHTML = tableHTML;
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateFilterIngredientsByUnitPaginationControls(baseUrl, page, size, totalPages, unit);
+
+    } catch (error) {
+        console.error("Error filtering ingredients by unit:", error);
+    }
+}
+
+
+function updateFilterIngredientsByUnitPaginationControls(baseUrl, currentPage, pageSize, totalPages, unit = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("ingredient-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterIngredientsByUnit(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
+
+
+
+
+
+
 
 
 //validations
