@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     getAllActiveIngredients(baseUrl)
     getAllStockIngredients(baseUrl)
-    filterstockTable()
+    //filterstockTable()
 
     loadAllStockHistory(baseUrl,page=0,size=10)
     loadAllingredientsName(baseUrl)
@@ -160,6 +160,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     typeSelect.addEventListener('change', filterStockHistoryTable);
     dateInput.addEventListener('input', filterStockHistoryTable);
     ingredientInput.addEventListener('input', filterStockHistoryTable);
+
+
+
+    
+
+    
+    document.querySelector("#search_stock_status").addEventListener("change", () => {
+        filterStockByStatus(baseUrl, page = 0, size = 10);
+    });
 
 });
 
@@ -868,7 +877,7 @@ async function loadAllStock(baseUrl, page, size) {
         }
 
         const responseData = await response.json();
-        const stocks = responseData.data.data; // Assuming data follows the same structure
+        const stocks = responseData.data.data; 
         let tableHTML = "";
 
         for (let i = 0; i < stocks.length; i++) {
@@ -1244,39 +1253,147 @@ async function updateStock(baseUrl) {
 
 
 //searching events
-function filterstockTable() {
-    const searchStockStatus = document.getElementById('search_stock_status');
-    const searchStockType = document.getElementById('search_stock_type');
-    const searchIngredient = document.getElementById('search_stock_ingredient');
-    const tableBody = document.getElementById('tbl_ing_stock_body');
+// function filterstockTable() {
+//     const searchStockStatus = document.getElementById('search_stock_status');
+//     const searchStockType = document.getElementById('search_stock_type');
+//     const searchIngredient = document.getElementById('search_stock_ingredient');
+//     const tableBody = document.getElementById('tbl_ing_stock_body');
 
 
-    function filterstocks() {
-        const statusFilter = searchStockStatus.value.toLowerCase();
-        const unitFilter = searchStockType.value.toLowerCase();
-        const ingredientFilter = searchIngredient.value.toLowerCase();
+//     function filterstocks() {
+//         const statusFilter = searchStockStatus.value.toLowerCase();
+//         const unitFilter = searchStockType.value.toLowerCase();
+//         const ingredientFilter = searchIngredient.value.toLowerCase();
 
-        for (const row of tableBody.rows) {
-            const status = row.cells[4].textContent.toLowerCase();
-            const unitType = row.cells[2].textContent.toLowerCase();
-            const ingredient = row.cells[1].textContent.toLowerCase();
+//         for (const row of tableBody.rows) {
+//             const status = row.cells[4].textContent.toLowerCase();
+//             const unitType = row.cells[2].textContent.toLowerCase();
+//             const ingredient = row.cells[1].textContent.toLowerCase();
 
-            const statusMatch = status.includes(statusFilter);
-            const unitMatch = unitType.includes(unitFilter);
-            const ingredientMatch = ingredient.includes(ingredientFilter);
+//             const statusMatch = status.includes(statusFilter);
+//             const unitMatch = unitType.includes(unitFilter);
+//             const ingredientMatch = ingredient.includes(ingredientFilter);
 
-            if (statusMatch && unitMatch && ingredientMatch) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
+//             if (statusMatch && unitMatch && ingredientMatch) {
+//                 row.style.display = '';
+//             } else {
+//                 row.style.display = 'none';
+//             }
+//         }
+//     }
+
+//     searchStockStatus.addEventListener('change', filterstocks);
+//     searchStockType.addEventListener('change', filterstocks);
+//     searchIngredient.addEventListener('input', filterstocks);
+// }
+
+// Function to filter stock by status
+async function filterStockByStatus(baseUrl, page, size) {
+    const stockStatus = document.querySelector("#search_stock_status").value.trim();
+    console.log(stockStatus);
+
+    if(!stockStatus){
+        loadAllStock(baseUrl,page=0,size=10);
+        return
+    }
+    
+
+    try {
+        const response = await fetch(`${baseUrl}/stock?status=${stockStatus}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
             }
+        });
+
+        const responseData = await response.json();
+        const stocks = responseData.data.data; // Assuming data follows the same structure
+        let tableHTML = "";
+
+        for (let i = 0; i < stocks.length; i++) {
+            let stockStatus = stocks[i][1];
+            let displayStatus = stockStatus === "inStock" ? "In Stock" : "Out of Stock";
+            let color = stockStatus === "outOfStock" ? "red" : "black";
+
+            tableHTML += 
+                `<tr data-index="${i}">
+                    <td>${i + 1 + page * size}</td>
+                    <td>${stocks[i][7]}</td>
+                    <td>${stocks[i][5]}</td>
+                    <td>${stocks[i][4].toFixed(3)}</td>   
+                    <td style="color: ${color};">${displayStatus}</td>   
+                </tr>`;
         }
+
+        const tableBody = document.querySelector('#tbl_ing_stock tbody');
+        tableBody.innerHTML = tableHTML;
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateFilterStockByStatusPaginationControls(baseUrl, page, size, totalPages, stockStatus);
+
+    } catch (error) {
+        console.error("Error filtering stock by status:", error);
+    }
+}
+
+
+function updateFilterStockByStatusPaginationControls(baseUrl, currentPage, pageSize, totalPages, stockStatus = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
     }
 
-    searchStockStatus.addEventListener('change', filterstocks);
-    searchStockType.addEventListener('change', filterstocks);
-    searchIngredient.addEventListener('input', filterstocks);
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("stock-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterStockByStatus(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
 }
+
+
+
+
+
+
+
+
 
 //======================================Stock History========================================
 
