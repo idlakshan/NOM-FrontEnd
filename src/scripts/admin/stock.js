@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     loadAllIngredients(baseUrl);
     filteringIngredientTable();
     getAvailableIngredients(baseUrl);
-    loadAllStock(baseUrl);
+    loadAllStock(baseUrl,page=0,size=10)
 
     getAllActiveIngredients(baseUrl)
     getAllStockIngredients(baseUrl)
@@ -403,7 +403,7 @@ async function updateIngredient(baseUrl) {
             clearIngredientsInputs();
             checkIngredientInputs();
             getAvailableIngredients(baseUrl);
-            loadAllStock(baseUrl);
+            loadAllStock(baseUrl,page=0,size=10)
             getAllActiveIngredients(baseUrl);
             loadAllStockHistory(baseUrl)
 
@@ -454,7 +454,7 @@ async function deleteIngredient(baseUrl) {
                     clearIngredientsInputs();
                     checkIngredientInputs();
                     getAvailableIngredients(baseUrl);
-                    loadAllStock(baseUrl);
+                    loadAllStock(baseUrl,page=0,size=10)
                     getAllActiveIngredients(baseUrl);
                     loadAllStockHistory(baseUrl)
                 })
@@ -794,11 +794,10 @@ function calculateStockIngredientUnitPrice() {
 }
 
 
-
-//------load all stock-----------------
-async function loadAllStock(baseUrl) {
+//------load all stock with pagination-----------------
+async function loadAllStock(baseUrl, page, size) {
     try {
-        const response = await fetch(baseUrl + "/stock/allStock", {
+        const response = await fetch(`${baseUrl}/stock/paged/allStock?page=${page}&size=${size}`, {
             method: 'GET',
             headers: {
                 Accept: "application/json",
@@ -807,35 +806,87 @@ async function loadAllStock(baseUrl) {
         });
 
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error(`Network response was not ok: ${response.statusText}`);
         }
+
         const responseData = await response.json();
-       // console.log(responseData);
-        
+        const stocks = responseData.data.data; // Assuming data follows the same structure
         let tableHTML = "";
 
-        for (let i = 0; i < responseData.data.length; i++) {
-            let stockStatus = responseData.data[i][1];
+        for (let i = 0; i < stocks.length; i++) {
+            let stockStatus = stocks[i][1];
             let displayStatus = stockStatus === "inStock" ? "In Stock" : "Out of Stock";
-            let color = stockStatus === "outOfStock" ? "red" : "black"; 
+            let color = stockStatus === "outOfStock" ? "red" : "black";
 
-            tableHTML += `
-                <tr data-index="${i}">
-                    <td>${i + 1}</td>
-                    <td>${responseData.data[i][7]}</td>
-                    <td>${responseData.data[i][5]}</td>
-                    <td>${responseData.data[i][4].toFixed(3)}</td>   
+            tableHTML += 
+                `<tr data-index="${i}">
+                    <td>${i + 1 + page * size}</td>
+                    <td>${stocks[i][7]}</td>
+                    <td>${stocks[i][5]}</td>
+                    <td>${stocks[i][4].toFixed(3)}</td>   
                     <td style="color: ${color};">${displayStatus}</td>   
-                </tr>
-            `;
+                </tr>`;
         }
 
         const tableBody = document.querySelector('#tbl_ing_stock tbody');
         tableBody.innerHTML = tableHTML;
 
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateStockPaginationControls(baseUrl, page, size, totalPages);
+
     } catch (error) {
         console.error('Error:', error);
     }
+}
+
+// Handle stock pagination
+function updateStockPaginationControls(baseUrl, currentPage, pageSize, totalPages) {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("stock-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                loadAllStock(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
 }
 
 
@@ -978,7 +1029,7 @@ async function saveStock(baseUrl) {
                 showConfirmButton: false,
                 timer: 1500
             });
-            loadAllStock(baseUrl);
+            loadAllStock(baseUrl,page=0,size=10)
             loadAllStockHistory(baseUrl)
             stockIngredientAddIdElement.value = '';
             stockIngredientAddNameElement.value = '';
@@ -1113,7 +1164,7 @@ async function updateStock(baseUrl) {
                 timer: 1500
             });
 
-            loadAllStock(baseUrl);
+            loadAllStock(baseUrl,page=0,size=10)
             loadAllStockHistory(baseUrl);
             stockHistory(baseUrl);
             stockOverviewReport(baseUrl);
@@ -1298,7 +1349,7 @@ async function updateStockHistory(baseUrl) {
                 timer: 1500
             });
             loadAllStockHistory(baseUrl);
-            loadAllStock(baseUrl)
+            loadAllStock(baseUrl,page=0,size=10)
             resetStockHistoryForm()
             stockHistory(baseUrl);
             stockOverviewReport(baseUrl);
@@ -1348,7 +1399,7 @@ function deleteStockHistory(baseUrl) {
                         confirmButtonText: "OK"
                     });
                     loadAllStockHistory(baseUrl)
-                    loadAllStock(baseUrl)
+                    loadAllStock(baseUrl,page=0,size=10)
                     resetStockHistoryForm()
                     stockHistory(baseUrl);
                     stockOverviewReport(baseUrl);
