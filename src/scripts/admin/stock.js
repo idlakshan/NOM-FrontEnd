@@ -165,10 +165,20 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     
 
-    
+    //stock table filtering events
     document.querySelector("#search_stock_status").addEventListener("change", () => {
         filterStockByStatus(baseUrl, page = 0, size = 10);
     });
+
+    document.querySelector("#search_stock_type").addEventListener("change", () => {
+        filterStockByUnit(baseUrl, page = 0, size = 10);
+    });
+
+    document.querySelector("#search_stock_ingredient").addEventListener("input", () => {
+        filterStockByIngredient(baseUrl, page = 0, size = 10);
+    });
+
+    
 
 });
 
@@ -1287,10 +1297,11 @@ async function updateStock(baseUrl) {
 //     searchIngredient.addEventListener('input', filterstocks);
 // }
 
+
 // Function to filter stock by status
 async function filterStockByStatus(baseUrl, page, size) {
     const stockStatus = document.querySelector("#search_stock_status").value.trim();
-    console.log(stockStatus);
+   // console.log(stockStatus);
 
     if(!stockStatus){
         loadAllStock(baseUrl,page=0,size=10);
@@ -1387,6 +1398,202 @@ function updateFilterStockByStatusPaginationControls(baseUrl, currentPage, pageS
     });
 }
 
+
+// Function to filter stock by unit
+async function filterStockByUnit(baseUrl, page, size) {
+    const unit = document.querySelector("#search_stock_type").value.trim();
+   
+    if (!unit) {
+        loadAllStock(baseUrl, page = 0, size = 10);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/stock?unit=${unit}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+        const stocks = responseData.data.data; 
+        let tableHTML = "";
+
+        for (let i = 0; i < stocks.length; i++) {
+            let stockStatus = stocks[i][1];
+            let displayStatus = stockStatus === "inStock" ? "In Stock" : "Out of Stock";
+            let color = stockStatus === "outOfStock" ? "red" : "black";
+
+            tableHTML += 
+                `<tr data-index="${i}">
+                    <td>${i + 1 + page * size}</td>
+                    <td>${stocks[i][7]}</td>
+                    <td>${stocks[i][5]}</td>
+                    <td>${stocks[i][4].toFixed(3)}</td>   
+                    <td style="color: ${color};">${displayStatus}</td>   
+                </tr>`;
+        }
+
+        const tableBody = document.querySelector('#tbl_ing_stock tbody');
+        tableBody.innerHTML = tableHTML;
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateFilterStockByUnitPaginationControls(baseUrl, page, size, totalPages, unit);
+
+    } catch (error) {
+        console.error("Error filtering stock by unit:", error);
+    }
+}
+
+function updateFilterStockByUnitPaginationControls(baseUrl, currentPage, pageSize, totalPages, unit = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("stock-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterStockByUnit(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
+// Function to filter stock by ingredient
+async function filterStockByIngredient(baseUrl, page, size) {
+    const ingredient = document.querySelector("#search_stock_ingredient").value.trim();
+    //console.log(ingredient);
+
+    if (!ingredient) {
+        loadAllStock(baseUrl, page = 0, size = 10);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/stock?ingName=${ingredient}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+        const stocks = responseData.data.data; 
+        let tableHTML = "";
+
+        for (let i = 0; i < stocks.length; i++) {
+            let stockStatus = stocks[i][1];
+            let displayStatus = stockStatus === "inStock" ? "In Stock" : "Out of Stock";
+            let color = stockStatus === "outOfStock" ? "red" : "black";
+
+            tableHTML += 
+                `<tr data-index="${i}">
+                    <td>${i + 1 + page * size}</td>
+                    <td>${stocks[i][7]}</td>
+                    <td>${stocks[i][5]}</td>
+                    <td>${stocks[i][4].toFixed(3)}</td>   
+                    <td style="color: ${color};">${displayStatus}</td>   
+                </tr>`;
+        }
+
+        const tableBody = document.querySelector('#tbl_ing_stock tbody');
+        tableBody.innerHTML = tableHTML;
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateFilterStockByIngredientPaginationControls(baseUrl, page, size, totalPages, ingredient);
+
+    } catch (error) {
+        console.error("Error filtering stock by ingredient:", error);
+    }
+}
+
+
+function updateFilterStockByIngredientPaginationControls(baseUrl, currentPage, pageSize, totalPages, ingredient = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("stock-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterStockByIngredient(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
 
 
 
