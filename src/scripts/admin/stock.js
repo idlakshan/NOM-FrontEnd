@@ -218,10 +218,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
         document.getElementById('search_stockHistory_date').addEventListener("input", () => {
-        filterStockHistoryByUnit(baseUrl, page = 0, size = 10);
+            filterStockHistoryByDate(baseUrl, page = 0, size = 10);
         // document.querySelector("#search_ingredient_status").value = "";
         // document.querySelector("#search_ingredient_type").value = "";
     });
+
+    document.getElementById('search_stockHistory_ingredient').addEventListener("input", () => {
+        filterStockHistoryByIngredientName(baseUrl, page = 0, size = 10);
+    // document.querySelector("#search_ingredient_status").value = "";
+    // document.querySelector("#search_ingredient_type").value = "";
+});
 
 
 
@@ -2544,6 +2550,213 @@ function updateFilterStockHistoryByUnitPaginationControls(baseUrl, currentPage, 
             const selectedPage = parseInt(this.getAttribute("data-page"));
             if (selectedPage >= 0 && selectedPage < totalPages) {
                 filterStockHistoryByUnit(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
+
+
+// Function to filter stock history by date
+async function filterStockHistoryByDate(baseUrl, page, size) {
+    const date = document.getElementById('search_stockHistory_date').value.trim();
+
+    if (!date) {
+        loadAllStockHistory(baseUrl, page = 0, size = 10);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/stockDetails?date=${date}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+        const historyData = responseData.data.data;
+        console.log(historyData);
+
+        let tableHTML = "";
+
+        historyData.forEach((item, index) => {
+            tableHTML += `
+                <tr data-index="${index}" data-ingId="${item[3]}" data-stockId="${item[8]}" data-stockDetailsId="${item[0]}" data-status="${item[1]}">
+                    <td>${index + 1 + page * size}</td>
+                    <td>${item[11]}</td>
+                    <td>${item[2]}</td>
+                    <td>${item[6]}</td>
+                    <td>${item[7]}</td>
+                    <td>${item[4]}</td>
+                    <td>${item[5]}</td>
+                    <td>${item[1]}</td>
+                </tr>
+            `;
+        });
+
+        const tableBody = document.querySelector('#tbl_stockHistory tbody');
+        tableBody.innerHTML = tableHTML;
+
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateFilterStockHistoryByDatePaginationControls(baseUrl, page, size, totalPages, date);
+
+    } catch (error) {
+        console.error("Error filtering stock history by date:", error);
+    }
+}
+
+
+function updateFilterStockHistoryByDatePaginationControls(baseUrl, currentPage, pageSize, totalPages, date = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("stock-history-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterStockHistoryByDate(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
+
+
+// Function to filter stock history by ingredient name
+async function filterStockHistoryByIngredientName(baseUrl, page, size) {
+    const name = document.getElementById('search_stockHistory_ingredient').value.trim();
+
+    // If no name is entered, load all stock history
+    if (!name) {
+        loadAllStockHistory(baseUrl, page = 0, size = 10);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/stockDetails?name=${name}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+        const historyData = responseData.data.data;
+        console.log(historyData);
+
+        let tableHTML = "";
+
+        historyData.forEach((item, index) => {
+            tableHTML += `
+                <tr data-index="${index}" data-ingId="${item[3]}" data-stockId="${item[8]}" data-stockDetailsId="${item[0]}" data-status="${item[1]}">
+                    <td>${index + 1 + page * size}</td>
+                    <td>${item[11]}</td>
+                    <td>${item[2]}</td>
+                    <td>${item[6]}</td>
+                    <td>${item[7]}</td>
+                    <td>${item[4]}</td>
+                    <td>${item[5]}</td>
+                    <td>${item[1]}</td>
+                </tr>
+            `;
+        });
+
+        const tableBody = document.querySelector('#tbl_stockHistory tbody');
+        tableBody.innerHTML = tableHTML;
+
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateFilterStockHistoryByIngredientNamePaginationControls(baseUrl, page, size, totalPages, name);
+
+    } catch (error) {
+        console.error("Error filtering stock history by ingredient name:", error);
+    }
+}
+
+
+function updateFilterStockHistoryByIngredientNamePaginationControls(baseUrl, currentPage, pageSize, totalPages, name = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("stock-history-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterStockHistoryByIngredientName(baseUrl, selectedPage, pageSize);
             }
         });
     });
