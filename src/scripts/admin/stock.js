@@ -156,10 +156,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     ingredientQtyInput.addEventListener('input', validateStockUpdateInputs);
 
 
-    statusSelect.addEventListener('change', filterStockHistoryTable);
-    typeSelect.addEventListener('change', filterStockHistoryTable);
-    dateInput.addEventListener('input', filterStockHistoryTable);
-    ingredientInput.addEventListener('input', filterStockHistoryTable);
+    // statusSelect.addEventListener('change', filterStockHistoryTable);
+    // typeSelect.addEventListener('change', filterStockHistoryTable);
+    // dateInput.addEventListener('input', filterStockHistoryTable);
+    // ingredientInput.addEventListener('input', filterStockHistoryTable);
 
 
 
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.querySelector("#search_stock_status").addEventListener("change", () => {
         filterStockByStatus(baseUrl, page = 0, size = 10);
         document.querySelector("#search_stock_ingredient").value = "";
-             document.querySelector("#search_stock_type").value = "";
+        document.querySelector("#search_stock_type").value = "";
     });
 
     document.querySelector("#search_stock_type").addEventListener("change", () => {
@@ -204,8 +204,28 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.querySelector("#search_ingredient_type").value = "";
     });
 
+    //stock history table filtering events
+    document.getElementById('search_stockHistory_status').addEventListener("input", () => {
+        filterStockHistoryByStatus(baseUrl, page = 0, size = 10);
+        // document.querySelector("#search_ingredient_status").value = "";
+        // document.querySelector("#search_ingredient_type").value = "";
+    });
+
+    document.getElementById('search_stockHistory_type').addEventListener("input", () => {
+        filterStockHistoryByUnit(baseUrl, page = 0, size = 10);
+        // document.querySelector("#search_ingredient_status").value = "";
+        // document.querySelector("#search_ingredient_type").value = "";
+    });
+
+        document.getElementById('search_stockHistory_date').addEventListener("input", () => {
+        filterStockHistoryByUnit(baseUrl, page = 0, size = 10);
+        // document.querySelector("#search_ingredient_status").value = "";
+        // document.querySelector("#search_ingredient_type").value = "";
+    });
 
 
+
+    
 
 
 });
@@ -2304,26 +2324,227 @@ async function loadAllingredientsName(baseUrl) {
 
 
 //stock history table filterig
-function filterStockHistoryTable() {
-    const statusValue = statusSelect.value.toLowerCase();
-    const typeValue = typeSelect.value.toLowerCase();
-    const dateValue = dateInput.value;
-    const ingredientValue = ingredientInput.value.toLowerCase();
+// function filterStockHistoryTable() {
+//     const statusValue = statusSelect.value.toLowerCase();
+//     const typeValue = typeSelect.value.toLowerCase();
+//     const dateValue = dateInput.value;
+//     const ingredientValue = ingredientInput.value.toLowerCase();
 
-    const rows = tableBody.getElementsByTagName('tr');
-    for (const row of rows) {
-        const cells = row.getElementsByTagName('td');
-        const status = cells[7].textContent.toLowerCase();
-        const type = cells[3].textContent.toLowerCase();
-        const date = cells[2].textContent;
-        const ingredient = cells[1].textContent.toLowerCase();
+//     const rows = tableBody.getElementsByTagName('tr');
+//     for (const row of rows) {
+//         const cells = row.getElementsByTagName('td');
+//         const status = cells[7].textContent.toLowerCase();
+//         const type = cells[3].textContent.toLowerCase();
+//         const date = cells[2].textContent;
+//         const ingredient = cells[1].textContent.toLowerCase();
 
-        const matchesStatus = status.includes(statusValue) || !statusValue;
-        const matchesType = type.includes(typeValue) || !typeValue;
-        const matchesDate = date.includes(dateValue) || !dateValue;
-        const matchesIngredient = ingredient.includes(ingredientValue) || !ingredientValue;
+//         const matchesStatus = status.includes(statusValue) || !statusValue;
+//         const matchesType = type.includes(typeValue) || !typeValue;
+//         const matchesDate = date.includes(dateValue) || !dateValue;
+//         const matchesIngredient = ingredient.includes(ingredientValue) || !ingredientValue;
 
-        row.style.display = matchesStatus && matchesType && matchesDate && matchesIngredient ? '' : 'none';
+//         row.style.display = matchesStatus && matchesType && matchesDate && matchesIngredient ? '' : 'none';
+//     }
+// }
+
+// Function to filter stock history by status
+async function filterStockHistoryByStatus(baseUrl, page, size) {
+    const status = document.getElementById('search_stockHistory_status').value.trim();
+
+    if (!status) {
+        loadAllStockHistory(baseUrl, page = 0, size = 10);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/stockDetails?actionStatus=${status}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+        const historyData = responseData.data.data;
+        console.log(historyData);
+
+        let tableHTML = "";
+
+        historyData.forEach((item, index) => {
+            tableHTML += `
+                <tr data-index="${index}" data-ingId="${item[3]}" data-stockId="${item[8]}" data-stockDetailsId="${item[0]}" data-status="${item[1]}">
+                    <td>${index + 1 + page * size}</td>
+                    <td>${item[11]}</td>
+                    <td>${item[2]}</td>
+                    <td>${item[6]}</td>
+                    <td>${item[7]}</td>
+                    <td>${item[4]}</td>
+                    <td>${item[5]}</td>
+                    <td>${item[1]}</td>
+                </tr>
+            `;
+        });
+
+        const tableBody = document.querySelector('#tbl_stockHistory tbody');
+        tableBody.innerHTML = tableHTML;
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateFilterStockHistoryPaginationControls(baseUrl, page, size, totalPages, status);
+
+    } catch (error) {
+        console.error("Error filtering stock history by status:", error);
     }
 }
 
+
+function updateFilterStockHistoryPaginationControls(baseUrl, currentPage, pageSize, totalPages, status = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("stock-history-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterStockHistoryByStatus(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
+
+// Function to filter stock history by unit
+async function filterStockHistoryByUnit(baseUrl, page, size) {
+    const unit = document.getElementById('search_stockHistory_type').value.trim();
+
+    if (!unit) {
+        loadAllStockHistory(baseUrl, page = 0, size = 10);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}/stockDetails?unit=${unit}&page=${page}&size=${size}`, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("jwt")}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const responseData = await response.json();
+        const historyData = responseData.data.data;
+        console.log(historyData);
+
+        let tableHTML = "";
+
+        historyData.forEach((item, index) => {
+            tableHTML += `
+                <tr data-index="${index}" data-ingId="${item[3]}" data-stockId="${item[8]}" data-stockDetailsId="${item[0]}" data-status="${item[1]}">
+                    <td>${index + 1 + page * size}</td>
+                    <td>${item[11]}</td>
+                    <td>${item[2]}</td>
+                    <td>${item[6]}</td>
+                    <td>${item[7]}</td>
+                    <td>${item[4]}</td>
+                    <td>${item[5]}</td>
+                    <td>${item[1]}</td>
+                </tr>
+            `;
+        });
+
+        const tableBody = document.querySelector('#tbl_stockHistory tbody');
+        tableBody.innerHTML = tableHTML;
+
+
+        const totalPages = responseData.data.totalCount
+            ? Math.ceil(responseData.data.totalCount / size)
+            : 1;
+
+        updateFilterStockHistoryByUnitPaginationControls(baseUrl, page, size, totalPages, unit);
+
+    } catch (error) {
+        console.error("Error filtering stock history by unit:", error);
+    }
+}
+
+
+function updateFilterStockHistoryByUnitPaginationControls(baseUrl, currentPage, pageSize, totalPages, unit = '') {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("stock-history-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                filterStockHistoryByUnit(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
