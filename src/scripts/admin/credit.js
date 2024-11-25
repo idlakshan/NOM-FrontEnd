@@ -10,8 +10,8 @@ const creditPaymentNavbar = document.querySelector(".navbar");
 document.addEventListener('DOMContentLoaded', async function () {
     const baseUrl = await window.api.getBaseUrl();
 
-    loadAllCreditCustomers(baseUrl);
-    searchCreditCustomer();
+    loadAllCreditCustomers(baseUrl,page = 0, size = 10);
+    searchCreditCustomerByContact(baseUrl,page = 0, size = 10);
 
     document.querySelector("#btnCloseCreditPayment").addEventListener("click", function () {
         document.querySelector(".creditPayment-popup").style.display = "none";
@@ -84,30 +84,119 @@ function filterTableByDate(date) {
     }
 }
 
-//----------search credit customer--------------
-function searchCreditCustomer() {
-    document.getElementById('search_credit').addEventListener('input', function () {
-        const searchQuery = this.value.toLowerCase();
-        const rows = document.querySelectorAll('#tblCredit_body tr');
 
-        rows.forEach(row => {
-            const customer = row.cells[1].textContent.toLowerCase();
-            const contact = row.cells[2].textContent.toLowerCase();
+//----------Search Credit Customer by Contact-----------
+function searchCreditCustomerByContact(baseUrl, page, size) {
+    document.getElementById('search_credit').addEventListener('input', async function () {
+        const contact = this.value.trim();
+        
+        if (!contact) {
+            loadAllCreditCustomers(baseUrl, page = 0, size = 10);
+            return;
+        }
 
-            if (customer.includes(searchQuery) || contact.includes(searchQuery)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
+        try {
+            const url = `${baseUrl}/CreditCustomer?cusName=&contact=${contact}&page=${page}&size=${size}`;
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const customersList = await response.json();
+            const customers = customersList.data.data;
+        
+            const totalCount = customersList.data.totalCount; 
+            console.log(totalCount);
+
+            let customerList = "";
+
+            for (let i = 0; i < customers.length; i++) {
+                const customer = customers[i]; 
+                const value4 = customer[4];
+                const value5 = customer[3];
+                const color4 = value4 > 0 ? '#00cc00' : '#101A24';
+                const color5 = value5 > 0 ? '#ff3300' : '#101A24';
+
+                customerList += `
+                    <tr class="customer-row" data-due-amount="${value5}" data-customer-name="${customer[6]}" data-customer-id="${customer[2]}">
+                        <td>${i + 1 + page * size}</td>
+                        <td>${customer[6]}</td> <!-- Customer Name -->
+                        <td>${customer[7]}</td> <!-- Customer Phone -->
+                        <td>${customer[5]}</td> <!-- Customer Some Field -->
+                        <td style="color:${color4};">${value4}</td> <!-- Some Value -->
+                        <td style="color:${color5};">${value5}</td> <!-- Some Value -->
+                        <td><button class="btn-submit btnCreditOpen" style="height: 30px;">Pay</button></td>
+                    </tr>
+                `;
+            }
+
+            document.querySelector('#tblCredit_body').innerHTML = customerList;
+
+            document.querySelectorAll('.customer-row').forEach(row => {
+                row.addEventListener('click', function (event) {
+                    if (!event.target.classList.contains('btnCreditOpen') && !event.target.closest('.btnCreditOpen')) {
+                        selectedCustomerCreditDetailsPopup(baseUrl, row);
+                    }
+                });
+            });
+
+            creditPaymentPopupHandleEvent();
+
+            const totalPages = Math.ceil(totalCount / size);
+            updateCreditCustomerPaginationControlsForContact(baseUrl, contact, page, size, totalPages);
+
+        } catch (error) {
+            console.error('Error searching credit customers by contact:', error);
+        }
+    });
+}
+
+
+function updateCreditCustomerPaginationControlsForContact(baseUrl, contact, currentPage, pageSize, totalPages) {
+    let paginationHtml = "";
+
+    // Previous button
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    // Page buttons
+    for (let i = 0; i < totalPages; i++) {
+        paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+    }
+
+    // Next button
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("credit-customer-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    // Add event listeners to pagination buttons
+    document.querySelectorAll(".pagination-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                fetchAndRenderCreditCustomersByContact(baseUrl, contact, selectedPage, pageSize);
             }
         });
     });
 }
 
 
-//----------Load All credit Customers-----------
-async function loadAllCreditCustomers(baseUrl) {
+
+
+
+
+//----------Load All Credit Customers with Pagination-----------
+async function loadAllCreditCustomers(baseUrl, page = 0, size = 10) {
     try {
-        const response = await fetch(baseUrl + '/CreditCustomer', {
+        const response = await fetch(`${baseUrl}/CreditCustomer/paged?page=${page}&size=${size}`, {
             method: "GET",
             headers: {
                 Accept: "application/json",
@@ -120,21 +209,25 @@ async function loadAllCreditCustomers(baseUrl) {
         }
 
         const customersList = await response.json();
-        //console.log(customersList);
+        const totalCustomers = customersList.data.totalCount;
+        const customers = customersList.data.data;
+        console.log(customers);
+        
+
         let customerList = "";
 
-        for (let i = 0; i < customersList.data.length; i++) {
-            const value4 = customersList.data[i][4];
-            const value5 = customersList.data[i][3];
+        for (let i = 0; i < customers.length; i++) {
+            const value4 = customers[i][4];
+            const value5 = customers[i][3];
             const color4 = value4 > 0 ? '#00cc00' : '#101A24';
             const color5 = value5 > 0 ? '#ff3300' : '#101A24';
 
             customerList += `
-                <tr class="customer-row" data-due-amount="${value5}" data-customer-name="${customersList.data[i][6]}" data-customer-id="${customersList.data[i][2]}">
-                    <td>${i + 1}</td>
-                    <td>${customersList.data[i][6]}</td>
-                    <td>${customersList.data[i][7]}</td>
-                    <td>${customersList.data[i][5]}</td>
+                <tr class="customer-row" data-due-amount="${value5}" data-customer-name="${customers[i][6]}" data-customer-id="${customers[i][2]}">
+                    <td>${i + 1 + page * size}</td>
+                    <td>${customers[i][6]}</td>
+                    <td>${customers[i][7]}</td>
+                    <td>${customers[i][5]}</td>
                     <td style="color:${color4};">${value4}</td>
                     <td style="color:${color5};">${value5}</td>
                     <td><button class="btn-submit btnCreditOpen" style="height: 30px;">Pay</button></td>
@@ -144,6 +237,7 @@ async function loadAllCreditCustomers(baseUrl) {
 
         document.querySelector('#tblcredit tbody').innerHTML = customerList;
 
+      
         document.querySelectorAll('.customer-row').forEach(row => {
             row.addEventListener('click', function (event) {
                 if (!event.target.classList.contains('btnCreditOpen') && !event.target.closest('.btnCreditOpen')) {
@@ -152,16 +246,67 @@ async function loadAllCreditCustomers(baseUrl) {
 
                 document.querySelector('.select_creditOrder').addEventListener('change', () => {
                     selectedCustomerCreditDetailsPopup(baseUrl, row);
-                })
+                });
             });
         });
 
         creditPaymentPopupHandleEvent();
 
+        const totalPages = Math.ceil(totalCustomers / size);
+        updateCreditCustomerPaginationControls(baseUrl, page, size, totalPages);
+
     } catch (error) {
         console.error('Error loading credit customers:', error);
     }
 }
+
+function updateCreditCustomerPaginationControls(baseUrl, currentPage, pageSize, totalPages) {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+        
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("credit-customer-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    
+    document.querySelectorAll(".pagination-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                loadAllCreditCustomers(baseUrl, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
 
 //-----customer wise credit payment popup------------ 
 function creditPaymentPopupHandleEvent() {
@@ -428,7 +573,7 @@ function payTotalCreditCustomerWiseHandle(baseUrl) {
                 timer: 1500
             });
 
-            loadAllCreditCustomers(baseUrl);
+            loadAllCreditCustomers(baseUrl,page = 0, size = 10);
             creditReport(baseUrl);
             creditPayment(baseUrl);
        
@@ -703,7 +848,7 @@ async function payTotalCreditOrderWiseHandle(baseUrl, currentRow) {
         });
 
         await selectedCustomerCreditDetailsPopup(baseUrl, currentRow);
-        loadAllCreditCustomers(baseUrl);
+        loadAllCreditCustomers(baseUrl,page = 0, size = 10);
         creditPayment(baseUrl);
         creditReport(baseUrl);
 
