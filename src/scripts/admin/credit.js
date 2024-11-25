@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     document.getElementById('search_Credit_date').addEventListener('input', function () {
         const searchDate = this.value;
-        filterTableByDate(searchDate);
+      //  filterTableByDate(searchDate);
+      searchCreditCustomerByDate(baseUrl, searchDate, page=0, size=10)
     });
 
 
@@ -70,19 +71,318 @@ document.getElementById('search_credit_orderid').addEventListener('input', funct
 
 
 //----------search credit date--------------
-function filterTableByDate(date) {
-    const table = document.getElementById('tblcreditOrderDetails');
-    const rows = table.getElementsByTagName('tr');
-    for (let i = 1; i < rows.length; i++) {
-        const cells = rows[i].getElementsByTagName('td');
-        const rowDate = cells[1].textContent.split(' ')[0];
-        if (date && rowDate !== date) {
-            rows[i].style.display = 'none';
-        } else {
-            rows[i].style.display = '';
+// function filterTableByDate(date) {
+//     const table = document.getElementById('tblcreditOrderDetails');
+//     const rows = table.getElementsByTagName('tr');
+//     for (let i = 1; i < rows.length; i++) {
+//         const cells = rows[i].getElementsByTagName('td');
+//         const rowDate = cells[1].textContent.split(' ')[0];
+//         if (date && rowDate !== date) {
+//             rows[i].style.display = 'none';
+//         } else {
+//             rows[i].style.display = '';
+//         }
+//     }
+// }
+
+async function loadSelectCreditCustomer(baseUrl,customerId) {
+    const response = await fetch(`${baseUrl}/CreditCustomerDetail?custId=${customerId}&page=${0}&size=${10}`,  {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const creditOrdersList = await response.json();
+  // console.log(creditOrdersList);
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+    let ordersList = "";
+    const statusFilter = document.querySelector('.select_creditOrder').value;
+    //console.log(statusFilter);
+
+    for (let i = 0; i < creditOrdersList.data.data.length; i++) {
+        const order = creditOrdersList.data.data[i];
+        const value4 = order.settledCreditDetailAmount;
+        const value5 = order.dueCreditDetailAmount;
+        const color4 = value4 > 0 ? '#00cc00' : '#101A24';
+        const color5 = value5 > 0 ? '#ff3300' : '#101A24';
+
+        if ((statusFilter === 'Pending' && order.dueCreditDetailAmount !== 0) ||
+            (statusFilter === 'Paid' && order.dueCreditDetailAmount === 0) ||
+            (statusFilter === 'all')) {
+
+            const isPaid = (order.dueCreditDetailAmount === 0);
+            const checkboxDisabled = isPaid ? 'disabled' : '';
+
+            ordersList += `
+                <tr class="customer-row" data-due-amount="${value5}" data-customer-name="${order[6]}" data-customer-id="${order[2]}">
+                    <td class="table_orderId">${order.orderId}</td>
+                    <td>${formatDate(order.orderDateTime)}</td>
+                    <td>${order.totalCreditDetailAmount}</td>
+                    <td style="color:${color4};">${value4}</td>
+                    <td style="color:${color5};">${value5}</td>
+                    <td><div class="table_inputContainer"><input type="text" class="table_input" disabled></div></td>
+                   <td><input type="checkbox" class="table_checkbox" ${checkboxDisabled}></td>
+                </tr>`;
         }
     }
+
+    document.querySelector('#tblcreditOrderDetails tbody').innerHTML = ordersList;
+
+    
+    function calculateSum() {
+        const totalInput = document.getElementById('creditPayment-totalOrderWise');
+        let sum = 0;
+        const allInputs = document.querySelectorAll('#tblcreditOrderDetails .table_input:not([disabled])');
+        allInputs.forEach(input => {
+            const value = parseFloat(input.value) || 0;
+            sum += value;
+        });
+        totalInput.value = sum.toFixed(2);
+    }
+
+    const checkboxes = document.querySelectorAll('#tblcreditOrderDetails .table_checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const inputField = this.closest('tr').querySelector('.table_input');
+            inputField.disabled = !this.checked;
+            if (this.checked) {
+                inputField.focus();
+                activeCreditOrderInput = inputField;
+                document.getElementById("creditPayment-cashOrderWise").value = "0.00";
+                document.getElementById("creditPayment-cardOrderWise").value = "0.00";
+            } else {
+                inputField.value = '';
+                inputField.parentElement.style.borderColor = '';
+            }
+            calculateSum();
+        });
+    });
+
+    document.addEventListener('input', function (event) {
+        if (event.target.matches('#tblcreditOrderDetails .table_input:not([disabled])')) {
+            const input = event.target;
+            const inputValue = parseFloat(input.value) || 0;
+            const dueAmount = parseFloat(input.closest('tr').dataset.dueAmount);
+            const validInput = /^[0-9]*\.?[0-9]*$/;
+            if (!validInput.test(input.value)) {
+                input.value = input.value.slice(0, -1);
+            }
+
+            if (inputValue > dueAmount) {
+                input.parentElement.style.border = '1px solid #ff3300';
+            } else if (inputValue != "" && inputValue <= dueAmount) {
+                input.parentElement.style.border = '1px solid #00cc00';
+            } else {
+                input.parentElement.style.borderColor = '';
+            }
+
+            calculateSum();
+        }
+    });
 }
+
+// Function to fetch and render credit orders based on the date
+async function searchCreditCustomerByDate(baseUrl, date, page, size) {
+    const customerId = document.getElementById("creditOrdersCustomerName").innerText.split('-')[0];
+    console.log(date);    
+    if (!date) {
+        loadSelectCreditCustomer(baseUrl,customerId)
+        return; 
+    }
+
+    try {
+        const url = `${baseUrl}/CreditCustomerDetail?custId=${customerId}&dateTime=${date}&page=${page}&size=${size}`;
+        
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const creditOrdersList = await response.json();
+        const totalCount = creditOrdersList.data.totalCount;
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        let ordersList = "";
+        const statusFilter = document.querySelector('.select_creditOrder').value;
+
+        for (let i = 0; i < creditOrdersList.data.data.length; i++) {
+            const order = creditOrdersList.data.data[i];
+            const value4 = order.settledCreditDetailAmount;
+            const value5 = order.dueCreditDetailAmount;
+            const color4 = value4 > 0 ? '#00cc00' : '#101A24';
+            const color5 = value5 > 0 ? '#ff3300' : '#101A24';
+
+            if ((statusFilter === 'Pending' && order.dueCreditDetailAmount !== 0) ||
+                (statusFilter === 'Paid' && order.dueCreditDetailAmount === 0) ||
+                (statusFilter === 'all')) {
+
+                const isPaid = (order.dueCreditDetailAmount === 0);
+                const checkboxDisabled = isPaid ? 'disabled' : '';
+
+               
+                ordersList += `
+                    <tr class="customer-row" data-due-amount="${value5}" data-customer-name="${order[6]}" data-customer-id="${order[2]}">
+                        <td class="table_orderId">${order.orderId}</td>
+                        <td>${formatDate(order.orderDateTime)}</td>
+                        <td>${order.totalCreditDetailAmount}</td>
+                        <td style="color:${color4};">${value4}</td>
+                        <td style="color:${color5};">${value5}</td>
+                        <td><div class="table_inputContainer"><input type="text" class="table_input" disabled></div></td>
+                        <td><input type="checkbox" class="table_checkbox" ${checkboxDisabled}></td>
+                    </tr>
+                `;
+            }
+        }
+
+     
+        document.querySelector('#tblcreditOrderDetails tbody').innerHTML = ordersList;
+        
+
+
+        function calculateSum() {
+            const totalInput = document.getElementById('creditPayment-totalOrderWise');
+            let sum = 0;
+            const allInputs = document.querySelectorAll('#tblcreditOrderDetails .table_input:not([disabled])');
+            allInputs.forEach(input => {
+                const value = parseFloat(input.value) || 0;
+                sum += value;
+            });
+            totalInput.value = sum.toFixed(2);
+        }
+
+        const checkboxes = document.querySelectorAll('#tblcreditOrderDetails .table_checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const inputField = this.closest('tr').querySelector('.table_input');
+                inputField.disabled = !this.checked;
+                if (this.checked) {
+                    inputField.focus();
+                    activeCreditOrderInput = inputField;
+                    document.getElementById("creditPayment-cashOrderWise").value = "0.00";
+                    document.getElementById("creditPayment-cardOrderWise").value = "0.00";
+                } else {
+                    inputField.value = '';
+                    inputField.parentElement.style.borderColor = '';
+                }
+                calculateSum();
+            });
+        });
+
+        document.addEventListener('input', function (event) {
+            if (event.target.matches('#tblcreditOrderDetails .table_input:not([disabled])')) {
+                const input = event.target;
+                const inputValue = parseFloat(input.value) || 0;
+                const dueAmount = parseFloat(input.closest('tr').dataset.dueAmount);
+                const validInput = /^[0-9]*\.?[0-9]*$/;
+                if (!validInput.test(input.value)) {
+                    input.value = input.value.slice(0, -1);
+                }
+
+                if (inputValue > dueAmount) {
+                    input.parentElement.style.border = '1px solid #ff3300';
+                } else if (inputValue != "" && inputValue <= dueAmount) {
+                    input.parentElement.style.border = '1px solid #00cc00';
+                } else {
+                    input.parentElement.style.borderColor = '';
+                }
+
+                calculateSum();
+            }
+        });
+
+        const totalPages = creditOrdersList.data.totalCount
+        ? Math.ceil(creditOrdersList.data.totalCount / size)
+        : 1;
+
+        updateCreditOrderPaginationControls(baseUrl, date, page, size, totalPages);
+
+    } catch (error) {
+        console.error('Error searching credit orders by date:', error);
+    }
+}
+
+
+function updateCreditOrderPaginationControls(baseUrl, date, currentPage, pageSize, totalPages) {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("credit-customerpopup-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    document.querySelectorAll(".pagination-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                searchCreditCustomerByDate(baseUrl, date, selectedPage, pageSize);
+            }
+        });
+    });
+}
+
+
+
 
 
 //----------Search Credit Customer by Contact-----------
@@ -128,11 +428,11 @@ function searchCreditCustomerByContact(baseUrl, page, size) {
                 customerList += `
                     <tr class="customer-row" data-due-amount="${value5}" data-customer-name="${customer[6]}" data-customer-id="${customer[2]}">
                         <td>${i + 1 + page * size}</td>
-                        <td>${customer[6]}</td> <!-- Customer Name -->
-                        <td>${customer[7]}</td> <!-- Customer Phone -->
-                        <td>${customer[5]}</td> <!-- Customer Some Field -->
-                        <td style="color:${color4};">${value4}</td> <!-- Some Value -->
-                        <td style="color:${color5};">${value5}</td> <!-- Some Value -->
+                        <td>${customer[6]}</td>
+                        <td>${customer[7]}</td>
+                        <td>${customer[5]}</td> 
+                        <td style="color:${color4};">${value4}</td
+                        <td style="color:${color5};">${value5}</td> 
                         <td><button class="btn-submit btnCreditOpen" style="height: 30px;">Pay</button></td>
                     </tr>
                 `;
@@ -191,9 +491,6 @@ function updateCreditCustomerPaginationControlsForContact(baseUrl, contact, curr
 
 
 
-
-
-
 //----------Load All Credit Customers with Pagination-----------
 async function loadAllCreditCustomers(baseUrl, page = 0, size = 10) {
     try {
@@ -212,7 +509,7 @@ async function loadAllCreditCustomers(baseUrl, page = 0, size = 10) {
         const customersList = await response.json();
         const totalCustomers = customersList.data.totalCount;
         const customers = customersList.data.data;
-        console.log(customers);
+       // console.log(customers);
         
 
         let customerList = "";
