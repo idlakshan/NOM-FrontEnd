@@ -114,7 +114,7 @@ function searchCreditCustomerByContact(baseUrl, page, size) {
             const customers = customersList.data.data;
         
             const totalCount = customersList.data.totalCount; 
-            console.log(totalCount);
+           // console.log(totalCount);
 
             let customerList = "";
 
@@ -143,7 +143,7 @@ function searchCreditCustomerByContact(baseUrl, page, size) {
             document.querySelectorAll('.customer-row').forEach(row => {
                 row.addEventListener('click', function (event) {
                     if (!event.target.classList.contains('btnCreditOpen') && !event.target.closest('.btnCreditOpen')) {
-                        selectedCustomerCreditDetailsPopup(baseUrl, row);
+                        selectedCustomerCreditDetailsPopup(baseUrl, row,page=0,size=10);
                     }
                 });
             });
@@ -158,6 +158,7 @@ function searchCreditCustomerByContact(baseUrl, page, size) {
         }
     });
 }
+
 
 
 function updateCreditCustomerPaginationControlsForContact(baseUrl, contact, currentPage, pageSize, totalPages) {
@@ -241,11 +242,11 @@ async function loadAllCreditCustomers(baseUrl, page = 0, size = 10) {
         document.querySelectorAll('.customer-row').forEach(row => {
             row.addEventListener('click', function (event) {
                 if (!event.target.classList.contains('btnCreditOpen') && !event.target.closest('.btnCreditOpen')) {
-                    selectedCustomerCreditDetailsPopup(baseUrl, row);
+                    selectedCustomerCreditDetailsPopup(baseUrl, row,page=0,size=10);
                 }
 
                 document.querySelector('.select_creditOrder').addEventListener('change', () => {
-                    selectedCustomerCreditDetailsPopup(baseUrl, row);
+                    selectedCustomerCreditDetailsPopup(baseUrl, row,page=0,size=10);
                 });
             });
         });
@@ -260,6 +261,7 @@ async function loadAllCreditCustomers(baseUrl, page = 0, size = 10) {
     }
 }
 
+//----------Update Pagination Controls for Credit Customers-----------
 function updateCreditCustomerPaginationControls(baseUrl, currentPage, pageSize, totalPages) {
     let paginationHtml = "";
 
@@ -631,7 +633,9 @@ function validatePaymentInputs() {
 
 
 //-----Orders wise credit payment popup------------ 
-async function selectedCustomerCreditDetailsPopup(baseUrl, row) {
+async function selectedCustomerCreditDetailsPopup(baseUrl, row,page,size) {
+   // console.log(page,size);
+    
     const popup = document.querySelector(".creditOrders-popup");
     const dueAmount = parseFloat(row.dataset.dueAmount).toFixed(2);
 
@@ -646,7 +650,7 @@ async function selectedCustomerCreditDetailsPopup(baseUrl, row) {
         document.getElementById("creditOrdersCustomerName").innerText = `${customerId} - ${customer}`;
 
         try {
-            const response = await fetch(`${baseUrl}/CreditCustomerDetail?customerId=${customerId}`, {
+            const response = await fetch(`${baseUrl}/CreditCustomerDetail?custId=${customerId}&page=${page}&size=${size}`,  {
                 method: "GET",
                 headers: {
                     Accept: "application/json",
@@ -659,7 +663,7 @@ async function selectedCustomerCreditDetailsPopup(baseUrl, row) {
             }
 
             const creditOrdersList = await response.json();
-         //   console.log(creditOrdersList);
+          // console.log(creditOrdersList);
 
             function formatDate(dateString) {
                 const date = new Date(dateString);
@@ -677,8 +681,8 @@ async function selectedCustomerCreditDetailsPopup(baseUrl, row) {
             const statusFilter = document.querySelector('.select_creditOrder').value;
             //console.log(statusFilter);
 
-            for (let i = 0; i < creditOrdersList.data.length; i++) {
-                const order = creditOrdersList.data[i];
+            for (let i = 0; i < creditOrdersList.data.data.length; i++) {
+                const order = creditOrdersList.data.data[i];
                 const value4 = order.settledCreditDetailAmount;
                 const value5 = order.dueCreditDetailAmount;
                 const color4 = value4 > 0 ? '#00cc00' : '#101A24';
@@ -757,12 +761,69 @@ async function selectedCustomerCreditDetailsPopup(baseUrl, row) {
                 }
             });
 
+            const totalPages = creditOrdersList.data.totalCount
+            ? Math.ceil(creditOrdersList.data.totalCount / size)
+            : 1;
+
+            renderCreditOrderPagination(baseUrl, row, page, size, totalPages);
+
         } catch (error) {
             console.error('Error loading credit customers:', error);
         }
     } else {
         // btnOpen.disabled = true;
     }
+}
+
+function renderCreditOrderPagination(baseUrl,row, currentPage, size, totalPages) {
+    let paginationHtml = "";
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? "disabled" : ""}>Prev</button>`;
+
+    if (totalPages <= 5) {
+        for (let i = 0; i < totalPages; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+    } else {
+        paginationHtml += `<button class="pagination-btn ${currentPage === 0 ? "active" : ""}" data-page="0">1</button>`;
+
+        if (currentPage > 2) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        const startPage = Math.max(1, currentPage - 1);
+        const endPage = Math.min(totalPages - 2, currentPage + 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i + 1}</button>`;
+        }
+
+        if (currentPage < totalPages - 3) {
+            paginationHtml += `<span class="dots">...</span>`;
+        }
+
+        paginationHtml += `<button class="pagination-btn ${currentPage === totalPages - 1 ? "active" : ""}" data-page="${totalPages - 1}">${totalPages}</button>`;
+    }
+
+    paginationHtml += `<button class="pagination-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? "disabled" : ""}>Next</button>`;
+
+    const paginationControls = document.getElementById("credit-customerpopup-pagination-controls");
+    paginationControls.innerHTML = paginationHtml;
+
+    const paginationButtons = document.querySelectorAll(".pagination-btn");
+
+
+
+
+    paginationButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const selectedPage = parseInt(this.getAttribute("data-page"));
+            if (selectedPage >= 0 && selectedPage < totalPages) {
+                selectedCustomerCreditDetailsPopup(baseUrl, row, selectedPage, size);
+            }
+        });
+    });
+    
 }
 
 
@@ -847,7 +908,7 @@ async function payTotalCreditOrderWiseHandle(baseUrl, currentRow) {
             timer: 1500
         });
 
-        await selectedCustomerCreditDetailsPopup(baseUrl, currentRow);
+        await selectedCustomerCreditDetailsPopup(baseUrl, currentRow,page=0,size=10);
         loadAllCreditCustomers(baseUrl,page = 0, size = 10);
         creditPayment(baseUrl);
         creditReport(baseUrl);
