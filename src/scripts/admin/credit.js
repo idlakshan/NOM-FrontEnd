@@ -48,6 +48,12 @@ document.addEventListener('DOMContentLoaded', async function () {
       searchCreditCustomerByDate(baseUrl, searchDate, page=0, size=10)
     });
 
+    document.getElementById('search_creditPayment_status').addEventListener('change', function () {
+        const searchDate = this.value;
+      //  filterTableByDate(searchDate);
+      filterCreditOrdersByStatus(baseUrl, page=0, size=10)
+    });
+
 
 });
 
@@ -86,6 +92,8 @@ document.getElementById('search_credit_orderid').addEventListener('input', funct
 // }
 
 async function loadSelectCreditCustomer(baseUrl,customerId) {
+    console.log(customerId);
+    
     const response = await fetch(`${baseUrl}/CreditCustomerDetail?custId=${customerId}&page=${0}&size=${10}`,  {
         method: "GET",
         headers: {
@@ -99,7 +107,7 @@ async function loadSelectCreditCustomer(baseUrl,customerId) {
     }
 
     const creditOrdersList = await response.json();
-  // console.log(creditOrdersList);
+   console.log(creditOrdersList);
 
     function formatDate(dateString) {
         const date = new Date(dateString);
@@ -124,8 +132,8 @@ async function loadSelectCreditCustomer(baseUrl,customerId) {
         const color4 = value4 > 0 ? '#00cc00' : '#101A24';
         const color5 = value5 > 0 ? '#ff3300' : '#101A24';
 
-        if ((statusFilter === 'Pending' && order.dueCreditDetailAmount !== 0) ||
-            (statusFilter === 'Paid' && order.dueCreditDetailAmount === 0) ||
+        if ((statusFilter === 'pending' && order.dueCreditDetailAmount !== 0) ||
+            (statusFilter === 'paid' && order.dueCreditDetailAmount === 0) ||
             (statusFilter === 'all')) {
 
             const isPaid = (order.dueCreditDetailAmount === 0);
@@ -199,6 +207,7 @@ async function loadSelectCreditCustomer(baseUrl,customerId) {
     });
 }
 
+
 // Function to fetch and render credit orders based on the date
 async function searchCreditCustomerByDate(baseUrl, date, page, size) {
     const customerId = document.getElementById("creditOrdersCustomerName").innerText.split('-')[0];
@@ -225,6 +234,8 @@ async function searchCreditCustomerByDate(baseUrl, date, page, size) {
 
         const creditOrdersList = await response.json();
         const totalCount = creditOrdersList.data.totalCount;
+        console.log(creditOrdersList);
+        
 
         function formatDate(dateString) {
             const date = new Date(dateString);
@@ -240,6 +251,7 @@ async function searchCreditCustomerByDate(baseUrl, date, page, size) {
         let ordersList = "";
         const statusFilter = document.querySelector('.select_creditOrder').value;
 
+
         for (let i = 0; i < creditOrdersList.data.data.length; i++) {
             const order = creditOrdersList.data.data[i];
             const value4 = order.settledCreditDetailAmount;
@@ -247,8 +259,8 @@ async function searchCreditCustomerByDate(baseUrl, date, page, size) {
             const color4 = value4 > 0 ? '#00cc00' : '#101A24';
             const color5 = value5 > 0 ? '#ff3300' : '#101A24';
 
-            if ((statusFilter === 'Pending' && order.dueCreditDetailAmount !== 0) ||
-                (statusFilter === 'Paid' && order.dueCreditDetailAmount === 0) ||
+            if ((statusFilter === 'pending' && order.dueCreditDetailAmount !== 0) ||
+                (statusFilter === 'paid' && order.dueCreditDetailAmount === 0) ||
                 (statusFilter === 'all')) {
 
                 const isPaid = (order.dueCreditDetailAmount === 0);
@@ -380,6 +392,121 @@ function updateCreditOrderPaginationControls(baseUrl, date, currentPage, pageSiz
         });
     });
 }
+
+
+
+
+// Function to fetch and render credit orders with pagination
+async function filterCreditOrdersByStatus(baseUrl, page, size) {
+    const customerId = document.getElementById("creditOrdersCustomerName").innerText.split('-')[0];
+    const statusFilter = document.querySelector('.select_creditOrder').value; // Get the selected status
+
+    try {
+        // Build the URL with the status filter
+        const url = `${baseUrl}/CreditCustomerDetail?custId=${customerId}&status=${statusFilter}&page=${page}&size=${size}`;
+        console.log(url);
+        
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const creditOrdersList = await response.json();
+        const totalCount = creditOrdersList.data.totalCount;
+        console.log(creditOrdersList);
+        
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        let ordersList = "";
+
+        for (let i = 0; i < creditOrdersList.data.data.length; i++) {
+            const order = creditOrdersList.data.data[i];
+            const value4 = order.settledCreditDetailAmount;
+            const value5 = order.dueCreditDetailAmount;
+            const color4 = value4 > 0 ? '#00cc00' : '#101A24';
+            const color5 = value5 > 0 ? '#ff3300' : '#101A24';
+
+            const isPaid = (order.dueCreditDetailAmount === 0);
+            const checkboxDisabled = isPaid ? 'disabled' : '';
+
+            ordersList += `
+                <tr class="customer-row" data-due-amount="${value5}" data-customer-name="${order[6]}" data-customer-id="${order[2]}">
+                    <td class="table_orderId">${order.orderId}</td>
+                    <td>${formatDate(order.orderDateTime)}</td>
+                    <td>${order.totalCreditDetailAmount}</td>
+                    <td style="color:${color4};">${value4}</td>
+                    <td style="color:${color5};">${value5}</td>
+                    <td><div class="table_inputContainer"><input type="text" class="table_input" disabled></div></td>
+                    <td><input type="checkbox" class="table_checkbox" ${checkboxDisabled}></td>
+                </tr>`;
+        }
+
+        document.querySelector('#tblcreditOrderDetails tbody').innerHTML = ordersList;
+
+        // Update pagination controls
+        const totalPages = Math.ceil(totalCount / size);
+        updateCreditCustomerStatusPaginationControls(baseUrl, page, size, totalPages, statusFilter);
+
+    } catch (error) {
+        console.error('Error filtering credit orders by status:', error);
+    }
+}
+
+// Function to render pagination controls
+function updateCreditCustomerStatusPaginationControls(baseUrl, currentPage, size, totalPages, statusFilter) {
+    const paginationContainer = document.querySelector('#credit-customerpopup-pagination-controls');
+    let paginationHTML = "";
+
+    // Previous button
+    if (currentPage > 0) {
+        paginationHTML += `<button class="pagination-btn" data-page="${currentPage - 1}">Previous</button>`;
+    }
+
+    // Page numbers
+    for (let i = 0; i < totalPages; i++) {
+        const activeClass = i === currentPage ? 'active' : '';
+        paginationHTML += `<button class="pagination-btn ${activeClass}" data-page="${i}">${i + 1}</button>`;
+    }
+
+    // Next button
+    if (currentPage < totalPages - 1) {
+        paginationHTML += `<button class="pagination-btn" data-page="${currentPage + 1}">Next</button>`;
+    }
+
+    paginationContainer.innerHTML = paginationHTML;
+
+    // Add event listeners to pagination buttons
+    const paginationButtons = document.querySelectorAll('.pagination-btn');
+    paginationButtons.forEach((button) => {
+        button.addEventListener('click', (e) => {
+            const newPage = parseInt(e.target.getAttribute('data-page'), 10);
+            filterCreditOrdersByStatus(baseUrl, newPage, size);
+        });
+    });
+}
+
+
+
+
+
 
 
 
@@ -960,7 +1087,7 @@ async function selectedCustomerCreditDetailsPopup(baseUrl, row,page,size) {
             }
 
             const creditOrdersList = await response.json();
-          // console.log(creditOrdersList);
+        //  console.log(creditOrdersList);
 
             function formatDate(dateString) {
                 const date = new Date(dateString);
@@ -985,8 +1112,8 @@ async function selectedCustomerCreditDetailsPopup(baseUrl, row,page,size) {
                 const color4 = value4 > 0 ? '#00cc00' : '#101A24';
                 const color5 = value5 > 0 ? '#ff3300' : '#101A24';
 
-                if ((statusFilter === 'Pending' && order.dueCreditDetailAmount !== 0) ||
-                    (statusFilter === 'Paid' && order.dueCreditDetailAmount === 0) ||
+                if ((statusFilter === 'pending' && order.dueCreditDetailAmount !== 0) ||
+                    (statusFilter === 'paid' && order.dueCreditDetailAmount === 0) ||
                     (statusFilter === 'all')) {
 
                     const isPaid = (order.dueCreditDetailAmount === 0);
@@ -1069,6 +1196,8 @@ async function selectedCustomerCreditDetailsPopup(baseUrl, row,page,size) {
         }
     } else {
         // btnOpen.disabled = true;
+        console.log("ji");
+        
     }
 }
 

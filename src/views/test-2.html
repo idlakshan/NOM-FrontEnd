@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Stock DataTable</title>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-items: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+            margin: 20px 0;
+        }
+
+        .filter-container {
+            margin: 20px auto;
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .filter-container label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .filter-container input {
+            padding: 8px;
+            margin: 0 10px 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 160px;
+        }
+
+        .filter-container input[type="date"] {
+            padding: 6px;
+            width: auto;
+        }
+
+        .dataTables_length, .dataTables_filter {
+            margin-bottom: 15px;
+        }
+
+        table.dataTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table.dataTable thead {
+            background-color: #5C6574;
+            color: white;
+        }
+
+        table.dataTable tbody tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        table.dataTable tbody td, table.dataTable thead th {
+            padding: 12px;
+            text-align: left;
+        }
+
+        table.dataTable tbody td {
+            font-size: 14px;
+        }
+
+        .column-filter-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .container{
+            width: 95%;
+        }
+
+       
+        @media (max-width: 768px) {
+            .filter-container {
+                padding: 10px;
+            }
+
+            .filter-container input {
+                width: 120px;
+                font-size: 12px;
+            }
+
+            table.dataTable tbody td {
+                font-size: 12px;
+            }
+
+            table.dataTable thead th {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Restaurant Stock Management</h1>
+
+    <div class="filter-container">
+        <label for="min-date">Start Date:</label>
+        <input type="date" id="min-date" placeholder="YYYY-MM-DD">
+        <label for="max-date">End Date:</label>
+        <input type="date" id="max-date" placeholder="YYYY-MM-DD">
+    </div>
+
+    
+   <div class="container">
+    <table id="stock-table" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th>Unit Price</th>
+                <th>Restock Date</th>
+                <th>Total price</th>
+            </tr>
+            <tr>
+                <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
+                <th><input type="text" class="column-filter-input" placeholder="Filter by Name"></th>
+                <th><input type="text" class="column-filter-input" placeholder="Filter by Quantity"></th>
+                <th><input type="text" class="column-filter-input" placeholder="Filter by Unit"></th>
+                <th><input type="text" class="column-filter-input" placeholder="Filter by Unit Price"></th>
+                <th><input type="text" class="column-filter-input" placeholder="Filter by Restock Date"></th>
+                <th><input type="text" class="column-filter-input" placeholder="Filter by Total Price"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>Carrot</td><td>20</td><td>Kg</td><td>220</td><td>2024/11/21</td><td>4400</td></tr>
+            <tr><td>2</td><td>Eggs</td><td>20</td><td>Kg</td><td>50</td><td>2024/01/21</td><td>1000</td></tr>
+            <tr><td>3</td><td>Potato</td><td>10</td><td>Kg</td><td>220</td><td>2024/03/27</td><td>4400</td></tr>
+            <tr><td>4</td><td>Tomato</td><td>22</td><td>Kg</td><td>220</td><td>2024/14/17</td><td>4400</td></tr>
+            <tr><td>5</td><td>Garlic</td><td>23</td><td>Kg</td><td>220</td><td>2024/02/14</td><td>4400</td></tr>
+            <tr><td>6</td><td>Salmon</td><td>25</td><td>Kg</td><td>220</td><td>2024/11/16</td><td>4400</td></tr>
+            <tr><td>7</td><td>Chicken</td><td>26</td><td>Kg</td><td>220</td><td>2024/03/27</td><td>4400</td></tr>
+            <tr><td>8</td><td>Thalapath Fish</td><td>23</td><td>Kg</td><td>220</td><td>2024/05/27</td><td>4400</td></tr>
+            <tr><td>9</td><td>Soya Souse</td><td>21</td><td>L</td><td>220</td><td>2024/09/27</td><td>4400</td></tr>
+            <tr><td>10</td><td>Carrot</td><td>30</td><td>L</td><td>220</td><td>2024/04/11</td><td>4400</td></tr>
+            <tr><td>11</td><td>B'Onion</td><td>250</td><td>Kg</td><td>220</td><td>2024/06/09</td><td>4400</td></tr>
+            <tr><td>12</td><td>Red Onion</td><td>30</td><td>Kg</td><td>220</td><td>2024/11/15</td><td>4400</td></tr>
+            <tr><td>13</td><td>Leaks</td><td>20</td><td>Kg</td><td>220</td><td>2024/08/14</td><td>4400</td></tr>
+            <tr><td>14</td><td>Cheese</td><td>60</td><td>Pisces</td><td>220</td><td>2024/09/11</td><td>4400</td></tr>
+            <tr><td>15</td><td>Kiri Samba</td><td>30</td><td>Kg</td><td>220</td><td>2024/10/23</td><td>4400</td></tr>
+            <tr><td>16</td><td>Beans</td><td>20</td><td>Kg</td><td>220</td><td>2024/11/27</td><td>4400</td></tr>
+            <tr><td>17</td><td>Oyster Souse</td><td>20</td><td>Kg</td><td>220</td><td>2024/11/27</td><td>4400</td></tr>
+            <tr><td>18</td><td>Pumking</td><td>20</td><td>Kg</td><td>220</td><td>2024/11/27</td><td>4400</td></tr>
+         
+        </tbody>
+    </table>
+   </div>
+
+    <script>
+        $(document).ready(function() {
+  
+            var table = $('#stock-table').DataTable({
+                orderCellsTop: true,
+                fixedHeader: true,
+                lengthMenu: [5, 10, 15, 25, 50],
+                searching: true,
+            });
+
+           
+            $('#stock-table thead tr:eq(1) th input').on('keyup change', function() {
+                var columnIndex = $(this).parent().index();
+                table
+                    .column(columnIndex)
+                    .search(this.value)
+                    .draw();
+            });
+
+          
+            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                var minDate = $('#min-date').val();
+                var maxDate = $('#max-date').val();
+                var expiryDate = data[5]; 
+
+                if ((!minDate && !maxDate) || !expiryDate) {
+                    return true;
+                }
+
+                var expiryTimestamp = new Date(expiryDate).getTime();
+                var minTimestamp = minDate ? new Date(minDate).getTime() : null;
+                var maxTimestamp = maxDate ? new Date(maxDate).getTime() : null;
+
+                if (
+                    (!minTimestamp || expiryTimestamp >= minTimestamp) &&
+                    (!maxTimestamp || expiryTimestamp <= maxTimestamp)
+                ) {
+                    return true;
+                }
+                return false;
+            });
+
+           
+            $('#min-date, #max-date').on('change', function() {
+                table.draw();
+            });
+        });
+    </script>
+</body>
+</html>

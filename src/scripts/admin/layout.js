@@ -232,6 +232,20 @@ $("#btn-adminCredit").click('on', function () {
 });
 
 
+$(".report-card").click(function () {
+    var targetId = $(this).data("target");
+
+    $(".reports-section").css('display', 'none');
+    $("#report-section").css('display', 'none');
+    $("#" + targetId).css('display', 'block');
+});
+
+$(".btnBack").click(function () {
+    var targetId = $(this).data("target");
+    $("#" + targetId).css('display', 'none');
+    $("#report-section").css('display', 'block');
+});
+
 
 const dateAndTimeElement = document.getElementById("currentDateAndTime");
 
