@@ -66,6 +66,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    right: 0;
 }
 
 .input-wrapper-top{
@@ -600,8 +602,57 @@ table.dataTable tbody td {
  font-size: 14px;
 }
 
+
+
+
+
+.dataTables_paginate .paginate_button.current {
+    background-color: var(--selected-color) !important; 
+    color: white !important; 
+    border-color: var(--primary-color) !important;
+}
+
+
+
+.dataTables_length {
+    margin-left: 20px; 
+}
+
+
+.dataTables_length label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 10px;
+    color: #333;
+}
+
+
+.dataTables_length select {
+    font-size: 14px;
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+
+
+
+
+.dataTables_length select option {
+    padding: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+
+
 .parent-container {
     position: relative;
+    margin-bottom: 4px;
 }
 
 .gloabl-search {
@@ -610,6 +661,7 @@ table.dataTable tbody td {
     padding: 6px;
     border-radius: 5px;
     z-index: 10;
+
  
 }
 
