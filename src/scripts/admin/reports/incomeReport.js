@@ -1,5 +1,8 @@
 $(document).ready(async function () {
     const baseUrl = await window.api.getBaseUrl();
+    incomeReport(baseUrl);
+});
+async function incomeReport(baseUrl) {
     const response = await fetch(baseUrl + "/payment/getAllPayment", {
         method: "GET",
         headers: {
@@ -11,27 +14,27 @@ $(document).ready(async function () {
     console.log(paymentData);
 
     const columns = [
-        { 
-            data: null, 
+        {
+            data: null,
             title: "#Id",
             render: function (data, type, row, meta) {
-                return meta.row + 1; 
-            } 
+                return meta.row + 1;
+            }
         },
         { data: "paymentId", title: "Payment Id" },
         { data: "orderId", title: "Order Id" },
-        { 
-            data: "paymentDateTime", 
-            title: "Date", 
+        {
+            data: "paymentDateTime",
+            title: "Date",
             render: function (data) {
                 if (!data) return "";
                 const date = new Date(data);
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0'); 
-                const hour = date.getHours() % 12 || 12; 
-                const minute = String(date.getMinutes()).padStart(2, '0'); 
-                const period = date.getHours() < 12 ? 'AM' : 'PM'; 
+                const day = String(date.getDate()).padStart(2, '0');
+                const hour = date.getHours() % 12 || 12;
+                const minute = String(date.getMinutes()).padStart(2, '0');
+                const period = date.getHours() < 12 ? 'AM' : 'PM';
 
                 return `${year}.${month}.${day} ${hour}:${minute} ${period}`;
             }
@@ -42,7 +45,7 @@ $(document).ready(async function () {
         { data: "paymentTotal", title: "Net Total" },
     ];
 
-   
+
     const table = $('#tblIncome').DataTable({
         data: paymentData.data,
         columns: columns,
@@ -59,7 +62,7 @@ $(document).ready(async function () {
         let totalCredit = 0;
         let totalNet = 0;
 
-    
+
         table.rows({ page: 'current' }).data().each(function (rowData) {
             totalCash += parseFloat(rowData.cashPayment) || 0;
             totalCard += parseFloat(rowData.cardPayment) || 0;
@@ -67,24 +70,24 @@ $(document).ready(async function () {
             totalNet += parseFloat(rowData.paymentTotal) || 0;
         });
 
-      
+
         $('#report_cash_income').text(totalCash.toFixed(2));
         $('#report_card_income').text(totalCard.toFixed(2));
         $('#report_credit_income').text(totalCredit.toFixed(2));
         $('#report_total_income').text(totalNet.toFixed(2));
     }
 
-   
+
     updateTotals();
 
-    
-    table.on('draw', function() {
+
+    table.on('draw', function () {
         updateTotals();
     });
     $('#global-search-income').on('keyup', function () {
         table.search(this.value).draw();
     });
-   
+
     $('#tblIncome thead tr:eq(1) th input').on('keyup change', function () {
         const columnIndex = $(this).parent().index();
         table
@@ -96,7 +99,7 @@ $(document).ready(async function () {
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         const minDate = $('#min-date-imcome').val();
         const maxDate = $('#max-date-imcome').val();
-        const expiryDate = data[3]; 
+        const expiryDate = data[3];
 
         if ((!minDate && !maxDate) || !expiryDate) {
             return true;
@@ -118,4 +121,5 @@ $(document).ready(async function () {
     $('#min-date-income, #max-date-imcome').on('change', function () {
         table.draw();
     });
-});
+}
+
