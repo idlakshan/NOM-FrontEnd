@@ -9,6 +9,7 @@
     /* border: 1px solid green; */
 }
 
+
 .sub-report-container-wrapper{
     width: 100%;
     height: 99%;
@@ -44,22 +45,24 @@
 
 .report-container-top {
     width: 100%;
-    height: 10%;
-    border: 1px solid red;
+    height: 7%;
+    /* border: 1px solid red; */
     display: flex;
 }
 
 .report-container-top-input-wrapper {
     width: 90%;
     height: 100%;
-    border: 1px solid green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
 }
 
 .report-container-top-csvbutton-wrapper {
     width: 10%;
     height: 100%;
-    border: 1px solid green;
+    /* border: 1px solid green; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -528,6 +531,87 @@
     display: block;
 }
 
+
+
+
+/* ..............reports.................... */
+.filter-container {
+    margin: 20px auto;
+    text-align: center;
+    max-width: 800px;
+}
+
+.filter-container label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.filter-container input {
+    padding: 10px;
+    margin: 0 10px 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 160px;
+}
+
+.filter-container input[type="date"] {
+    padding: 6px;
+    width: auto;
+}
+
+.dataTables_length, .dataTables_filter {
+    margin-bottom: 15px;
+}
+
+table.dataTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table.dataTable thead th {
+    background-color: #5C6574 !important;
+    color: white !important;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+table.dataTable tbody td, table.dataTable thead th {
+    padding: 12px;
+    text-align: left;
+}
+
+table.dataTable tbody td {
+    font-size: 14px;
+}
+
+.column-filter-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.column-filter-input::placeholder{
+ font-size: 14px;
+}
+
+.parent-container {
+    position: relative;
+}
+
+.gloabl-search {
+    position: absolute;
+    right: 12px;
+    padding: 6px;
+    border-radius: 5px;
+    z-index: 10;
+ 
+}
 
 
 @media only screen and (max-width: 1392px) {

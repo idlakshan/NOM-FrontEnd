@@ -10,7 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> -->
 
     <link rel="stylesheet" href="../styles/common-styles.css">
     <link rel="stylesheet" href="../styles/extrenal-popup.css">
@@ -29,6 +29,11 @@
     <link rel="stylesheet" href="../styles/admin/reports/reports.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
+        <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    
+     
 
 </head>
 
@@ -2928,7 +2933,13 @@
 
                         <div class="report-container-top">
                             <div class="report-container-top-input-wrapper">
-                         
+
+                                <div class="filter-container">
+                                    <label for="min-date">From:</label>
+                                    <input type="date" id="min-date-income" placeholder="YYYY-MM-DD">
+                                    <label for="max-date">To:</label>
+                                    <input type="date" id="max-date-income" placeholder="YYYY-MM-DD">
+                                </div>
 
 
 
@@ -2936,14 +2947,17 @@
                             </div>
                             <div class="report-container-top-csvbutton-wrapper">
                                 <img id="csvIncome" class="csvReport" src="../icons/csvDownload.png"
-                                    style="cursor: pointer; margin-left: 13%;" width="70px" alt="">
+                                    style="cursor: pointer; margin-left: 13%;" width="60px" alt="">
                             </div>
 
 
                         </div>
                         <div class="reports-container-bottom">
-                            <table id="tblIncome" class="table table-striped table-bordered" cellspacing="0"
-                                width="95%">
+                            <div class="parent-container">
+                                <input type="text" id="global-search-income" class="gloabl-search" placeholder="Search...">
+                            </div>
+                            <table id="tblIncome" class="table table-striped table-bordered display" cellspacing="0"
+                                width="100%">
                                 <thead>
                                     <tr>
                                         <th>#Id</th>
@@ -2954,6 +2968,16 @@
                                         <th>Card</th>
                                         <th>Credit</th>
                                         <th>Net Total</th>
+                                    </tr>
+                                    <tr>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Payment"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Order"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Cash"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Card"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Credit"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -4094,6 +4118,7 @@
     <!-- tables data sorting -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
+
     <!-- xlsx library for download tables data  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 
@@ -4120,7 +4145,10 @@
     <script src="../scripts/admin/table.js"></script>
     <script src="../scripts/admin/credit.js"></script>
 
-    <script s></script>
+    <!-- reports -->
+
+
+    <script src="../scripts/admin/reports/incomeReport.js"></script>
 
     <script src="../scripts/draggable-keyboard.js"> </script>
 
