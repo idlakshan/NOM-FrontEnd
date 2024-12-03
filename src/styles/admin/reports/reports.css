@@ -602,6 +602,10 @@ table.dataTable tbody td {
  font-size: 14px;
 }
 
+.dataTables_info {
+    margin-left: 20px;  
+}
+
 
 
 

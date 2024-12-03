@@ -3077,8 +3077,11 @@
                          
                         </div>
                         <div class="reports-container-bottom">
+                            <div class="parent-container">
+                                <input type="text" id="global-search-expenses" class="gloabl-search" placeholder="Search...">
+                            </div>
                             <table id="tblExpenses" class="table table-striped table-bordered" cellspacing="0"
-                                width="95%">
+                                width="100%">
                                 <thead>
                                     <tr>
                                         <th>#Id</th>
@@ -3179,24 +3182,33 @@
                                 data-target="orderDetailsReport" height="60px" style="cursor: pointer; margin-left: 1%;"
                                 alt="">
                             <h1 class="report-heading-title">Order Details Report</h3>
+                                <div class="report-container-top-csvbutton-wrapper">
+                                    <img id="csvOrderDetails" class="csvReport" src="../icons/csvDownload.png"
+                                        style="cursor: pointer; margin-left: 13%;" width="60px" alt="">
+                                </div>
                         </div>
                         <div class="report-container-top">
                             <div class="report-container-top-input-wrapper">
                          
-
-
-
-
+                                <div class="report-container-top-input-wrapper">
+                                    <div class="filter-container">
+                                        <label for="min-date">From:</label>
+                                        <input type="date" id="min-date-orderdetails" placeholder="YYYY-MM-DD">
+                                        <label for="max-date">To:</label>
+                                        <input type="date" id="max-date-orderdetails" placeholder="YYYY-MM-DD">
+                                    </div>
+    
+                                </div>
                             </div>
-                            <div class="report-container-top-csvbutton-wrapper">
-                                <img id="csvOrderDetails" class="csvReport" src="../icons/csvDownload.png"
-                                    style="cursor: pointer; margin-left: 13%;" width="70px" alt="">
-                            </div>
+                            
 
                         </div>
                         <div class="reports-container-bottom">
+                            <div class="parent-container">
+                                <input type="text" id="global-search-orderdetails" class="gloabl-search" placeholder="Search...">
+                            </div>
                             <table id="tblOrderDetails" class="table table-striped table-bordered" cellspacing="0"
-                                width="95%">
+                                width="100%">
                                 <thead>
                                     <tr>
                                         <th>#Id</th>
@@ -3207,6 +3219,16 @@
                                         <th>QTY</th>
                                         <th>Unit Price</th>
                                         <th>Total</th>
+                                    </tr>
+                                    <tr>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Order"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Dish"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Dish Size"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Qty"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Unit Price"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -3294,7 +3316,12 @@
                         <div class="report-container-top current-stock-top">
                             <div class="report-container-top-input-wrapper">
                          
-
+                                <div class="filter-container">
+                                    <label for="min-date">From:</label>
+                                    <input type="date" id="min-date-dish" placeholder="YYYY-MM-DD">
+                                    <label for="max-date">To:</label>
+                                    <input type="date" id="max-date-dish" placeholder="YYYY-MM-DD">
+                                </div>
 
 
 
@@ -3315,6 +3342,16 @@
                                         <th>Date</th>
                                         <th>No of Dish</th>
                                         <th>Total Price</th>
+                                    </tr>
+                                    <tr>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Order"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Customer Id"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Customer"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by No of Dish"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
+                                       
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -4158,6 +4195,7 @@
 
     <script src="../scripts/admin/reports/incomeReport.js"></script>
     <script src="../scripts/admin/reports/expensesReport.js"></script>
+    <script src="../scripts/admin/reports/orderdetailsReport.js"></script>
 
     <script src="../scripts/draggable-keyboard.js"> </script>
 

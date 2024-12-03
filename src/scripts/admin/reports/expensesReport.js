@@ -71,7 +71,7 @@ async function expensesReport(baseUrl) {
         searching: true,
     });
 
-    function updateTotals() {
+    function updateExpensesTotals() {
         let totalQty = 0;
         let totalExpenses = 0;
 
@@ -84,10 +84,10 @@ async function expensesReport(baseUrl) {
         $('#reportTotalExpenses').text(totalExpenses.toFixed(2));
     }
 
-    updateTotals();
+    updateExpensesTotals();
 
     table.on('draw', function() {
-        updateTotals();
+        updateExpensesTotals();
     });
 
     $('#global-search-expenses').on('keyup', function () {

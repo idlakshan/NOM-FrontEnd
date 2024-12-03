@@ -56,7 +56,7 @@ async function incomeReport(baseUrl) {
     });
 
 
-    function updateTotals() {
+    function updateIncomeTotals() {
         let totalCash = 0;
         let totalCard = 0;
         let totalCredit = 0;
@@ -78,11 +78,11 @@ async function incomeReport(baseUrl) {
     }
 
 
-    updateTotals();
+    updateIncomeTotals();
 
 
     table.on('draw', function () {
-        updateTotals();
+        updateIncomeTotals();
     });
     $('#global-search-income').on('keyup', function () {
         table.search(this.value).draw();
