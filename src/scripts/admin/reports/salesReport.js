@@ -20,7 +20,6 @@ async function salesReports(baseUrl) {
         const dishesList = await response.json();
         console.log(dishesList);
 
-    
         const columns = [
             {
                 data: null,
@@ -67,7 +66,7 @@ async function salesReports(baseUrl) {
             searching: true,
         });
 
-        $('#global-search-dish').on('keyup', function () {
+        $('#global-search-sales').on('keyup', function () {
             table.search(this.value).draw();
         });
 

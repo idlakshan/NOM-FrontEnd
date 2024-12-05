@@ -2452,26 +2452,38 @@
                                 data-target="stockReport" height="60px" style="cursor: pointer; margin-left: 1%;"
                                 alt="">
                             <h1 class="report-heading-title">Stock History</h3>
+                                <div class="report-container-top-csvbutton-wrapper">
+                                    <img id="csvStock" class="csvReport" src="../icons/csvDownload.png"
+                                        style="cursor: pointer; margin-left: 13%;" width="60px" alt="">
+                                </div>
                         </div>
 
                         <div class="report-container-top">
                             <div class="report-container-top-input-wrapper">
                          
-
+                                <div class="filter-container">
+                                    <label for="min-date">From:</label>
+                                    <input type="date" id="min-date-stockHistory" placeholder="YYYY-MM-DD">
+                                    <label for="max-date">To:</label>
+                                    <input type="date" id="max-date-stockHistory" placeholder="YYYY-MM-DD">
+                                </div>
 
 
 
                             </div>
                             <div class="report-container-top-csvbutton-wrapper">
                                 <img id="csvStock" class="csvReport" src="../icons/csvDownload.png"
-                                    style="cursor: pointer; margin-left: 13%;" width="70px" alt="">
+                                    style="cursor: pointer; margin-left: 13%;" width="60px" alt="">
                             </div>
 
 
                         </div>
                         <div class="reports-container-bottom">
+                            <div class="parent-container">
+                                <input type="text" id="global-search-stockHistory" class="gloabl-search" placeholder="Search...">
+                            </div>
                             <table id="tblStockHistory" class="table table-striped table-bordered" cellspacing="0"
-                                width="95%">
+                                width="100%">
                                 <thead>
                                     <tr>
                                         <th>#Id</th>
@@ -2482,6 +2494,18 @@
                                         <th>Total</th>
                                         <th>Date</th>
                                         <th>Status</th>
+                                    </tr>
+                                    <tr>
+
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Ingredient"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Unit"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Price"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Qty"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Status"></th>
+                                       
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -2771,6 +2795,9 @@
                         </div>
 
                         <div class="reports-container-bottom">
+                            <div class="parent-container">
+                                <input type="text" id="global-search-sales" class="gloabl-search" placeholder="Search...">
+                            </div>
                             <table id="tblSales" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
@@ -4221,6 +4248,7 @@
     <script src="../scripts/admin/reports/orderdetailsReport.js"></script>
     <script src="../scripts/admin/reports/dishReport.js"></script>
     <script src="../scripts/admin/reports/salesReport.js"></script>
+    <script src="../scripts/admin/reports/stockHistory.js"></script>
 
     <script src="../scripts/draggable-keyboard.js"> </script>
 
