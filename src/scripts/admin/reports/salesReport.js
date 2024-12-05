@@ -71,7 +71,7 @@ async function salesReports(baseUrl) {
         });
 
       
-        function attachDishRowClickListeners() {
+        function attachSaleshRowClickListeners() {
             const rows = document.querySelectorAll('#tblSales tbody tr');
             rows.forEach(function (row, index) {
                 row.addEventListener("click", function () {
@@ -81,11 +81,11 @@ async function salesReports(baseUrl) {
             });
         }
 
-        attachDishRowClickListeners();
+        attachSaleshRowClickListeners();
 
    
         table.on('draw', function () {
-            attachDishRowClickListeners();
+            attachSaleshRowClickListeners();
         });
 
       

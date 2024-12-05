@@ -52,6 +52,9 @@ async function stockHistory(baseUrl) {
         { data: 1, title: "Status" },
     ];
 
+    if ($.fn.dataTable.isDataTable('#tblStockHistory')) {
+        $('#tblStockHistory').DataTable().clear().destroy();
+    }
 
     const table = $('#tblStockHistory').DataTable({
         data: stockDetails.data,

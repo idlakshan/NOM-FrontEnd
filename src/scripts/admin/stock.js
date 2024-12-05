@@ -1482,8 +1482,8 @@ async function saveStock(baseUrl) {
 
             checkStockInputs()
             getAllStockIngredients(baseUrl)
-           // stockHistory(baseUrl);
-           // stockOverviewReport(baseUrl);
+           stockHistory(baseUrl);
+           stockOverviewReport(baseUrl);
             expensesReport(baseUrl)
             loadAllDishIngredients(baseUrl)
 
