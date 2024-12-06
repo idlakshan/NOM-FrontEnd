@@ -2599,23 +2599,32 @@
                                 data-target="cashSettlementReport" height="60px"
                                 style="cursor: pointer; margin-left: 1%;" alt="">
                             <h1 class="report-heading-title">Cash Settlement Report</h3>
+                                <div class="report-container-top-csvbutton-wrapper">
+                                    <img id="csvCashSettlement" class="csvReport" src="../icons/csvDownload.png"
+                                        style="cursor: pointer; margin-left: 13%;" width="60px" alt="">
+                                </div>
                         </div>
 
                         <div class="report-container-top">
                             <div class="report-container-top-input-wrapper">
-                         
-
+<!--                          
+                                <div class="filter-container">
+                                    <label for="min-date">From:</label>
+                                    <input type="date" id="min-date-cashSettlemant" placeholder="YYYY-MM-DD">
+                                    <label for="max-date">To:</label>
+                                    <input type="date" id="max-date-cashSettlemant" placeholder="YYYY-MM-DD">
+                                </div> -->
 
 
 
                             </div>
 
-                            <div class="report-container-top-csvbutton-wrapper">
-                                <img id="csvCashSettlement" class="csvReport" src="../icons/csvDownload.png"
-                                    style="cursor: pointer; margin-left: 13%;" width="70px" alt="">
-                            </div>
+                            
                         </div>
                         <div class="reports-container-bottom">
+                            <div class="parent-container">
+                                <input type="text" id="global-search-cashSettlemant" class="gloabl-search" placeholder="Search...">
+                            </div>
                             <table id="tblCashSettlement" class="table table-striped table-bordered" cellspacing="0"
                                 width="100%">
                                 <thead>
@@ -2628,6 +2637,18 @@
                                         <th>System</th>
                                         <th>Total</th>
                                         <th>Variance</th>
+                                    </tr>
+                                    <tr>
+
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Shift"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Cashier"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Shift Start"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Shift End"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by System"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Variance"></th>
+                                       
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -4263,6 +4284,7 @@
     <script src="../scripts/admin/reports/salesReport.js"></script>
     <script src="../scripts/admin/reports/stockHistory.js"></script>
     <script src="../scripts/admin/reports/stockOverview.js"></script>
+    <script src="../scripts/admin/reports/cashsetlemantReport.js"></script>
 
     <script src="../scripts/draggable-keyboard.js"> </script>
 
