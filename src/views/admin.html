@@ -1999,6 +1999,10 @@
                                 data-target="currentStockReport" height="60px" style="cursor: pointer; margin-left: 1%;"
                                 alt="">
                             <h1 class="report-heading-title">Stock Overview Report</h3>
+                                <div class="report-container-top-csvbutton-wrapper">
+                                    <img id="csvCurrentStock" class="csvReport" src="../icons/csvDownload.png"
+                                        style="cursor: pointer; margin-left: 13%;" width="60px" alt="">
+                                </div>
                         </div>
 
                         <div class="report-container-top">
@@ -2007,16 +2011,13 @@
 
 
                             </div>
-                            <div class="report-container-top-csvbutton-wrapper">
-                                <img id="csvStock" class="csvReport" src="../icons/csvDownload.png"
-                                    style="cursor: pointer; margin-left: 13%;" width="70px" alt="">
-                            </div>
+                           
 
 
                         </div>
                         <div class="reports-container-bottom">
                             <div class="parent-container">
-                                <input type="text" id="global-search-currenStock" class="gloabl-search" placeholder="Search...">
+                                <input type="text" id="global-search-currenStock" class="gloabl-search keyboard-input" placeholder="Search...">
                             </div>
                             <table id="tblCurrentStock" class="table table-striped table-bordered" cellspacing="0"
                                 width="100%">
@@ -2031,12 +2032,12 @@
                                     </tr>
                                     <tr>
 
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Ingredient"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Unit"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Qty"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Re-Order"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Status"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Ingredient"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Unit"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Qty"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Re-Order"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Status"></th>
                                        
                                     </tr>
                                 </thead>
@@ -2119,7 +2120,7 @@
                                 alt="">
                             <h1 class="report-heading-title">Credit Report</h3>
                                 <div class="report-container-top-csvbutton-wrapper">
-                                    <img id="csvStock" class="csvReport" src="../icons/csvDownload.png"
+                                    <img id="csvCredit" class="csvReport" src="../icons/csvDownload.png"
                                         style="cursor: pointer; margin-left: 13%;" width="60px" alt="">
                                 </div>
                         </div>
@@ -2137,7 +2138,7 @@
                         </div>
                         <div class="reports-container-bottom">
                             <div class="parent-container">
-                                <input type="text" id="global-search-credit" class="gloabl-search" placeholder="Search...">
+                                <input type="text" id="global-search-credit" class="gloabl-search keyboard-input"  placeholder="Search...">
                             </div>
                             <table id="tblCreditReport" class="table table-striped table-bordered" cellspacing="0"
                                 width="100%">
@@ -2154,14 +2155,14 @@
                                     </tr>
                                     <tr>
 
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Credit Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Customer"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Contact"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Last Payment"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Credit"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Settled"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Due"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Credit Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Customer"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Contact"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Last Payment"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Credit"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Settled"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Due"></th>
                                        
                                     </tr>
                                 </thead>
@@ -2244,10 +2245,7 @@
                     <img src="../images/back.png" id="btnBackPopupCredit" height="60px"
                         style="margin-top: 1%; cursor: pointer; margin-left: 1%;" alt="">
                     <h1 class="report-heading-title" style="margin-top: 10px;">Credit Order Details Report</h3>
-                        <div class="report-container-top-csvbutton-wrapper">
-                            <img id="csvCreditOrders" class="csvReport" src="../icons/csvDownload.png"
-                                style="cursor: pointer; margin-left: 13%;" width="60px" alt="">
-                        </div>
+                      
                 </div>
                 <div class="report-container-top">
                     <div class="report-container-top-input-wrapper">
@@ -2303,7 +2301,7 @@
                 </div>
                 <div class="reports-Creditpopup-container-body">
                     <div class="parent-container">
-                        <input type="text" id="global-search-creditpopup-main" class="gloabl-search" placeholder="Search...">
+                        <input type="text" id="global-search-creditpopup-main" class="gloabl-search keyboard-input" placeholder="Search...">
                     </div>
                     <table id="tblCreditPopup" class="table table-striped table-bordered" cellspacing="0" width="98%">
                         <thead>
@@ -2498,7 +2496,7 @@
                                 alt="">
                             <h1 class="report-heading-title">Stock History</h3>
                                 <div class="report-container-top-csvbutton-wrapper">
-                                    <img id="csvStock" class="csvReport" src="../icons/csvDownload.png"
+                                    <img id="csvStockHistory" class="csvReport" src="../icons/csvDownload.png"
                                         style="cursor: pointer; margin-left: 13%;" width="60px" alt="">
                                 </div>
                         </div>
@@ -2525,7 +2523,7 @@
                         </div>
                         <div class="reports-container-bottom">
                             <div class="parent-container">
-                                <input type="text" id="global-search-stockHistory" class="gloabl-search" placeholder="Search...">
+                                <input type="text" id="global-search-stockHistory" class="gloabl-search keyboard-input" placeholder="Search...">
                             </div>
                             <table id="tblStockHistory" class="table table-striped table-bordered" cellspacing="0"
                                 width="100%">
@@ -2542,14 +2540,14 @@
                                     </tr>
                                     <tr>
 
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Ingredient"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Unit"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Price"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Qty"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Status"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Ingredient"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Unit"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Price"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Qty"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Total"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Status"></th>
                                        
                                     </tr>
                                 </thead>
@@ -2655,7 +2653,7 @@
                         </div>
                         <div class="reports-container-bottom">
                             <div class="parent-container">
-                                <input type="text" id="global-search-cashSettlemant" class="gloabl-search" placeholder="Search...">
+                                <input type="text" id="global-search-cashSettlemant" class="gloabl-search keyboard-input" placeholder="Search...">
                             </div>
                             <table id="tblCashSettlement" class="table table-striped table-bordered" cellspacing="0"
                                 width="100%">
@@ -2672,14 +2670,14 @@
                                     </tr>
                                     <tr>
 
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Shift"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Cashier"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Shift Start"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Shift End"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by System"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Variance"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Shift"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Cashier"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Shift Start"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Shift End"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by System"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Total"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Variance"></th>
                                        
                                     </tr>
                                 </thead>
@@ -2698,8 +2696,7 @@
                     <img src="../images/back.png" id="btnBackPopupCashSettlement" height="60px"
                         style="margin-top: 1%; cursor: pointer; margin-left: 1%;" alt="">
                     <h1 class="report-heading-title" style="margin-top: 10px;">Shift Details Report</h1>
-                    <img id="csvCashSettlementPopup" class="csvReport" src="../icons/csvDownload.png"
-                        style="cursor: pointer; position: absolute; right: 8%; top: 1%;" width="65px" alt="">
+                   
                 </div>
                 <div class="reports-popup-container-header" style="margin-bottom: 20px;">
                     <div class="reports-popup-container-header-column">
@@ -2862,7 +2859,7 @@
 
                         <div class="reports-container-bottom">
                             <div class="parent-container">
-                                <input type="text" id="global-search-sales" class="gloabl-search" placeholder="Search...">
+                                <input type="text" id="global-search-sales" class="gloabl-search keyboard-input" placeholder="Search...">
                             </div>
                             <table id="tblSales" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
@@ -2880,16 +2877,16 @@
                                     </tr>
                                    <tr>
 
-                                    <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
-                                    <th><input type="text" class="column-filter-input" placeholder="Filter by Order"></th>
-                                    <th><input type="text" class="column-filter-input" placeholder="Filter by Customer"></th>
-                                    <th><input type="text" class="column-filter-input" placeholder="Filter by Cashier"></th>
-                                    <th><input type="text" class="column-filter-input" placeholder="Filter by Table"></th>
-                                    <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
-                                    <th><input type="text" class="column-filter-input" placeholder="Filter by Cash"></th>
-                                    <th><input type="text" class="column-filter-input" placeholder="Filter by Card"></th>
-                                    <th><input type="text" class="column-filter-input" placeholder="Filter by Credit"></th>
-                                    <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
+                                    <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Id"></th>
+                                    <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Order"></th>
+                                    <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Customer"></th>
+                                    <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Cashier"></th>
+                                    <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Table"></th>
+                                    <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Date"></th>
+                                    <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Cash"></th>
+                                    <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Card"></th>
+                                    <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Credit"></th>
+                                    <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Total"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -3062,7 +3059,7 @@
                         </div>
                         <div class="reports-container-bottom">
                             <div class="parent-container">
-                                <input type="text" id="global-search-income" class="gloabl-search" placeholder="Search...">
+                                <input type="text" id="global-search-income" class="gloabl-search keyboard-input" placeholder="Search...">
                             </div>
                             <table id="tblIncome" class="table table-striped table-bordered display" cellspacing="0"
                                 width="100%">
@@ -3078,14 +3075,14 @@
                                         <th>Net Total</th>
                                     </tr>
                                     <tr>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Payment"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Order"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Cash"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Card"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Credit"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Payment"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Order"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Cash"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Card"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Credit"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Total"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -3190,7 +3187,7 @@
                         </div>
                         <div class="reports-container-bottom">
                             <div class="parent-container">
-                                <input type="text" id="global-search-expenses" class="gloabl-search" placeholder="Search...">
+                                <input type="text" id="global-search-expenses" class="gloabl-search keyboard-input" placeholder="Search...">
                             </div>
                             <table id="tblExpenses" class="table table-striped table-bordered" cellspacing="0"
                                 width="100%">
@@ -3205,13 +3202,13 @@
                                         <th>Total</th>
                                     </tr>
                                     <tr>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Stock"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Ingredient"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Unit Price"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Qty"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Stock"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Ingredient"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Unit Price"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Qty"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Total"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -3317,7 +3314,7 @@
                         </div>
                         <div class="reports-container-bottom">
                             <div class="parent-container">
-                                <input type="text" id="global-search-orderdetails" class="gloabl-search" placeholder="Search...">
+                                <input type="text" id="global-search-orderdetails" class="gloabl-search keyboard-input" placeholder="Search...">
                             </div>
                             <table id="tblOrderDetails" class="table table-striped table-bordered" cellspacing="0"
                                 width="100%">
@@ -3333,14 +3330,14 @@
                                         <th>Total</th>
                                     </tr>
                                     <tr>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Order"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Dish"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Dish Size"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Qty"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Unit Price"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Order"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Dish"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Dish Size"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Qty"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Unit Price"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Total"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -3446,7 +3443,7 @@
                         </div>
                         <div class="reports-container-bottom current-stock-bottom">
                             <div class="parent-container">
-                                <input type="text" id="global-search-dish" class="gloabl-search" placeholder="Search...">
+                                <input type="text" id="global-search-dish" class="gloabl-search keyboard-input" placeholder="Search...">
                             </div>
                             <table id="tblDish" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
@@ -3460,13 +3457,13 @@
                                         <th>Total Price</th>
                                     </tr>
                                     <tr>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Order"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Customer Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Customer"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by No of Dish"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Order"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Customer Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Customer"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by No of Dish"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Total"></th>
                                        
                                     </tr>
                                 </thead>
@@ -3542,8 +3539,7 @@
                     <img src="../images/back.png" id="btnBackPopupDish" height="60px"
                         style="margin-top: 1%; cursor: pointer; margin-left: 1%;" alt="">
                     <h1 class="report-heading-title" style="margin-top: 10px;">Order Details Report</h1>
-                    <img id="csvSalesPopup" class="csvReport" src="../icons/csvDownload.png"
-                        style="cursor: pointer; position: absolute; right: 8%; top: 1%;" width="65px" alt="">
+                 
                 </div>
                 <div class="reports-popup-container-header">
                     <div class="reports-popup-container-header-column">
@@ -3634,7 +3630,7 @@
                         </div>
                         <div class="reports-container-bottom">
                             <div class="parent-container">
-                                <input type="text" id="global-search-creditPayment" class="gloabl-search" placeholder="Search...">
+                                <input type="text" id="global-search-creditPayment" class="gloabl-search keyboard-input" placeholder="Search...">
                             </div>
                             <table id="tblCreditPayment" class="table table-striped table-bordered" cellspacing="0"
                                 width="100%">
@@ -3649,13 +3645,13 @@
                                         <th>Total</th>
                                     </tr>
                                     <tr>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Payment"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Customer"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Cash"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Card"></th>
-                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Payment"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Customer"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Cash"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Card"></th>
+                                        <th><input type="text" class="column-filter-input keyboard-input" placeholder="Filter by Total"></th>
                                        
                                     </tr>
                                 </thead>
@@ -4338,6 +4334,7 @@
     <script src="../scripts/admin/reports/cashsetlemantReport.js"></script>
     <script src="../scripts/admin/reports/creditpaymentReport.js"></script>
     <script src="../scripts/admin/reports/creditReport.js"></script>
+    <script src="../scripts/admin/reports/csvDowndlad.js"></script>
 
     <script src="../scripts/draggable-keyboard.js"> </script>
 

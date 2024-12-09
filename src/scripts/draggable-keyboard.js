@@ -176,6 +176,8 @@ function handleKeyboardButtonClick(event) {
 
         // Dispatch input event
         selectedInput.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+     
+       selectedInput.dispatchEvent(new Event('keyup', { bubbles: true, cancelable: true }));
     }
 }
 
