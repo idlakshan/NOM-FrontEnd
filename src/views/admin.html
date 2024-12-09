@@ -3580,23 +3580,32 @@
                                 data-target="creditPaymentReport" height="60px"
                                 style="cursor: pointer; margin-left: 1%;" alt="">
                             <h1 class="report-heading-title">Credit Payment</h3>
+                                <div class="report-container-top-csvbutton-wrapper">
+                                    <img id="csvcreditPayments" class="csvReport" src="../icons/csvDownload.png"
+                                        style="cursor: pointer; margin-left: 13%;" width="60px" alt="">
+                                </div>
                         </div>
                         <div class="report-container-top">
                             <div class="report-container-top-input-wrapper">
                          
-
+                                <div class="filter-container">
+                                    <label for="min-date">From:</label>
+                                    <input type="date" id="min-date-creditPayment" placeholder="YYYY-MM-DD">
+                                    <label for="max-date">To:</label>
+                                    <input type="date" id="max-date-creditPayment" placeholder="YYYY-MM-DD">
+                                </div>
 
 
 
                             </div>
-                            <div class="report-container-top-csvbutton-wrapper">
-                                <img id="csvcreditPayments" class="csvReport" src="../icons/csvDownload.png"
-                                    style="cursor: pointer; margin-left: 13%;" width="70px" alt="">
-                            </div>
+                          
                         </div>
                         <div class="reports-container-bottom">
+                            <div class="parent-container">
+                                <input type="text" id="global-search-creditPayment" class="gloabl-search" placeholder="Search...">
+                            </div>
                             <table id="tblCreditPayment" class="table table-striped table-bordered" cellspacing="0"
-                                width="95%">
+                                width="100%">
                                 <thead>
                                     <tr>
                                         <th>#Id</th>
@@ -3606,6 +3615,16 @@
                                         <th>Cash</th>
                                         <th>Card</th>
                                         <th>Total</th>
+                                    </tr>
+                                    <tr>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Id"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Payment"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Customer"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Date"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Cash"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Card"></th>
+                                        <th><input type="text" class="column-filter-input" placeholder="Filter by Total"></th>
+                                       
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -4285,6 +4304,7 @@
     <script src="../scripts/admin/reports/stockHistory.js"></script>
     <script src="../scripts/admin/reports/stockOverview.js"></script>
     <script src="../scripts/admin/reports/cashsetlemantReport.js"></script>
+    <script src="../scripts/admin/reports/creditpaymentReport.js"></script>
 
     <script src="../scripts/draggable-keyboard.js"> </script>
 
